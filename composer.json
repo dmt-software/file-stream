@@ -1,0 +1,33 @@
+{
+  "name": "dmt-software/file-stream",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "proggeler",
+      "email": "proggeler@de-mes.nl"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "DMT\\FileStream\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.4",
+    "ext-iconv": "*",
+    "ext-json": "*",
+    "ext-libxml": "*",
+    "ext-simplexml": "*",
+    "pcrov/jsonreader": "^1.0",
+    "dmt-software/xml-parser": "^0.7.3"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DMT\\Test\\FileStream\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^13.3"
+  }
+}
