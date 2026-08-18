@@ -57,8 +57,6 @@ class Processor
             $iterator = new CallbackFilterIterator($iterator, $filter);
         }
 
-        foreach (new LimitIterator($iterator, $this->offset, $this->limit) as $key => $row) {
-            yield $key => $row;
-        }
+        yield from new LimitIterator($iterator, $this->offset, $this->limit);
     }
 }
