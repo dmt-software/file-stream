@@ -9,7 +9,7 @@ use DMT\FileStream\Exception\SerializationException;
 /**
  * @template T of object
  */
-interface Deserializer
+interface DeserializerInterface
 {
     /**
      * @return T

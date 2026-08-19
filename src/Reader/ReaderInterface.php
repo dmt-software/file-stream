@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream;
+namespace DMT\FileStream\Reader;
 
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Exception\ReaderException;
@@ -16,7 +16,7 @@ interface ReaderInterface
      * @throws NotFoundException
      * @throws ReaderException
      */
-    public function getHeader(mixed $query): object;
+    public function getHeader(string $query): object;
 
     /**
      * Get the results from the file stream.
@@ -25,5 +25,5 @@ interface ReaderInterface
      * @throws NotFoundException
      * @throws ReaderException
      */
-    public function getResults(mixed $query): Iterator;
+    public function getResults(string $query): Iterator;
 }

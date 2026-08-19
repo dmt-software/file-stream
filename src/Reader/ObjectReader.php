@@ -2,30 +2,30 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream;
+namespace DMT\FileStream\Reader;
 
 use DMT\FileStream\Reader\Pointer\PointerInterface;
 use DMT\FileStream\Reader\Stream\StreamIterator;
-use DMT\FileStream\Serialization\Deserializer;
+use DMT\FileStream\Serialization\DeserializerInterface;
 use Iterator;
 
 /**
  * @template T of object
  */
-final readonly class Reader implements ReaderInterface
+final readonly class ObjectReader implements ReaderInterface
 {
     public function __construct(
         private StreamIterator $reader,
         private PointerInterface $pointer,
-        /** @var Deserializer<T> */
-        private Deserializer $deserializer,
+        /** @var DeserializerInterface<T> */
+        private DeserializerInterface $deserializer,
     ) {
     }
 
     /**
      * @return T
      */
-    public function getHeader(mixed $query): object
+    public function getHeader(string $query = ''): object
     {
         $this->pointer->setPointer($query);
 
@@ -37,7 +37,7 @@ final readonly class Reader implements ReaderInterface
     /**
      * @return Iterator<T>
      */
-    public function getResults(mixed $query): Iterator
+    public function getResults(string $query = ''): Iterator
     {
         $this->pointer->setPointer($query);
 

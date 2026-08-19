@@ -9,9 +9,9 @@ use Exception;
 use SimpleXMLElement;
 
 /**
- * @implements Deserializer<SimpleXMLElement>
+ * @implements DeserializerInterface<SimpleXMLElement>
  */
-class SimpleXmlDeserializer implements Deserializer
+class SimpleXmlDeserializer implements DeserializerInterface
 {
     public function __construct(
         private ?string $namespace = null,

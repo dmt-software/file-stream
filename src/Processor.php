@@ -7,6 +7,7 @@ namespace DMT\FileStream;
 use CallbackFilterIterator;
 use DMT\FileStream\Filter\CallbackFilter;
 use DMT\FileStream\Filter\FilterInterface;
+use DMT\FileStream\Reader\ReaderInterface;
 use LimitIterator;
 
 class Processor
@@ -18,9 +19,8 @@ class Processor
     private int $offset = 0;
     private int $limit = -1;
 
-    public function __construct(
-        private ReaderInterface $reader,
-    ) {
+    public function __construct(private ReaderInterface $reader)
+    {
     }
 
     /**
@@ -49,9 +49,9 @@ class Processor
      *
      * @return iterable<int, mixed>
      */
-    public function getResults(mixed $query): Iterable
+    public function getResults(mixed $query = null): Iterable
     {
-        $iterator = $this->reader->getResults($query);
+        $iterator = $this->reader->getResults($query ?? '');
 
         foreach ($this->filters as $filter) {
             $iterator = new CallbackFilterIterator($iterator, $filter);
