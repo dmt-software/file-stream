@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DMT\FileStream\Reader;
 
 use ArrayObject;
@@ -19,10 +21,10 @@ final readonly class CsvReader implements ReaderInterface
      *
      * @return ArrayObject<string, mixed>
      */
-    public function getHeader(?string $query = null): object
+    public function getHeader(): object
     {
         try {
-            $row = $this->parser->getIterator()->current();
+            $row = array_keys($this->parser->getIterator()->current());
         } catch (Exception $exception) {
             throw new NotFoundException('header not found in csv file', previous: $exception);
         }
@@ -35,7 +37,7 @@ final readonly class CsvReader implements ReaderInterface
      *
      * @return Iterator<int, ArrayObject<string, mixed>>
      */
-    public function getResults(?string $query = null): Iterator
+    public function getResults(): Iterator
     {
         foreach ($this->parser as $key => $row) {
             yield $key => new ArrayObject($row, ArrayObject::ARRAY_AS_PROPS);

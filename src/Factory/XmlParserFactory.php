@@ -14,14 +14,27 @@ use DMT\XmlParser\Tokenizer\XmlReaderTokenizer;
 /**
  * @implements ParserFactoryInterface<Parser>
  */
-class XmlParserFactory implements ParserFactoryInterface
+final readonly class XmlParserFactory implements ParserFactoryInterface
 {
+    /**
+     * @param array{"encoding"?: string, flags?: int} $config
+     */
+    public function __construct(
+        private readonly array $config = []
+    ) {
+    }
+
     /**
      * @inheritDoc
      */
     public function fromFile(string $filename): Parser
     {
-        return new Parser(new XmlReaderTokenizer(new FileParser($filename)));
+        return new Parser(
+            new XmlReaderTokenizer(
+                new FileParser($filename),
+                ...$this->config
+            )
+        );
     }
 
     /**
@@ -29,7 +42,12 @@ class XmlParserFactory implements ParserFactoryInterface
      */
     public function fromString(string $string): Parser
     {
-        return new Parser(new XmlParserTokenizer(new StringParser($string)));
+        return new Parser(
+            new XmlParserTokenizer(
+                new StringParser($string),
+                ...$this->config
+            )
+        );
     }
 
     /**
@@ -37,6 +55,11 @@ class XmlParserFactory implements ParserFactoryInterface
      */
     public function fromStream(mixed $stream): Parser
     {
-        return new Parser(new XmlParserTokenizer(new StreamParser($stream)));
+        return new Parser(
+            new XmlParserTokenizer(
+                new StreamParser($stream),
+                ...$this->config
+            )
+        );
     }
 }

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace DMT\FileStream;
 
 use CallbackFilterIterator;
+use DMT\FileStream\Exception\ValidationException;
+use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Filter\CallbackFilter;
 use DMT\FileStream\Filter\FilterInterface;
 use DMT\FileStream\Reader\ReaderInterface;
@@ -16,11 +18,33 @@ class Processor
      * @var list<FilterInterface>
      */
     private array $filters = [];
+
+    /**
+     * @var int
+     */
     private int $offset = 0;
+
+    /**
+     * @var int
+     */
     private int $limit = -1;
 
-    public function __construct(private ReaderInterface $reader)
+    public function __construct(
+        private ReaderInterface $reader,
+    ) {
+    }
+
+    /**
+     * Validate the file stream data using the stream header.
+     *
+     * @throws NotFoundException
+     * @throws ValidationException
+     */
+    public function validate(callable $function): void
     {
+        if ($function($this->reader->getHeader()) === false) {
+            throw new ValidationException('Invalid data');
+        }
     }
 
     /**
@@ -49,9 +73,9 @@ class Processor
      *
      * @return iterable<int, mixed>
      */
-    public function getResults(mixed $query = null): Iterable
+    public function getResults(): Iterable
     {
-        $iterator = $this->reader->getResults($query ?? '');
+        $iterator = $this->reader->getResults();
 
         foreach ($this->filters as $filter) {
             $iterator = new CallbackFilterIterator($iterator, $filter);

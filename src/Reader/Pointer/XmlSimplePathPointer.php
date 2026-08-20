@@ -17,15 +17,24 @@ final class XmlSimplePathPointer implements PointerInterface
     private array $stack = [];
     private string $path = '';
 
-    public function __construct(private readonly Parser $parser)
-    {
+    public function __construct(
+        private readonly Parser $parser,
+        private readonly string $resultPath,
+        private readonly ?string $headerPath = null,
+    ) {
     }
 
     /**
      * @inheritDoc
      */
-    public function setPointer(string $path): void
+    public function setPointer(bool $header = false): void
     {
+        if ($header && $this->headerPath === null) {
+            throw new NotFoundException('Header path not defined');
+        }
+
+        $path = $header ? $this->headerPath : $this->resultPath;
+
         if ($path === $this->path) {
             return;
         }

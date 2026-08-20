@@ -11,5 +11,5 @@ interface PointerInterface
     /**
      * @throws NotFoundException
      */
-    public function setPointer(string $path): void;
+    public function setPointer(bool $header = false): void;
 }

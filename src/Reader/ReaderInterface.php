@@ -16,7 +16,7 @@ interface ReaderInterface
      * @throws NotFoundException
      * @throws ReaderException
      */
-    public function getHeader(string $query): object;
+    public function getHeader(): object;
 
     /**
      * Get the results from the file stream.
@@ -25,5 +25,5 @@ interface ReaderInterface
      * @throws NotFoundException
      * @throws ReaderException
      */
-    public function getResults(string $query): Iterator;
+    public function getResults(): Iterator;
 }

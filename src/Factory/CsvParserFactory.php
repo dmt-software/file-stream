@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DMT\FileStream\Factory;
 
 use DMT\FileStream\Reader\Parser\CsvParser;
@@ -8,8 +10,22 @@ use InvalidArgumentException;
 /**
  * @implements ParserFactoryInterface<CsvParser>
  */
-class CsvParserFactory implements ParserFactoryInterface
+final readonly class CsvParserFactory implements ParserFactoryInterface
 {
+    /**
+     * @param array{
+     *     "delimiter"?: string,
+     *     "enclosure"?: string,
+     *     "escape"?: string,
+     *     "header"?: bool
+     * }
+     * $config
+     */
+    public function __construct(
+        private readonly array $config = []
+    ) {
+    }
+
     /**
      * @inheritDoc
      */
@@ -21,7 +37,7 @@ class CsvParserFactory implements ParserFactoryInterface
             throw new InvalidArgumentException('Could not open file');
         }
 
-        return new CsvParser($stream);
+        return new CsvParser($stream, ...$this->config);
     }
 
     /**

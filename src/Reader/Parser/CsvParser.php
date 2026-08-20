@@ -7,7 +7,7 @@ namespace DMT\FileStream\Reader\Parser;
 use Iterator;
 use IteratorAggregate;
 
-class CsvParser implements IteratorAggregate
+final readonly class CsvParser implements IteratorAggregate
 {
     public function __construct(
         /** @var resource */

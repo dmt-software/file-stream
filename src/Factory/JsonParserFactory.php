@@ -11,10 +11,14 @@ use pcrov\JsonReader\JsonReader;
 /**
  * @implements ParserFactoryInterface<JsonReader>
  */
-class JsonParserFactory implements ParserFactoryInterface
+final readonly class JsonParserFactory implements ParserFactoryInterface
 {
-    public function __construct(private readonly JsonReader $reader = new JsonReader())
-    {
+    /**
+     * @param array{"options"?: int} $config
+     */
+    public function __construct(
+        private readonly array $config = []
+    ) {
     }
 
     /**
@@ -23,7 +27,7 @@ class JsonParserFactory implements ParserFactoryInterface
     public function fromFile(string $filename): JsonReader
     {
         try {
-            $reader = clone $this->reader;
+            $reader = new JsonReader(...$this->config);
             $reader->open($filename);
         } catch (Exception $exception) {
             throw new InvalidArgumentException('Invalid json file', previous: $exception);
@@ -38,7 +42,7 @@ class JsonParserFactory implements ParserFactoryInterface
     public function fromStream(mixed $stream): JsonReader
     {
         try {
-            $reader = clone $this->reader;
+            $reader = new JsonReader(...$this->config);;
             $reader->stream($stream);
         } catch (Exception $exception) {
             throw new InvalidArgumentException('Invalid json file', previous: $exception);
@@ -53,7 +57,7 @@ class JsonParserFactory implements ParserFactoryInterface
     public function fromString(string $string): JsonReader
     {
         try {
-            $reader = clone $this->reader;
+            $reader = new JsonReader(...$this->config);
             $reader->json($string);
         } catch (Exception $exception) {
             throw new InvalidArgumentException('Invalid json file', previous: $exception);

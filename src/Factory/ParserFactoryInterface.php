@@ -14,7 +14,7 @@ interface ParserFactoryInterface
     /**
      * Create a new parser to read from a file.
      *
-     * @readonly T
+     * @return T
      * @throws InvalidArgumentException
      */
     public function fromFile(string $filename): object;

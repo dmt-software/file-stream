@@ -25,9 +25,9 @@ final readonly class ObjectReader implements ReaderInterface
     /**
      * @return T
      */
-    public function getHeader(string $query = ''): object
+    public function getHeader(): object
     {
-        $this->pointer->setPointer($query);
+        $this->pointer->setPointer(true);
 
         return $this->deserializer->deserialize(
             $this->reader->current()
@@ -37,9 +37,9 @@ final readonly class ObjectReader implements ReaderInterface
     /**
      * @return Iterator<T>
      */
-    public function getResults(string $query = ''): Iterator
+    public function getResults(): Iterator
     {
-        $this->pointer->setPointer($query);
+        $this->pointer->setPointer();
 
         foreach ($this->reader as $key => $row) {
             yield $key => $this->deserializer->deserialize($row);

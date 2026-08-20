@@ -14,15 +14,24 @@ final class JsonDottedSlugPointer implements PointerInterface
 {
     private array $stack = [];
 
-    public function __construct(private readonly JsonObjectParser $parser)
-    {
+    public function __construct(
+        private readonly JsonObjectParser $parser,
+        private readonly string $resultPath,
+        private readonly ?string $headerPath = null,
+    ) {
     }
 
     /**
      * @inheritDoc
      */
-    public function setPointer(string $path): void
+    public function setPointer(bool $header = false): void
     {
+        if ($header && $this->headerPath === null) {
+            throw new NotFoundException('Header path not defined');
+        }
+
+        $path = $header ? $this->headerPath : $this->resultPath;
+
         if ($path === '') {
             return;
         }
