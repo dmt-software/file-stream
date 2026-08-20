@@ -42,9 +42,14 @@ final class CsvParser implements IteratorAggregate
         } while (!feof($this->stream) && $current !== false);
     }
 
+    /**
+     * Get the header of the csv file.
+     *
+     * @return array<string, string> An array containing the column name as property, and it's type as value.
+     */
     public function getHeader(): array
     {
-        if ($this->header === false) {
+        if (preg_grep('/^column_\d+$/', (array)$this->header) == $this->header) {
             throw new NotFoundException('No header found in csv file.');
         }
 
@@ -58,7 +63,10 @@ final class CsvParser implements IteratorAggregate
             $this->header = $this->parseHeader($current);
         }
 
-        return array_unique($this->header);
+        return array_map(
+            fn (int $count) => $count > 1 ? 'array' : 'string',
+            array_count_values($this->header)
+        );
     }
 
     private function parseHeader(array $current): array
