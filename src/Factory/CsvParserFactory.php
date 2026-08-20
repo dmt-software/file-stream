@@ -17,7 +17,7 @@ final readonly class CsvParserFactory implements ParserFactoryInterface
      *     "delimiter"?: string,
      *     "enclosure"?: string,
      *     "escape"?: string,
-     *     "header"?: bool
+     *     "header"?: bool|list<string>
      * }
      * $config
      */
@@ -49,7 +49,7 @@ final readonly class CsvParserFactory implements ParserFactoryInterface
             throw new InvalidArgumentException('Invalid stream');
         }
 
-        return new CsvParser($stream);
+        return new CsvParser($stream, ...$this->config);
     }
 
     /**
@@ -63,6 +63,6 @@ final readonly class CsvParserFactory implements ParserFactoryInterface
             throw new InvalidArgumentException('Could not read string');
         }
 
-        return new CsvParser($stream);
+        return new CsvParser($stream, ...$this->config);
     }
 }

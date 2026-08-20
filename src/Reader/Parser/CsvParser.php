@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader\Parser;
 
+use DMT\FileStream\Exception\NotFoundException;
 use Iterator;
 use IteratorAggregate;
 
-final readonly class CsvParser implements IteratorAggregate
+final class CsvParser implements IteratorAggregate
 {
     public function __construct(
         /** @var resource */
-        private mixed $stream,
-        private string $delimiter = ',',
-        private string $enclosure = '"',
-        private string $escape = '',
-        private bool $header = false,
+        private readonly mixed $stream,
+        private readonly string $delimiter = ',',
+        private readonly string $enclosure = '"',
+        private readonly string $escape = '',
+        private bool|array $header = false,
     ) {
     }
 
@@ -24,23 +25,40 @@ final readonly class CsvParser implements IteratorAggregate
      */
     public function getIterator(): Iterator
     {
-        static $header = null;
-
         do {
             $current = fgetcsv($this->stream, 0, $this->delimiter, $this->enclosure, $this->escape);
 
-            if ($header == $current) {
+            if ($this->header == $current) {
                 continue;
             }
 
-            if (!$header && $current !== false) {
-                $header = $this->parseHeader($current);
+            if (!is_array($this->header) && $current !== false) {
+                $this->header = $this->parseHeader($current);
             }
 
-            $line = array_slice($current, 0, count($header));
+            $line = array_slice($current, 0, count($this->header));
 
-            yield array_merge_recursive(...array_map(fn ($key, $val) => [$key => $val], $header, $line));
+            yield array_merge_recursive(...array_map(fn ($key, $val) => [$key => $val], $this->header, $line));
         } while (!feof($this->stream) && $current !== false);
+    }
+
+    public function getHeader(): array
+    {
+        if ($this->header === false) {
+            throw new NotFoundException('No header found in csv file.');
+        }
+
+        if (!is_array($this->header)) {
+            $current = fgetcsv($this->stream, 0, $this->delimiter, $this->enclosure, $this->escape);
+
+            if ($current === false) {
+                throw new NotFoundException('End of file.');
+            }
+
+            $this->header = $this->parseHeader($current);
+        }
+
+        return array_unique($this->header);
     }
 
     private function parseHeader(array $current): array

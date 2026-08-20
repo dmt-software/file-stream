@@ -23,13 +23,7 @@ final readonly class CsvReader implements ReaderInterface
      */
     public function getHeader(): object
     {
-        try {
-            $row = array_keys($this->parser->getIterator()->current());
-        } catch (Exception $exception) {
-            throw new NotFoundException('header not found in csv file', previous: $exception);
-        }
-
-        return new ArrayObject($row, ArrayObject::ARRAY_AS_PROPS);
+        return new ArrayObject($this->parser->getHeader(), ArrayObject::ARRAY_AS_PROPS);
     }
 
     /**
