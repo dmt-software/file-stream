@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Factory;
 
-use DMT\FileStream\Reader\Parser\CsvParser;
+use DMT\FileStream\Reader\Csv\CsvLineParser;
 use InvalidArgumentException;
 
 /**
- * @implements ParserFactoryInterface<CsvParser>
+ * @implements ParserFactoryInterface<CsvLineParser>
  */
 final readonly class CsvParserFactory implements ParserFactoryInterface
 {
@@ -17,7 +17,6 @@ final readonly class CsvParserFactory implements ParserFactoryInterface
      *     "delimiter"?: string,
      *     "enclosure"?: string,
      *     "escape"?: string,
-     *     "header"?: bool|list<string>
      * }
      * $config
      */
@@ -29,7 +28,7 @@ final readonly class CsvParserFactory implements ParserFactoryInterface
     /**
      * @inheritDoc
      */
-    public function fromFile(string $filename): CsvParser
+    public function fromFile(string $filename): CsvLineParser
     {
         $stream = @fopen($filename, 'r');
 
@@ -37,25 +36,25 @@ final readonly class CsvParserFactory implements ParserFactoryInterface
             throw new InvalidArgumentException('Could not open file');
         }
 
-        return new CsvParser($stream, ...$this->config);
+        return new CsvLineParser($stream, ...$this->config);
     }
 
     /**
      * @inheritDoc
      */
-    public function fromStream(mixed $stream): CsvParser
+    public function fromStream(mixed $stream): CsvLineParser
     {
         if (!is_resource($stream)) {
             throw new InvalidArgumentException('Invalid stream');
         }
 
-        return new CsvParser($stream, ...$this->config);
+        return new CsvLineParser($stream, ...$this->config);
     }
 
     /**
      * @inheritDoc
      */
-    public function fromString(string $string): CsvParser
+    public function fromString(string $string): CsvLineParser
     {
         $stream = @fopen('data://text/plain,' . $string, 'r');
 
@@ -63,6 +62,6 @@ final readonly class CsvParserFactory implements ParserFactoryInterface
             throw new InvalidArgumentException('Could not read string');
         }
 
-        return new CsvParser($stream, ...$this->config);
+        return new CsvLineParser($stream, ...$this->config);
     }
 }
