@@ -15,7 +15,7 @@ class XmlElementIterator implements StreamIterator
     private int $key = 0;
     private ?Element $element = null;
 
-    public function __construct(private Parser $parser)
+    public function __construct(private readonly Parser $parser)
     {
     }
 
@@ -70,7 +70,9 @@ class XmlElementIterator implements StreamIterator
      */
     public function rewind(): void
     {
-        // no rewind, keep the file pointer where it is.
+        if ($this->key > 0) {
+            throw new ReaderException('Cannot rewind XML stream.');
+        }
     }
 
     private function isValidElement(Element|ElementNode $current): bool

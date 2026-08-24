@@ -7,9 +7,7 @@ namespace DMT\FileStream\Reader\Stream;
 use DMT\FileStream\Exception\ReaderException;
 use DMT\FileStream\Reader\Parser\JsonObjectNode;
 use DMT\FileStream\Reader\Parser\JsonObjectParser;
-use DMT\FileStream\Stream\ParserInterface;
 use pcrov\JsonReader\Exception;
-use pcrov\JsonReader\JsonReader;
 
 final class JsonObjectIterator implements StreamIterator
 {
@@ -60,7 +58,9 @@ final class JsonObjectIterator implements StreamIterator
      */
     public function rewind(): void
     {
-        // no rewind, keep the file pointer where it is.
+        if ($this->key > 0) {
+            throw new ReaderException('Cannot rewind JSON stream.');
+        }
     }
 
     /**

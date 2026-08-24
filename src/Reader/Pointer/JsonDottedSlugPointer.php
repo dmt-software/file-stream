@@ -8,7 +8,6 @@ use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Exception\ReaderException;
 use DMT\FileStream\Reader\Parser\JsonObjectParser;
 use pcrov\JsonReader\Exception;
-use pcrov\JsonReader\JsonReader;
 
 final class JsonDottedSlugPointer implements PointerInterface
 {
@@ -56,7 +55,7 @@ final class JsonDottedSlugPointer implements PointerInterface
             throw new ReaderException('Error while reading JSON', previous: $exception);
         }
 
-        if ($node === null) {
+        if ($node === null && $path !== $this->resultPath) {
             throw new NotFoundException('End of file reached');
         }
     }
