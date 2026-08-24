@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\FileStream\Reader;
 
 use ArrayObject;
-use DMT\FileStream\Reader\Csv\CsvLineParser;
+use DMT\FileStream\Reader\Csv\CsvParser;
 use DMT\FileStream\Reader\Csv\Header\HeaderInterface;
 use DMT\FileStream\Reader\Csv\Header\NumberedColumnsHeader;
 use Iterator;
@@ -15,8 +15,8 @@ final readonly class CsvReader implements ReaderInterface
     private HeaderInterface $header;
 
     public function __construct(
-        private CsvLineParser $parser,
-        ?HeaderInterface $header = null,
+        private CsvParser $parser,
+        ?HeaderInterface  $header = null,
     ) {
         $this->header = $header ?? new NumberedColumnsHeader($this->parser);
     }

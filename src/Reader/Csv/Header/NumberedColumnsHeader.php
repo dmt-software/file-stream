@@ -6,15 +6,15 @@ namespace DMT\FileStream\Reader\Csv\Header;
 
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Exception\ReaderException;
-use DMT\FileStream\Reader\Csv\CsvLineParser;
+use DMT\FileStream\Reader\Csv\CsvParser;
 
 final class NumberedColumnsHeader implements HeaderInterface
 {
     private array $header = [];
 
     public function __construct(
-        private readonly CsvLineParser $parser,
-        private readonly bool $skipFirstRow = false
+        private readonly CsvParser $parser,
+        private readonly bool      $skipFirstRow = false
     ) {
     }
 

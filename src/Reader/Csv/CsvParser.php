@@ -7,7 +7,7 @@ namespace DMT\FileStream\Reader\Csv;
 use DMT\FileStream\Exception\ReaderException;
 use Iterator;
 
-final class CsvLineParser implements Iterator
+final class CsvParser implements Iterator
 {
     private array|false|null $current = null;
     private int $key = -1;

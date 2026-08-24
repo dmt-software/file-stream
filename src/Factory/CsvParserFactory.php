@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Factory;
 
-use DMT\FileStream\Reader\Csv\CsvLineParser;
+use DMT\FileStream\Reader\Csv\CsvParser;
 use InvalidArgumentException;
 
 /**
- * @implements ParserFactoryInterface<CsvLineParser>
+ * @implements ParserFactoryInterface<CsvParser>
  */
 final readonly class CsvParserFactory implements ParserFactoryInterface
 {
@@ -21,14 +21,14 @@ final readonly class CsvParserFactory implements ParserFactoryInterface
      * $config
      */
     public function __construct(
-        private readonly array $config = []
+        private array $config = []
     ) {
     }
 
     /**
      * @inheritDoc
      */
-    public function fromFile(string $filename): CsvLineParser
+    public function fromFile(string $filename): CsvParser
     {
         $stream = @fopen($filename, 'r');
 
@@ -36,25 +36,25 @@ final readonly class CsvParserFactory implements ParserFactoryInterface
             throw new InvalidArgumentException('Could not open file');
         }
 
-        return new CsvLineParser($stream, ...$this->config);
+        return new CsvParser($stream, ...$this->config);
     }
 
     /**
      * @inheritDoc
      */
-    public function fromStream(mixed $stream): CsvLineParser
+    public function fromStream(mixed $stream): CsvParser
     {
         if (!is_resource($stream)) {
             throw new InvalidArgumentException('Invalid stream');
         }
 
-        return new CsvLineParser($stream, ...$this->config);
+        return new CsvParser($stream, ...$this->config);
     }
 
     /**
      * @inheritDoc
      */
-    public function fromString(string $string): CsvLineParser
+    public function fromString(string $string): CsvParser
     {
         $stream = @fopen('data://text/plain,' . $string, 'r');
 
@@ -62,6 +62,6 @@ final readonly class CsvParserFactory implements ParserFactoryInterface
             throw new InvalidArgumentException('Could not read string');
         }
 
-        return new CsvLineParser($stream, ...$this->config);
+        return new CsvParser($stream, ...$this->config);
     }
 }

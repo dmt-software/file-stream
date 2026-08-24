@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace DMT\FileStream\Reader\Csv\Header;
 
 use DMT\FileStream\Exception\ReaderException;
-use DMT\FileStream\Reader\Csv\CsvLineParser;
+use DMT\FileStream\Reader\Csv\CsvParser;
 
 final class FirstRowHeader implements HeaderInterface
 {
     private array $header = [];
 
-    public function __construct(private readonly CsvLineParser $parser)
+    public function __construct(private readonly CsvParser $parser)
     {
     }
 
