@@ -6,7 +6,7 @@ namespace DMT\FileStream\Reader\Parser;
 
 use Stringable;
 
-class JsonObjectNode implements Stringable
+final class JsonObjectNode implements Stringable
 {
     public function __construct(
         public int $depth = 0,
@@ -17,6 +17,6 @@ class JsonObjectNode implements Stringable
 
     public function __toString(): string
     {
-        return json_encode($this->value);
+        return json_encode($this->value, JSON_THROW_ON_ERROR);
     }
 }

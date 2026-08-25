@@ -7,6 +7,9 @@ namespace DMT\FileStream\Reader\Stream;
 use DMT\FileStream\Exception\ReaderException;
 use Iterator;
 
+/**
+ * Stream iterators are single-pass. rewind() may throw once iteration has advanced.
+ */
 interface StreamIterator extends Iterator
 {
     /**

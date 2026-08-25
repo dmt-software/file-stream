@@ -34,6 +34,7 @@ final class JsonObjectIterator implements StreamIterator
 
                 if (!$node) {
                     $this->node = null;
+                    return;
                 }
 
                 $this->node ??= $node;

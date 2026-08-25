@@ -6,12 +6,12 @@ namespace DMT\FileStream\Reader\Csv\Header;
 
 use DMT\FileStream\Reader\Csv\CsvParser;
 
-final readonly class PreSetHeader implements HeaderInterface
+final readonly class PresetHeader implements HeaderInterface
 {
     public function __construct(
         private CsvParser $parser,
-        private array     $header,
-        private bool      $skipFirstRow = false
+        private array $header,
+        private bool $skipFirstRow = false
     ) {
     }
 

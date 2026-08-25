@@ -14,11 +14,11 @@ final readonly class CallbackValidator implements ValidatorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function validate(object $header): void
     {
-        if (!$this->callback->__invoke($header)) {
+        if ($this->callback->__invoke($header) === false) {
             throw new ValidationException('Unexpected header information');
         }
     }

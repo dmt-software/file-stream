@@ -47,15 +47,16 @@ final readonly class CsvReader implements ReaderInterface
     {
         $columns = $this->header->getHeader();
 
-        foreach ($this->parser as $key => $row) {
+        $key = 0;
+        foreach ($this->parser as $row) {
             if ($row == $columns) {
-                continue;
+                continue; // skip reoccurring header lines
             }
 
             $line = array_slice($row, 0, count($columns));
             $line = array_merge_recursive(...array_map(fn ($k, $val) => [$k => $val], $columns, $line));
 
-            yield $key => $this->deserializer->deserialize($line);
+            yield $key++ => $this->deserializer->deserialize($line);
         }
     }
 }

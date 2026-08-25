@@ -14,6 +14,9 @@ use DMT\FileStream\Validator\CallbackValidator;
 use DMT\FileStream\Validator\ValidatorInterface;
 use LimitIterator;
 
+/**
+ * @template T of object
+ */
 class Processor
 {
     /**
@@ -31,6 +34,9 @@ class Processor
      */
     private int $limit = -1;
 
+    /**
+     * @param ReaderInterface<T> $reader
+     */
     public function __construct(
         private ReaderInterface $reader,
     ) {
@@ -77,7 +83,7 @@ class Processor
      *
      * Like execution a query on a database, the limit is applied after the filter(s).
      *
-     * @return iterable<int, mixed>
+     * @return iterable<int, T>
      */
     public function getResults(): Iterable
     {

@@ -20,17 +20,28 @@ final class JsonDottedSlugPointer implements PointerInterface
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function setPointer(bool $header = false): void
+    public function advanceToHeader(): void
     {
-        if ($header && $this->headerPath === null) {
-            throw new NotFoundException('Header path not defined');
+        if ($this->headerPath === null) {
+            throw new ReaderException('Header path not defined');
         }
 
-        $path = $header ? $this->headerPath : $this->resultPath;
+        $this->moveToPath($this->headerPath);
 
+        try {
+            $this->parser->parseValue();
+        } catch (ReaderException) {
+            throw new NotFoundException('Header not found');
+        }
+    }
+
+    public function advanceToResults(): void
+    {
+        $this->moveToPath($this->resultPath);
+    }
+
+    private function moveToPath(string $path): void
+    {
         if ($path === '') {
             return;
         }
@@ -40,23 +51,19 @@ final class JsonDottedSlugPointer implements PointerInterface
         try {
             while ($node = $this->parser->parse()) {
                 if ($node->depth > count($paths)) {
-                    array_pop($this->stack);
+                    $this->stack = array_slice($this->stack, 0, $node->depth - 1);
                 }
 
                 if ($node->depth <= count($paths)) {
-                    $this->stack[$node->depth] = $node->name ?? '';
+                    $this->stack[$node->depth - 1] = $node->name ?? '';
                 }
 
-                if (count($this->stack) === count($paths) && implode('.', $this->stack) == $path) {
+                if ($this->stack === $paths) {
                     break;
                 }
             }
         } catch (Exception $exception) {
             throw new ReaderException('Error while reading JSON', previous: $exception);
-        }
-
-        if ($node === null && $path !== $this->resultPath) {
-            throw new NotFoundException('End of file reached');
         }
     }
 }

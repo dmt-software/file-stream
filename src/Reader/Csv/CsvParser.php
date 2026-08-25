@@ -21,7 +21,7 @@ final class CsvParser implements Iterator
     ) {
     }
 
-    public function current(): array
+    public function current(): array|false
     {
         return $this->current ??= fgetcsv($this->stream, 0, $this->delimiter, $this->enclosure, $this->escape);
     }
@@ -47,14 +47,8 @@ final class CsvParser implements Iterator
 
     public function rewind(): void
     {
-        if ($this->stream !== null) {
-            if (!@rewind($this->stream)) {
-                throw new ReaderException('Could not rewind CSV stream');
-            }
-
-            $this->key = -1;
-            $this->current = null;
-
+        if ($this->key > 0) {
+            throw new ReaderException('Cannot rewind CSV stream.');
         }
     }
 }

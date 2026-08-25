@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DMT\FileStream\Reader\Parser;
 
+use DMT\FileStream\Exception\ReaderException;
 use pcrov\JsonReader\JsonReader;
 
-class JsonObjectParser
+final class JsonObjectParser
 {
     private int $depth = 0;
-    private ?array $names = [];
+    private array $names = [];
     private ?JsonObjectNode $current = null;
 
     public function __construct(private JsonReader $reader)
@@ -21,7 +24,10 @@ class JsonObjectParser
 
             switch ($type) {
                 case JsonReader::OBJECT:
-                    $name = $this->reader->name() ?? end($this->names);
+                    $name = $this->reader->name();
+                    if (!$name && $this->names) {
+                        $name = end($this->names);
+                    }
                     $this->depth++;
 
                     return $this->current = new JsonObjectNode($this->depth, $name);
@@ -29,7 +35,11 @@ class JsonObjectParser
                     $this->depth--;
                     break;
                 case JsonReader::ARRAY:
-                    $this->names[] = $this->reader->name() ?? end($this->names);
+                    $name = $this->reader->name() ?? '';
+                    if (!$name && $this->names) {
+                        $name = end($this->names);
+                    }
+                    $this->names[] = $name;
                     break;
                 case JsonReader::END_ARRAY:
                     array_pop($this->names);
@@ -42,6 +52,10 @@ class JsonObjectParser
 
     public function parseValue(): JsonObjectNode
     {
+        if ($this->current === null) {
+            throw new ReaderException('No current JSON object');
+        }
+
         $this->current->value = $this->reader->value();
 
         return $this->current;

@@ -22,15 +22,13 @@ final class FirstRowHeader implements HeaderInterface
         }
 
         if ($this->parser->key() >= 0) {
-            throw new ReaderException('Already reading csv results.');
+            throw new ReaderException('Already advanced beyond first row.');
         }
 
         try {
             return $this->header = $this->parser->current();
         } finally {
-            if ($this->parser->key() < 0) {
-                $this->parser->next();
-            }
+            $this->parser->next();
         }
     }
 }
