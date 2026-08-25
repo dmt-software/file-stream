@@ -4,27 +4,31 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader;
 
-use ArrayObject;
 use DMT\FileStream\Reader\Csv\CsvParser;
 use DMT\FileStream\Reader\Csv\Header\HeaderInterface;
 use DMT\FileStream\Reader\Csv\Header\NumberedColumnsHeader;
+use DMT\FileStream\Serialization\ArrayObjectDeserializer;
+use DMT\FileStream\Serialization\DeserializerInterface;
 use Iterator;
 
+/**
+ * @template T of object
+ */
 final readonly class CsvReader implements ReaderInterface
 {
     private HeaderInterface $header;
 
     public function __construct(
         private CsvParser $parser,
-        ?HeaderInterface  $header = null,
+        ?HeaderInterface $header = null,
+        /** @var DeserializerInterface<T> */
+        private DeserializerInterface $deserializer = new ArrayObjectDeserializer()
     ) {
         $this->header = $header ?? new NumberedColumnsHeader($this->parser);
     }
 
     /**
      * {@inheritDoc}
-     *
-     * @return ArrayObject<string, mixed>
      */
     public function getHeader(): object
     {
@@ -33,13 +37,11 @@ final readonly class CsvReader implements ReaderInterface
             array_count_values($this->header->getHeader())
         );
 
-        return new ArrayObject($columns, ArrayObject::ARRAY_AS_PROPS);
+        return $this->deserializer->deserialize($columns);
     }
 
     /**
      * {@inheritDoc}
-     *
-     * @return Iterator<int, ArrayObject<string, mixed>>
      */
     public function getResults(): Iterator
     {
@@ -53,7 +55,7 @@ final readonly class CsvReader implements ReaderInterface
             $line = array_slice($row, 0, count($columns));
             $line = array_merge_recursive(...array_map(fn ($k, $val) => [$k => $val], $columns, $line));
 
-            yield $key => new ArrayObject($line, ArrayObject::ARRAY_AS_PROPS);
+            yield $key => $this->deserializer->deserialize($line);
         }
     }
 }

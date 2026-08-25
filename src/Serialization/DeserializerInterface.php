@@ -15,5 +15,5 @@ interface DeserializerInterface
      * @return T
      * @throws SerializationException
      */
-    public function deserialize(string $part): object;
+    public function deserialize(string|array $part): object;
 }

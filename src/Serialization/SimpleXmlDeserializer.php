@@ -11,7 +11,7 @@ use SimpleXMLElement;
 /**
  * @implements DeserializerInterface<SimpleXMLElement>
  */
-class SimpleXmlDeserializer implements DeserializerInterface
+final readonly class SimpleXmlDeserializer implements DeserializerInterface
 {
     public function __construct(
         private ?string $namespace = null,
@@ -23,7 +23,7 @@ class SimpleXmlDeserializer implements DeserializerInterface
     /**
      * @inheritDoc
      */
-    public function deserialize(string $part): object
+    public function deserialize(string|array $part): object
     {
         if ($this->encoding !== 'UTF-8') {
             $part = iconv($this->encoding, 'UTF-8//TRANSLIT', $part);
