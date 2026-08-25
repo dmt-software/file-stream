@@ -23,7 +23,7 @@ final readonly class ObjectReader implements ReaderInterface
     }
 
     /**
-     * @return T
+     * {@inheritDoc}
      */
     public function getHeader(): object
     {
@@ -35,7 +35,7 @@ final readonly class ObjectReader implements ReaderInterface
     }
 
     /**
-     * @return Iterator<T>
+     * @inheritDoc
      */
     public function getResults(): Iterator
     {

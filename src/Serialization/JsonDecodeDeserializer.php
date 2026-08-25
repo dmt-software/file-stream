@@ -24,7 +24,7 @@ final readonly class JsonDecodeDeserializer implements DeserializerInterface
     public function deserialize(string|array $part): object
     {
         try {
-            return json_decode($part, flags: $this->options ^ JSON_THROW_ON_ERROR);
+            return json_decode($part, flags: $this->options | JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
             throw new SerializationException('Invalid json', previous: $exception);
         }
