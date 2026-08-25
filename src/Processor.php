@@ -10,6 +10,8 @@ use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Filter\CallbackFilter;
 use DMT\FileStream\Filter\FilterInterface;
 use DMT\FileStream\Reader\ReaderInterface;
+use DMT\FileStream\Validator\CallbackValidator;
+use DMT\FileStream\Validator\ValidatorInterface;
 use LimitIterator;
 
 class Processor
@@ -40,11 +42,13 @@ class Processor
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function validate(callable $function): void
+    public function validate(ValidatorInterface|callable $function): void
     {
-        if ($function($this->reader->getHeader()) === false) {
-            throw new ValidationException('Invalid data');
+        if (!$function instanceof ValidatorInterface) {
+            $function = new CallbackValidator($function(...));
         }
+
+        $function->validate($this->reader->getHeader());
     }
 
     /**
@@ -70,6 +74,8 @@ class Processor
 
     /**
      * Get the results from the reader.
+     *
+     * Like execution a query on a database, the limit is applied after the filter(s).
      *
      * @return iterable<int, mixed>
      */

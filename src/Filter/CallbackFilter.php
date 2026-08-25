@@ -7,7 +7,7 @@ namespace DMT\FileStream\Filter;
 use Closure;
 use TypeError;
 
-readonly class CallbackFilter implements FilterInterface
+final readonly class CallbackFilter implements FilterInterface
 {
     public function __construct(private Closure $callback)
     {
