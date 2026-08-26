@@ -15,6 +15,7 @@ use DMT\FileStream\Validator\ValidatorInterface;
 use LimitIterator;
 
 /**
+ * @template H of object
  * @template T of object
  */
 class Processor
@@ -35,7 +36,7 @@ class Processor
     private int $limit = -1;
 
     /**
-     * @param ReaderInterface<T> $reader
+     * @param ReaderInterface<H, T> $reader
      */
     public function __construct(
         private ReaderInterface $reader,
@@ -44,6 +45,8 @@ class Processor
 
     /**
      * Validate the file stream data using the stream header.
+     *
+     * @param ValidatorInterface<H>|callable(H): mixed $function
      *
      * @throws NotFoundException
      * @throws ValidationException
@@ -59,6 +62,8 @@ class Processor
 
     /**
      * Add a callback filter to the processor.
+     *
+     * @param FilterInterface<T>|callable(T, int): bool $filter
      */
     public function filter(FilterInterface|callable $filter): void
     {

@@ -11,9 +11,8 @@ use DMT\FileStream\Serialization\DeserializerInterface;
 use Iterator;
 
 /**
- * @template H of object
  * @template T of object
- * @implements ReaderInterface<H, T>
+ * @implements ReaderInterface<T, T>
  */
 final readonly class CsvReader implements ReaderInterface
 {

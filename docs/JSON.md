@@ -32,7 +32,7 @@ use DMT\FileStream\Reader\Pointer\JsonDottedSlugPointer;
 use DMT\FileStream\Reader\Stream\JsonObjectIterator;
 use DMT\FileStream\Serialization\JsonDecodeDeserializer;
 
-$jsonReader = (new JsonParserFactory())->fromFile('languages.json');
+$jsonReader = new JsonParserFactory()->fromFile('languages.json');
 
 $parser = new JsonObjectParser($jsonReader);
 

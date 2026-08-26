@@ -17,7 +17,7 @@ final readonly class JsonParserFactory implements ParserFactoryInterface
      * @param array{"options"?: int} $config
      */
     public function __construct(
-        private readonly array $config = []
+        private array $config = []
     ) {
     }
 
@@ -49,7 +49,7 @@ final readonly class JsonParserFactory implements ParserFactoryInterface
             $reader = new JsonReader(...$this->config);
             $reader->stream($stream);
         } catch (Exception $exception) {
-            throw new InvalidArgumentException('Invalid json file', previous: $exception);
+            throw new InvalidArgumentException('Invalid json file stream', previous: $exception);
         }
 
         return $reader;
@@ -60,12 +60,12 @@ final readonly class JsonParserFactory implements ParserFactoryInterface
      */
     public function fromString(string $string): JsonReader
     {
-        try {
-            $reader = new JsonReader(...$this->config);
-            $reader->json($string);
-        } catch (Exception $exception) {
-            throw new InvalidArgumentException('Invalid json file', previous: $exception);
+        if (!json_validate($string)) {
+            throw new InvalidArgumentException('Invalid json string');
         }
+
+        $reader = new JsonReader(...$this->config);
+        $reader->json($string);
 
         return $reader;
     }

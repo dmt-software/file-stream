@@ -33,7 +33,7 @@ use DMT\FileStream\Reader\Pointer\XmlSimplePathPointer;
 use DMT\FileStream\Reader\Stream\XmlElementIterator;
 use DMT\FileStream\Serialization\SimpleXmlDeserializer;
 
-$parser = (new XmlParserFactory())->fromFile('languages.xml');
+$parser = new XmlParserFactory()->fromFile('languages.xml');
 
 $reader = new ObjectReader(
     new XmlElementIterator($parser),

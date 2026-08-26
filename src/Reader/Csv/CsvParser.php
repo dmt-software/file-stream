@@ -47,7 +47,7 @@ final class CsvParser implements Iterator
 
     public function rewind(): void
     {
-        if ($this->key > 0) {
+        if ($this->key >= 0) {
             throw new ReaderException('Cannot rewind CSV stream.');
         }
     }

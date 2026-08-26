@@ -18,7 +18,7 @@ use DMT\FileStream\Factory\CsvParserFactory;
 use DMT\FileStream\Reader\Csv\Header\FirstRowHeader;
 use DMT\FileStream\Reader\CsvReader;
 
-$parser = (new CsvParserFactory()->fromFile('languages.csv');
+$parser = new CsvParserFactory()->fromFile('languages.csv');
 
 $reader = new CsvReader(
     $parser,

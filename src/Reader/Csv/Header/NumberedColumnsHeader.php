@@ -12,10 +12,11 @@ use TypeError;
 final class NumberedColumnsHeader implements HeaderInterface
 {
     private array $header = [];
+    private bool $parsed = false;
 
     public function __construct(
         private readonly CsvParser $parser,
-        private readonly bool $skipFirstRow = false
+        private readonly bool $overridesColumnHeader = false
     ) {
     }
 
@@ -30,13 +31,17 @@ final class NumberedColumnsHeader implements HeaderInterface
         }
 
         try {
+            if (!$this->overridesColumnHeader) {
+                $this->parser->next();
+            }
+
             return $this->header = array_map(
                 fn(int $key): string => 'column_' . $key, range(0, count($this->parser->current()) - 1)
             );
         } catch (TypeError) {
             throw new NotFoundException('Empty CSV file.');
         } finally {
-            if ($this->skipFirstRow) {
+            if ($this->overridesColumnHeader) {
                 $this->parser->next();
             }
         }

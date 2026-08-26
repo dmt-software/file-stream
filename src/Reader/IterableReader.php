@@ -19,7 +19,7 @@ final class IterableReader implements ReaderInterface
 
     /**
      * @param iterable<mixed, T> $iterable
-     * @param T|null $header
+     * @param H|null $header
      */
     public function __construct(
         private iterable $iterable,
