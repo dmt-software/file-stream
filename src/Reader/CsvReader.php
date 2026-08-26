@@ -15,10 +15,12 @@ use Iterator;
  */
 final readonly class CsvReader implements ReaderInterface
 {
+    /**
+     * @param DeserializerInterface<array, T> $deserializer
+     */
     public function __construct(
         private CsvParser $parser,
         private HeaderInterface $header,
-        /** @var DeserializerInterface<T> */
         private DeserializerInterface $deserializer = new ArrayObjectDeserializer()
     ) {
     }

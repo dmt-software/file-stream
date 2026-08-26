@@ -7,6 +7,9 @@ namespace DMT\FileStream\Filter;
 use Closure;
 use TypeError;
 
+/**
+ * @implements FilterInterface<object>
+ */
 final readonly class CallbackFilter implements FilterInterface
 {
     public function __construct(private Closure $callback)
@@ -14,6 +17,8 @@ final readonly class CallbackFilter implements FilterInterface
     }
 
     /**
+     * {@inheritDoc}
+     *
      * @throws TypeError When filter cannot be used on the current result format.
      */
     public function __invoke(object $result, int $key): bool

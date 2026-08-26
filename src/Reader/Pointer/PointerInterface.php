@@ -20,6 +20,9 @@ interface PointerInterface
     public function moveToHeader(): void;
 
     /**
+     * Move the pointer to the results section of the file stream.
+     *
+     * @throws NotFoundException
      * @throws ReaderException
      */
     public function moveToResults(): void;

@@ -33,6 +33,10 @@ final readonly class SimpleXmlDeserializer implements DeserializerInterface
             $part = iconv($this->encoding, 'UTF-8//TRANSLIT', $part);
         }
 
+        if ($part === false) {
+            throw new SerializationException('Could not convert XML encoding to UTF-8');
+        }
+
         try {
             return new SimpleXMLElement($part, $this->options, false, $this->namespace ?? '');
         } catch (Throwable $throwable) {
