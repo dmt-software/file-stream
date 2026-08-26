@@ -10,6 +10,7 @@ use DMT\XmlParser\Source\StreamParser;
 use DMT\XmlParser\Source\StringParser;
 use DMT\XmlParser\Tokenizer\XmlParserTokenizer;
 use DMT\XmlParser\Tokenizer\XmlReaderTokenizer;
+use InvalidArgumentException;
 
 /**
  * @implements ParserFactoryInterface<Parser>
@@ -55,6 +56,10 @@ final readonly class XmlParserFactory implements ParserFactoryInterface
      */
     public function fromStream(mixed $stream): Parser
     {
+        if (!is_resource($stream)) {
+            throw new InvalidArgumentException('Invalid stream');
+        }
+
         return new Parser(
             new XmlParserTokenizer(
                 new StreamParser($stream),

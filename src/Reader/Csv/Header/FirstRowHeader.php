@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader\Csv\Header;
 
+use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Exception\ReaderException;
 use DMT\FileStream\Reader\Csv\CsvParser;
+use TypeError;
 
 final class FirstRowHeader implements HeaderInterface
 {
@@ -27,6 +29,8 @@ final class FirstRowHeader implements HeaderInterface
 
         try {
             return $this->header = $this->parser->current();
+        } catch (TypeError) {
+            throw new NotFoundException('Empty CSV file.');
         } finally {
             $this->parser->next();
         }

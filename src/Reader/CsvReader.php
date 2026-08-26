@@ -6,7 +6,6 @@ namespace DMT\FileStream\Reader;
 
 use DMT\FileStream\Reader\Csv\CsvParser;
 use DMT\FileStream\Reader\Csv\Header\HeaderInterface;
-use DMT\FileStream\Reader\Csv\Header\NumberedColumnsHeader;
 use DMT\FileStream\Serialization\ArrayObjectDeserializer;
 use DMT\FileStream\Serialization\DeserializerInterface;
 use Iterator;
@@ -16,15 +15,12 @@ use Iterator;
  */
 final readonly class CsvReader implements ReaderInterface
 {
-    private HeaderInterface $header;
-
     public function __construct(
         private CsvParser $parser,
-        ?HeaderInterface $header = null,
+        private HeaderInterface $header,
         /** @var DeserializerInterface<T> */
         private DeserializerInterface $deserializer = new ArrayObjectDeserializer()
     ) {
-        $this->header = $header ?? new NumberedColumnsHeader($this->parser);
     }
 
     /**

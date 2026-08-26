@@ -41,8 +41,12 @@ final readonly class JsonParserFactory implements ParserFactoryInterface
      */
     public function fromStream(mixed $stream): JsonReader
     {
+        if (!is_resource($stream)) {
+            throw new InvalidArgumentException('Invalid stream');
+        }
+
         try {
-            $reader = new JsonReader(...$this->config);;
+            $reader = new JsonReader(...$this->config);
             $reader->stream($stream);
         } catch (Exception $exception) {
             throw new InvalidArgumentException('Invalid json file', previous: $exception);

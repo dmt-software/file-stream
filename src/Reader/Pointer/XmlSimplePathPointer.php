@@ -28,7 +28,7 @@ final class XmlSimplePathPointer implements PointerInterface
     /**
      * @inheritDoc
      */
-    public function advanceToHeader(): void
+    public function moveToHeader(): void
     {
         if ($this->headerPath === null) {
             throw new ReaderException('Header path not defined');
@@ -41,7 +41,7 @@ final class XmlSimplePathPointer implements PointerInterface
         $this->moveToPath($this->headerPath);
     }
 
-    public function advanceToResults(): void
+    public function moveToResults(): void
     {
         if ($this->resultPath === $this->path) {
             return;
@@ -72,13 +72,11 @@ final class XmlSimplePathPointer implements PointerInterface
             }
 
             if (count($paths) == count($this->stack) && preg_match($valid, $this->stackToPath($paths))) {
-                break;
+                return;
             }
         }
 
-        if ($node === null) {
-            throw new NotFoundException('End of file reached');
-        }
+        throw new NotFoundException('End of file reached');
     }
 
     /**

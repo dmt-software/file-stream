@@ -17,10 +17,10 @@ interface PointerInterface
      * @throws NotFoundException
      * @throws ReaderException
      */
-    public function advanceToHeader(): void;
+    public function moveToHeader(): void;
 
     /**
      * @throws ReaderException
      */
-    public function advanceToResults(): void;
+    public function moveToResults(): void;
 }

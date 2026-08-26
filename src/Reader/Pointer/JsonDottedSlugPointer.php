@@ -20,22 +20,22 @@ final class JsonDottedSlugPointer implements PointerInterface
     ) {
     }
 
-    public function advanceToHeader(): void
+    /**
+     * @inheritDoc
+     */
+    public function moveToHeader(): void
     {
         if ($this->headerPath === null) {
             throw new ReaderException('Header path not defined');
         }
 
         $this->moveToPath($this->headerPath);
-
-        try {
-            $this->parser->parseValue();
-        } catch (ReaderException) {
-            throw new NotFoundException('Header not found');
-        }
     }
 
-    public function advanceToResults(): void
+    /**
+     * @inheritDoc
+     */
+    public function moveToResults(): void
     {
         $this->moveToPath($this->resultPath);
     }
@@ -59,11 +59,13 @@ final class JsonDottedSlugPointer implements PointerInterface
                 }
 
                 if ($this->stack === $paths) {
-                    break;
+                    return;
                 }
             }
         } catch (Exception $exception) {
             throw new ReaderException('Error while reading JSON', previous: $exception);
         }
+
+        throw new NotFoundException('End of file reached');
     }
 }

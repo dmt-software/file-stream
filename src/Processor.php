@@ -20,7 +20,7 @@ use LimitIterator;
 class Processor
 {
     /**
-     * @var list<FilterInterface>
+     * @var list<FilterInterface<T>>
      */
     private array $filters = [];
 
@@ -85,7 +85,7 @@ class Processor
      *
      * @return iterable<int, T>
      */
-    public function getResults(): Iterable
+    public function getResults(): iterable
     {
         $iterator = $this->reader->getResults();
 
