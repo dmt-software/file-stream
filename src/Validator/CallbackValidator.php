@@ -9,13 +9,16 @@ use DMT\FileStream\Exception\ValidationException;
 use TypeError;
 
 /**
- * @implements ValidatorInterface<object>
+ * @template T of object
+ * @implements ValidatorInterface<T>
  */
 final readonly class CallbackValidator implements ValidatorInterface
 {
     /**
      * The callback should return false or throw a ValidationException.
      * Any other return value will be considered valid.
+     *
+     * @param Closure(T): bool $callback
      */
     public function __construct(private Closure $callback)
     {
@@ -24,7 +27,7 @@ final readonly class CallbackValidator implements ValidatorInterface
     /**
      * {@inheritDoc}
      *
-     * @throws TypeError When callback does not except the object type of the given header.
+     * @throws TypeError When callback does not accept the object type of the given header.
      */
     public function validate(object $header): void
     {

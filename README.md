@@ -1,37 +1,70 @@
 # File Stream
 
-## Processor
+`dmt-software/file-stream` provides a common streaming API for reading and processing CSV, JSON, and XML files without 
+loading the complete document into memory.
 
-```php
-use DMT\FileStream\Processor; 
-use DMT\FileStream\Reader\ObjectReader; 
-use DMT\FileStream\Reader\Pointer\XmlSimplePathPointer; 
-use DMT\FileStream\Reader\Stream\XmlElementIterator; 
-use DMT\FileStream\Serialization\SimpleXmlDeserializer; 
-use DMT\XmlParser\Parser; 
-use DMT\XmlParser\Source\FileParser; 
-use DMT\XmlParser\Tokenizer\XmlReaderTokenizer; 
-        
-$parser = new Parser(new XmlReaderTokenizer(new FileParser('programming.xml')));
+## Installation
 
-$reader = new ObjectReader(
-    new XmlElementIterator($parser),
-    new XmlSimplePathPointer($parser, resultPath: '/languages/language', headerPath: '/summary'),
-    new SimpleXmlDeserializer(),
-);
-
-$processor = new Processor($reader);
-$processor->validate(fn (SimpleXMLElement $header) => $header->name == 'programming-languages');
-$processor->limit(0, 2);
-$processor->filter(fn (SimpleXMLElement $row) => $row->since < 2000);
-
-foreach ($processor->getResults() as $key => $language) {
-    printf('%d: %-10s %d' . PHP_EOL, $key, $language->name, $language->since);
-}
-
-// outputs something like:
-// 0: Javascript 1995
-// 1: PHP        1995
+```bash
+composer require dmt-software/file-stream
 ```
 
+## Supported formats
 
+- [CSV](docs/CSV.md)
+- [JSON](docs/JSON.md)
+- [XML](docs/XML.md)
+- [any iterable](docs/iterable.md)
+
+## Usage
+
+A reader exposes a header and a stream of results:
+
+```php
+$header = $reader->getHeader();
+
+foreach ($reader->getResults() as $result) {
+    // process result
+}
+```
+
+Use `Processor` to validate, filter, offset, and limit results:
+
+```php
+use DMT\FileStream\Processor;
+
+$processor = new Processor($reader);
+$processor->validate(fn (object $header) => true);
+$processor->filter(fn (object $result) => true);
+$processor->limit(offset: 0, limit: 100,);
+
+foreach ($processor->getResults() as $result) {
+    // process result
+}
+```
+
+Filters are applied before offset and limit.
+
+## Streaming behavior
+
+Readers are designed for forward-only processing.
+
+JSON and XML readers move through the document until the configured header and result sections are found. When both are 
+configured, the header is expected to occur before the results.
+
+Streams cannot be rewound after processing has advanced.
+
+## Exceptions
+
+Package exceptions implement:
+
+```php
+DMT\FileStream\Exception\Exception
+```
+
+Main exception types:
+
+- `NotFoundException` — expected data or a configured path was not found.
+- `ReaderException` — the source could not be read or an unsupported stream operation was attempted.
+- `SerializationException` — source data could not be converted to the requested PHP object.
+- `ValidationException` — header validation failed.

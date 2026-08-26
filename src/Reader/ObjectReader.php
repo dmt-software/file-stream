@@ -10,14 +10,18 @@ use DMT\FileStream\Serialization\DeserializerInterface;
 use Iterator;
 
 /**
+ * @template H of object
  * @template T of object
+ * @implements ReaderInterface<H, T>
  */
 final readonly class ObjectReader implements ReaderInterface
 {
+    /**
+     * @param DeserializerInterface<string, T> $deserializer
+     */
     public function __construct(
         private StreamIterator $reader,
         private PointerInterface $pointer,
-        /** @var DeserializerInterface<T> */
         private DeserializerInterface $deserializer,
     ) {
     }

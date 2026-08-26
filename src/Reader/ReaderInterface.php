@@ -9,6 +9,7 @@ use DMT\FileStream\Exception\ReaderException;
 use Iterator;
 
 /**
+ * @template H of object
  * @template T of object
  */
 interface ReaderInterface
@@ -16,7 +17,7 @@ interface ReaderInterface
     /**
      * Get the header part of the file stream.
      *
-     * @return T
+     * @return H
      * @throws NotFoundException
      * @throws ReaderException
      */

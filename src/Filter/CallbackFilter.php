@@ -8,10 +8,14 @@ use Closure;
 use TypeError;
 
 /**
- * @implements FilterInterface<object>
+ * @template T of object
+ * @implements FilterInterface<T>
  */
 final readonly class CallbackFilter implements FilterInterface
 {
+    /**
+     * @param Closure(T, int): bool $callback
+     */
     public function __construct(private Closure $callback)
     {
     }
