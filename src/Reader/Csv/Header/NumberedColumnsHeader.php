@@ -25,7 +25,7 @@ final class NumberedColumnsHeader implements HeaderInterface
             return $this->header;
         }
 
-        if ($this->parser->key() == -1) {
+        if ($this->parser->key() >= 0) {
             throw new ReaderException('Already advanced beyond first row.');
         }
 
