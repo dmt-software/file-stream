@@ -17,6 +17,6 @@ final class JsonObjectNode implements Stringable
 
     public function __toString(): string
     {
-        return $this->value;
+        return $this->value ?? '';
     }
 }

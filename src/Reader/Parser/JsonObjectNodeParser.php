@@ -32,7 +32,7 @@ final class JsonObjectNodeParser
 
                 switch ($nodeType) {
                     case JsonReader::OBJECT:
-                        return $this->createCurrentObjectNode();
+                        return $this->createObjectNode();
 
                     case JsonReader::END_OBJECT:
                         $this->leaveObject();
@@ -58,7 +58,7 @@ final class JsonObjectNodeParser
      *
      * @throws ParserException
      */
-    public function applyValueToCurrentNode(): JsonObjectNode
+    public function parseValue(): JsonObjectNode
     {
         try {
             $currentNode = $this->getCurrentNode();
@@ -79,7 +79,7 @@ final class JsonObjectNodeParser
         return $this->current;
     }
 
-    private function createCurrentObjectNode(): JsonObjectNode
+    private function createObjectNode(): JsonObjectNode
     {
         $this->depth++;
 
