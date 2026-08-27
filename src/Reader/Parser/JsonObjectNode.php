@@ -11,12 +11,12 @@ final class JsonObjectNode implements Stringable
     public function __construct(
         public int $depth = 0,
         public ?string $name = null,
-        public ?array $value = null,
+        public ?string $value = null,
     ) {
     }
 
     public function __toString(): string
     {
-        return json_encode($this->value, JSON_THROW_ON_ERROR);
+        return $this->value;
     }
 }

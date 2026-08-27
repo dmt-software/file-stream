@@ -27,14 +27,14 @@ Given:
 ```php
 use DMT\FileStream\Factory\JsonParserFactory;
 use DMT\FileStream\Reader\ObjectReader;
-use DMT\FileStream\Reader\Parser\JsonObjectParser;
+use DMT\FileStream\Reader\Parser\JsonObjectNodeParser;
 use DMT\FileStream\Reader\Pointer\JsonDottedSlugPointer;
 use DMT\FileStream\Reader\Stream\JsonObjectIterator;
 use DMT\FileStream\Serialization\JsonDecodeDeserializer;
 
 $jsonReader = new JsonParserFactory()->fromFile('languages.json');
 
-$parser = new JsonObjectParser($jsonReader);
+$parser = new JsonObjectNodeParser($jsonReader);
 
 $reader = new ObjectReader(
     new JsonObjectIterator($parser),
