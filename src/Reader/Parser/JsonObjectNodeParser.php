@@ -98,7 +98,7 @@ final class JsonObjectNodeParser
 
     private function enterArray(): void
     {
-        $this->names[] = $this->getName() ?? '';
+        $this->names[] = $this->getName();
     }
 
     private function leaveArray(): void
