@@ -8,5 +8,4 @@ use RuntimeException;
 
 class ReaderException extends RuntimeException implements Exception
 {
-
 }

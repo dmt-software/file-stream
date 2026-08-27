@@ -6,7 +6,7 @@ namespace DMT\Test\FileStream\Reader\Selector;
 
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Reader\Parser\JsonObjectNodeParser;
-use DMT\FileStream\Reader\Selector\JsonPathSelector;
+use DMT\FileStream\Reader\Selector\JsonObjectPathSelector;
 use InvalidArgumentException;
 use pcrov\JsonReader\JsonReader;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -16,7 +16,7 @@ final class JsonPathSelectorTest extends TestCase
 {
     public function testMovesToRootPath(): void
     {
-        $selector = new JsonPathSelector(
+        $selector = new JsonObjectPathSelector(
             parser: $this->parser('root-array.json'),
             path: '.'
         );
@@ -28,7 +28,7 @@ final class JsonPathSelectorTest extends TestCase
 
     public function testMovesToNestedPath(): void
     {
-        $selector = new JsonPathSelector(
+        $selector = new JsonObjectPathSelector(
             parser: $this->parser('objects.json'),
             path: '.meta'
         );
@@ -40,7 +40,7 @@ final class JsonPathSelectorTest extends TestCase
 
     public function testMovesToArrayPath(): void
     {
-        $selector = new JsonPathSelector(
+        $selector = new JsonObjectPathSelector(
             parser: $this->parser('objects.json'),
             path: '.languages'
         );
@@ -53,7 +53,7 @@ final class JsonPathSelectorTest extends TestCase
 
     public function testSupportsEscapedDotInPropertyName(): void
     {
-        $selector = new JsonPathSelector(
+        $selector = new JsonObjectPathSelector(
             parser: $this->parser('escaped-dot.json'),
             path: '.response\.data.languages'
         );
@@ -66,7 +66,7 @@ final class JsonPathSelectorTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new JsonPathSelector(
+        new JsonObjectPathSelector(
             parser: $this->parser('objects.json'),
             path: $path
         );
@@ -85,7 +85,7 @@ final class JsonPathSelectorTest extends TestCase
 
     public function testThrowsWhenPathCannotBeFound(): void
     {
-        $selector = new JsonPathSelector(
+        $selector = new JsonObjectPathSelector(
             parser: $this->parser('objects.json'),
             path: '.missing'
         );

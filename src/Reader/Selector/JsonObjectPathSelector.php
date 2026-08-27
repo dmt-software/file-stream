@@ -23,7 +23,7 @@ use InvalidArgumentException;
  *
  * @implements PathSelectorInterface<JsonObjectNode>
  */
-final readonly class JsonPathSelector implements PathSelectorInterface
+final readonly class JsonObjectPathSelector implements PathSelectorInterface
 {
     /**
      * The default path to select the root object.
@@ -75,7 +75,7 @@ final readonly class JsonPathSelector implements PathSelectorInterface
     private function isMalformedPath(): bool
     {
         return
-            str_starts_with($this->path, '.')
+            !str_starts_with($this->path, '.')
             || str_ends_with($this->path, '.')
             || str_contains($this->path, '..')
         ;
