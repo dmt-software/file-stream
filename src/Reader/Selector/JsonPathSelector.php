@@ -25,11 +25,16 @@ use InvalidArgumentException;
  */
 final readonly class JsonPathSelector implements PathSelectorInterface
 {
+    /**
+     * The default path to select the root object.
+     */
+    public const string ROOT_PATH = '.';
+
     public function __construct(
         private JsonObjectNodeParser $parser,
-        private string $path = '',
+        private string $path = self::ROOT_PATH,
     ) {
-        $this->validatePath($path);
+        $this->validatePath();
     }
 
     /**
@@ -37,7 +42,7 @@ final readonly class JsonPathSelector implements PathSelectorInterface
      */
     public function moveToNode(): JsonObjectNode
     {
-        $segments = $this->parsePath($this->path);
+        $segments = $this->parsePath();
         $stack = [];
 
         while ($node = $this->parser->parse()) {
@@ -52,31 +57,40 @@ final readonly class JsonPathSelector implements PathSelectorInterface
         throw new NotFoundException('JSON path not found');
     }
 
-    private function validatePath(string $path): void
+    private function validatePath(): void
     {
-        if (empty($path)) {
-            throw new InvalidArgumentException('JSON path cannot be empty');
-        }
-
-        if ($path === '.') {
+        if ($this->path === self::ROOT_PATH) {
             return;
         }
 
-        if (!str_starts_with($path, '.') || str_ends_with($path, '.') || str_contains($path, '..')) {
+        if (empty($this->path)) {
+            throw new InvalidArgumentException('JSON path cannot be empty');
+        }
+
+        if ($this->isMalformedPath()) {
             throw new InvalidArgumentException('Malformed JSON path');
         }
+    }
+
+    private function isMalformedPath(): bool
+    {
+        return
+            str_starts_with($this->path, '.')
+            || str_ends_with($this->path, '.')
+            || str_contains($this->path, '..')
+        ;
     }
 
     /**
      * @return list<string|null>
      */
-    private function parsePath(string $path): array
+    private function parsePath(): array
     {
-        if ($path === '.') {
+        if ($this->path === self::ROOT_PATH) {
             return [null];
         }
 
-        $segments = preg_split('~(?<!\\\)\.~', substr($path, 1));
+        $segments = preg_split('~(?<!\\\)\.~', substr($this->path, 1));
 
         if ($segments === false) {
             throw new ReaderException('Could not parse JSON path');
