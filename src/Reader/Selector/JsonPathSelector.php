@@ -2,38 +2,42 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Selector;
+namespace DMT\FileStream\Reader\Selector;
 
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Exception\ReaderException;
+use DMT\FileStream\Reader\Parser\JsonObjectNode;
 use DMT\FileStream\Reader\Parser\JsonObjectNodeParser;
 use InvalidArgumentException;
 
 /**
  * Selects a JSON object by a dotted path.
  *
- * Paths start at the unnamed JSON root and therefore must begin with ".".
+ * Paths start at the unnamed JSON root and therefore must begin with "."
  *
  * Examples:
  * - "." selects objects at the root level.
  * - ".languages" selects objects below the "languages" property.
  * - ".response.data.languages" selects a nested path.
  * - ".response\.data.languages" treats "response.data" as a literal property name.
+ *
+ * @implements PathSelectorInterface<JsonObjectNode>
  */
 final readonly class JsonPathSelector implements PathSelectorInterface
 {
-    public function __construct(private JsonObjectNodeParser $parser)
-    {
+    public function __construct(
+        private JsonObjectNodeParser $parser,
+        private string $path = '',
+    ) {
+        $this->validatePath($path);
     }
 
     /**
      * @inheritDoc
      */
-    public function moveTo(string $path): void
+    public function moveToNode(): JsonObjectNode
     {
-        $this->validatePath($path);
-
-        $segments = $this->parsePath($path);
+        $segments = $this->parsePath($this->path);
         $stack = [];
 
         while ($node = $this->parser->parse()) {
@@ -41,7 +45,7 @@ final readonly class JsonPathSelector implements PathSelectorInterface
             $stack[] = $node->name;
 
             if ($stack === $segments) {
-                return;
+                return $node;
             }
         }
 
@@ -50,6 +54,10 @@ final readonly class JsonPathSelector implements PathSelectorInterface
 
     private function validatePath(string $path): void
     {
+        if (empty($path)) {
+            throw new InvalidArgumentException('JSON path cannot be empty');
+        }
+
         if ($path === '.') {
             return;
         }
