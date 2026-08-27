@@ -26,7 +26,7 @@ use Iterator;
  *
  * @implements Iterator<int, string>
  */
-class JsonObjectIterator implements Iterator
+final class JsonObjectIterator implements Iterator
 {
     /**
      * The last node parsed.
@@ -53,13 +53,12 @@ class JsonObjectIterator implements Iterator
      */
     private bool $started = false;
 
-
     /**
      * @param PathSelectorInterface<JsonObjectNode> $selector
      */
     public function __construct(
-        private JsonObjectNodeParser $parser,
-        private PathSelectorInterface $selector,
+        private readonly JsonObjectNodeParser $parser,
+        private readonly PathSelectorInterface $selector,
     ) {
     }
 
@@ -78,8 +77,6 @@ class JsonObjectIterator implements Iterator
      */
     public function next(): void
     {
-        $global = false;
-
         do {
             $this->node = $this->parser->parse();
 
@@ -130,6 +127,11 @@ class JsonObjectIterator implements Iterator
         $this->key = 0;
     }
 
+    /**
+     * Determine whether the current node belongs to the selected result set.
+     *
+     * Matching is based on the depth and name of the node initially selected.
+     */
     private function isValidNode(): bool
     {
         return
