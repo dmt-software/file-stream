@@ -9,7 +9,7 @@ final class PrefixIndexNamingStrategy implements NamingStrategyInterface
     /**
      * Construct the strategy based on the first row.
      */
-    private NamedPropertiesStrategy $namedProperties;
+    private NamedPropertyStrategy $namedProperties;
 
     public function __construct(private readonly string $prefix = 'column')
     {
@@ -21,7 +21,7 @@ final class PrefixIndexNamingStrategy implements NamingStrategyInterface
     public function apply(array $columns): array
     {
         if (!isset($this->namedProperties)) {
-            $this->namedProperties = new NamedPropertiesStrategy(
+            $this->namedProperties = new NamedPropertyStrategy(
                 array_map(fn(int $key) => sprintf('%s%d', $this->prefix, $key), array_keys($columns))
             );
         }

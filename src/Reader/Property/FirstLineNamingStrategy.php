@@ -9,7 +9,7 @@ final class FirstLineNamingStrategy implements NamingStrategyInterface
     /**
      * Construct the strategy based on the first row.
      */
-    private NamedPropertiesStrategy $namedProperties;
+    private NamedPropertyStrategy $namedProperties;
 
     /**
      * @inheritDoc
@@ -17,7 +17,7 @@ final class FirstLineNamingStrategy implements NamingStrategyInterface
     public function apply(array $columns): array
     {
         if (!isset($this->namedProperties)) {
-            $this->namedProperties = new NamedPropertiesStrategy($columns);
+            $this->namedProperties = new NamedPropertyStrategy($columns);
         }
 
         return $this->namedProperties->apply($columns);

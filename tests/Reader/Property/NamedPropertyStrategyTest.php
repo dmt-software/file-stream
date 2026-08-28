@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Reader\Property;
 
-use DMT\FileStream\Reader\Property\NamedPropertiesStrategy;
+use DMT\FileStream\Reader\Property\NamedPropertyStrategy;
 use PHPUnit\Framework\TestCase;
 
-final class NamedPropertiesStrategyTest extends TestCase
+final class NamedPropertyStrategyTest extends TestCase
 {
     public function testAppliesPropertyNames(): void
     {
-        $strategy = new NamedPropertiesStrategy(['name', 'since', 'by']);
+        $strategy = new NamedPropertyStrategy(['name', 'since', 'by']);
 
         $this->assertSame(
             ['name' => 'PHP', 'since' => 1995, 'by' => 'Rasmus Lerdorf'],
@@ -21,7 +21,7 @@ final class NamedPropertiesStrategyTest extends TestCase
 
     public function testPadsMissingColumnsWithNull(): void
     {
-        $strategy = new NamedPropertiesStrategy(['name', 'since', 'by']);
+        $strategy = new NamedPropertyStrategy(['name', 'since', 'by']);
 
         $this->assertSame(
             ['name' => 'PHP', 'since' => 1995, 'by' => null],
@@ -31,7 +31,7 @@ final class NamedPropertiesStrategyTest extends TestCase
 
     public function testIgnoresAdditionalColumns(): void
     {
-        $strategy = new NamedPropertiesStrategy(['name', 'since']);
+        $strategy = new NamedPropertyStrategy(['name', 'since']);
 
         $this->assertSame(
             ['name' => 'PHP', 'since' => 1995],
@@ -41,7 +41,7 @@ final class NamedPropertiesStrategyTest extends TestCase
 
     public function testCombinesDuplicatePropertyNames(): void
     {
-        $strategy = new NamedPropertiesStrategy(['id', 'value', 'value']);
+        $strategy = new NamedPropertyStrategy(['id', 'value', 'value']);
 
         $this->assertSame(
             ['id' => 1, 'value' => ['foo', 'bar']],

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader\Property;
 
-final readonly class IndexedColumnNamingStrategy implements NamingStrategyInterface
+final readonly class IndexColumnNamingStrategy implements NamingStrategyInterface
 {
-    private NamedPropertiesStrategy $namedProperties;
+    private NamedPropertyStrategy $namedProperties;
 
     /**
      * @param array<int, string> $mapping
@@ -15,7 +15,7 @@ final readonly class IndexedColumnNamingStrategy implements NamingStrategyInterf
     {
         ksort($this->mapping);
 
-        $this->namedProperties = new NamedPropertiesStrategy(array_values($this->mapping));
+        $this->namedProperties = new NamedPropertyStrategy(array_values($this->mapping));
     }
 
     /**

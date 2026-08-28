@@ -19,6 +19,16 @@ final class PrefixIndexNamingStrategyTest extends TestCase
         );
     }
 
+    public function testUsesCustomPrefix(): void
+    {
+        $strategy = new PrefixIndexNamingStrategy('property');
+
+        $this->assertSame(
+            ['property0' => 'PHP', 'property1' => 1995, 'property2' => 'Rasmus Lerdorf'],
+            $strategy->apply(['PHP', 1995, 'Rasmus Lerdorf'])
+        );
+    }
+
     public function testUsesColumnCountFromFirstApply(): void
     {
         $strategy = new PrefixIndexNamingStrategy();

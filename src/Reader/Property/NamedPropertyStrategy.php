@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader\Property;
 
-final readonly class NamedPropertiesStrategy implements NamingStrategyInterface
+final readonly class NamedPropertyStrategy implements NamingStrategyInterface
 {
     /**
      * The number of property names.
