@@ -4,9 +4,18 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader\Property;
 
-final readonly class IndexColumnNamingStrategy implements NamingStrategyInterface
+/**
+ * Maps selected column indexes to configured property names.
+ *
+ * Columns without a configured mapping are ignored. Null values
+ * represent missing selected columns.
+ */
+final class IndexColumnNamingStrategy implements NamingStrategyInterface
 {
-    private NamedPropertyStrategy $namedProperties;
+    /**
+     * Inner naming strategy.
+     */
+    private readonly NamedPropertyStrategy $namedProperties;
 
     /**
      * @param array<int, string> $mapping

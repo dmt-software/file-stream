@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader\Property;
 
+/**
+ * Applies property names to a sequential record.
+ *
+ * Implementations determine how numeric record indexes are mapped to
+ * associative property names.
+ */
 interface NamingStrategyInterface
 {
     /**

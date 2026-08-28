@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader\Property;
 
+/**
+ * Maps record values to a predefined list of property names.
+ *
+ * Missing values are filled with null and additional values are ignored.
+ * Duplicate property names are combined into an array.
+ */
 final readonly class NamedPropertyStrategy implements NamingStrategyInterface
 {
     /**
@@ -16,9 +22,12 @@ final readonly class NamedPropertyStrategy implements NamingStrategyInterface
      */
     private bool $hasDuplicates;
 
+    /**
+     * @param list<string> $propertyNames
+     */
     public function __construct(private array $propertyNames)
     {
-        $this->hasDuplicates = max(...array_count_values($this->propertyNames)) > 1;
+        $this->hasDuplicates = max(array_count_values($this->propertyNames)) > 1;
         $this->propertyCount = count($this->propertyNames);
     }
 
