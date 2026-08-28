@@ -136,6 +136,7 @@ final class JsonObjectIterator implements Iterator
     {
         return
             $this->node?->depth === $this->depth
-            && $this->node?->name === $this->name;
+            && $this->node?->name === $this->name
+        ;
     }
 }
