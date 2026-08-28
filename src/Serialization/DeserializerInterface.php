@@ -7,6 +7,8 @@ namespace DMT\FileStream\Serialization;
 use DMT\FileStream\Exception\SerializationException;
 
 /**
+ * Deserialize data into an object.
+ *
  * @template T of object
  */
 interface DeserializerInterface

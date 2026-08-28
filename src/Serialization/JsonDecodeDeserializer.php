@@ -9,6 +9,8 @@ use InvalidArgumentException;
 use stdClass;
 
 /**
+ * Deserialize JSON data into a stdClass object.
+ *
  * @implements DeserializerInterface<stdClass>
  */
 final readonly class JsonDecodeDeserializer implements DeserializerInterface

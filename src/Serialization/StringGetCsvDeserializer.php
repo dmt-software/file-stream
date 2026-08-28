@@ -9,6 +9,11 @@ use DMT\FileStream\Reader\Csv\CsvControl;
 use DMT\FileStream\Reader\Property\NamingStrategyInterface;
 
 /**
+ * Deserializes a CSV record into an ArrayObject.
+ *
+ * CSV parsing is configured through CsvControl. Property names are assigned
+ * to the parsed values using the configured naming strategy.
+ *
  * @implements DeserializerInterface<ArrayObject>
  */
 final readonly class StringGetCsvDeserializer implements DeserializerInterface
