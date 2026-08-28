@@ -4,7 +4,7 @@
         <element id="1">One</element>
         <element id="2">Two</element>
     </group>
-    <group>
+    <other>
         <element id="3">Three</element>
-    </group>
+    </other>
 </root>

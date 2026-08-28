@@ -34,16 +34,6 @@ final class JsonObjectIterator implements Iterator
     private ?JsonObjectNode $node = null;
 
     /**
-     * The depth of the nodes to return.
-     */
-    private ?int $depth = null;
-
-    /**
-     * The name of the nodes to return.
-     */
-    private ?string $name = null;
-
-    /**
      * The current key.
      */
     private int $key = -1;
@@ -71,22 +61,18 @@ final class JsonObjectIterator implements Iterator
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @throws ParserException When the node cannot be parsed.
+     * @inheritDoc
      */
     public function next(): void
     {
-        do {
-            $this->node = $this->parser->parse();
+        try {
+            $this->selector->moveToNode();
 
-            if (!$this->node) {
-                return;
-            }
-        } while (!$this->isValidNode());
-
-        $this->node = $this->parser->parseValue();
-        $this->key++;
+            $this->node = $this->parser->parseValue();
+            $this->key++;
+        } catch (NotFoundException) {
+            $this->node = null;
+        }
     }
 
     /**
@@ -122,21 +108,6 @@ final class JsonObjectIterator implements Iterator
         $this->selector->moveToNode();
 
         $this->node = $this->parser->parseValue();
-        $this->depth = $this->node->depth;
-        $this->name = $this->node->name;
         $this->key = 0;
-    }
-
-    /**
-     * Determine whether the current node belongs to the selected result set.
-     *
-     * Matching is based on the depth and name of the node initially selected.
-     */
-    private function isValidNode(): bool
-    {
-        return
-            $this->node?->depth === $this->depth
-            && $this->node?->name === $this->name
-        ;
     }
 }

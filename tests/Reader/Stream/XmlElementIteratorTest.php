@@ -24,7 +24,7 @@ final class XmlElementIteratorTest extends TestCase
             iterator_to_array($iterator)
         );
 
-        $this->assertCount(3, $results);
+        $this->assertCount(2, $results);
         $this->assertStringContainsString('<element id="1">One</element>', $results[0]);
         $this->assertStringContainsString('<element id="2">Two</element>', $results[1]);
     }

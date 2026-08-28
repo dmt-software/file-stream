@@ -23,16 +23,21 @@ use InvalidArgumentException;
  *
  * @implements PathSelectorInterface<JsonObjectNode>
  */
-final readonly class JsonObjectPathSelector implements PathSelectorInterface
+final class JsonObjectPathSelector implements PathSelectorInterface
 {
     /**
      * The default path to select the root object.
      */
     public const string ROOT_PATH = '.';
 
+    /**
+     * @var list<JsonObjectNode>
+     */
+    private array $stack = [];
+
     public function __construct(
-        private JsonObjectNodeParser $parser,
-        private string $path = self::ROOT_PATH,
+        private readonly JsonObjectNodeParser $parser,
+        private readonly string $path = self::ROOT_PATH,
     ) {
         $this->validatePath();
     }
@@ -43,13 +48,12 @@ final readonly class JsonObjectPathSelector implements PathSelectorInterface
     public function moveToNode(): JsonObjectNode
     {
         $segments = $this->parsePath();
-        $stack = [];
 
         while ($node = $this->parser->parse()) {
-            $stack = array_slice($stack, 0, $node->depth - 1);
-            $stack[] = $node->name;
+            $this->stack = array_slice($this->stack, 0, $node->depth);
+            $this->stack[] = $node->name;
 
-            if ($stack === $segments) {
+            if ($this->stack === $segments) {
                 return $node;
             }
         }

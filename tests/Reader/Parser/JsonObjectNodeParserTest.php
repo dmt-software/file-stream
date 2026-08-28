@@ -18,7 +18,7 @@ final class JsonObjectNodeParserTest extends TestCase
         $node = $parser->parse();
 
         $this->assertNotNull($node);
-        $this->assertSame(1, $node->depth);
+        $this->assertSame(0, $node->depth);
         $this->assertNull($node->name);
         $this->assertNull($node->value);
     }
@@ -31,7 +31,7 @@ final class JsonObjectNodeParserTest extends TestCase
         $node = $parser->parse();
 
         $this->assertNotNull($node);
-        $this->assertSame(2, $node->depth);
+        $this->assertSame(1, $node->depth);
         $this->assertSame('meta', $node->name);
         $this->assertNull($node->value);
     }
@@ -41,7 +41,7 @@ final class JsonObjectNodeParserTest extends TestCase
         $parser = $this->parser('objects.json');
 
         while ($node = $parser->parse()) {
-            if ($node->depth === 2 && $node->name === 'languages') {
+            if ($node->depth === 1 && $node->name === 'languages') {
                 $this->assertSame('languages', $node->name);
 
                 return;
@@ -57,7 +57,7 @@ final class JsonObjectNodeParserTest extends TestCase
 
         while ($node = $parser->parse()) {
             if ($node->name === 'author') {
-                $this->assertSame(3, $node->depth);
+                $this->assertSame(2, $node->depth);
 
                 return;
             }

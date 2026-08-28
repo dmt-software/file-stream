@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader\Stream;
 
+use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Reader\Selector\PathSelectorInterface;
 use DMT\XmlParser\Node\Element;
 use DMT\XmlParser\Parser;
@@ -29,16 +30,6 @@ final class XmlElementIterator implements Iterator
     private ?Element $node = null;
 
     /**
-     * The depth of the elements to return.
-     */
-    private ?int $depth = null;
-
-    /**
-     * The local name of the elements to return.
-     */
-    private ?string $name = null;
-
-    /**
      * The current key.
      */
     private int $key = -1;
@@ -48,6 +39,9 @@ final class XmlElementIterator implements Iterator
      */
     private bool $started = false;
 
+    /**
+     * @param PathSelectorInterface<Element> $selector
+     */
     public function __construct(
         private readonly Parser $parser,
         private readonly PathSelectorInterface $selector,
@@ -67,23 +61,14 @@ final class XmlElementIterator implements Iterator
      */
     public function next(): void
     {
-        do {
-            $node = $this->parser->parse();
-
-            if (!$node) {
-                $this->node = null;
-
-                return;
-            }
-
-            if (!$node instanceof Element) {
-                continue;
-            }
+        try {
+            $node = $this->selector->moveToNode();
 
             $this->node = $node;
-        } while (!$this->isValidNode());
-
-        $this->key++;
+            $this->key++;
+        } catch (NotFoundException) {
+            $this->node = null;
+        }
     }
 
     /**
@@ -113,20 +98,9 @@ final class XmlElementIterator implements Iterator
 
         $this->started = true;
 
-        /** @var Element $node */
         $node = $this->selector->moveToNode();
 
         $this->node = $node;
-        $this->depth = $node->depth();
-        $this->name = $node->localName;
         $this->key = 0;
-    }
-
-    private function isValidNode(): bool
-    {
-        return
-            $this->node?->depth() === $this->depth
-            && $this->node?->localName === $this->name
-        ;
     }
 }

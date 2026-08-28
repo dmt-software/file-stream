@@ -81,10 +81,8 @@ final class JsonObjectNodeParser
 
     private function createObjectNode(): JsonObjectNode
     {
-        $this->depth++;
-
         $this->current = new JsonObjectNode(
-            $this->depth,
+            $this->depth++,
             $this->getName()
         );
 
