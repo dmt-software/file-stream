@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader\Property;
 
-final class IndexedColumnsNamingStrategy implements NamingStrategyInterface
+final class PrefixIndexNamingStrategy implements NamingStrategyInterface
 {
     /**
      * Construct the strategy based on the first row.
      */
     private NamedPropertiesStrategy $namedProperties;
+
+    public function __construct(private readonly string $prefix = 'column')
+    {
+    }
 
     /**
      * @inheritDoc
@@ -18,7 +22,7 @@ final class IndexedColumnsNamingStrategy implements NamingStrategyInterface
     {
         if (!isset($this->namedProperties)) {
             $this->namedProperties = new NamedPropertiesStrategy(
-                array_map(fn(int $key) => sprintf('column%d', $key), array_keys($columns))
+                array_map(fn(int $key) => sprintf('%s%d', $this->prefix, $key), array_keys($columns))
             );
         }
 

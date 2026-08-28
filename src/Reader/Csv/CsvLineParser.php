@@ -6,9 +6,22 @@ namespace DMT\FileStream\Reader\Csv;
 
 use InvalidArgumentException;
 
+/**
+ * Parses a CSV stream into complete records.
+ *
+ * Records may span multiple physical lines when enclosed fields contain line
+ * endings. Parsing continues until the configured enclosures are balanced.
+ */
 final readonly class CsvLineParser
 {
+    /**
+     * Regex pattern to determine the current record enclosure is opened.
+     */
     private string $opened;
+
+    /**
+     * Regex pattern to determine the current record is enclosed.
+     */
     private string $closed;
 
     /**
@@ -47,6 +60,9 @@ final readonly class CsvLineParser
         return $line !== '' ? $line : null;
     }
 
+    /**
+     * Check if the line is fully enclosed.
+     */
     private function isFulfilledLine(string $line): bool
     {
         $opened = 0;
