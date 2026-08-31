@@ -7,8 +7,10 @@ namespace DMT\Test\FileStream\Reader\Stream;
 use DMT\FileStream\Reader\Csv\CsvControl;
 use DMT\FileStream\Reader\Csv\CsvLineParser;
 use DMT\FileStream\Reader\Stream\CsvLineIterator;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(CsvLineIterator::class)]
 final class CsvLineIteratorTest extends TestCase
 {
     public function testIteratesCsvRecords(): void

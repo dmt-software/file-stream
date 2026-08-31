@@ -7,8 +7,10 @@ namespace DMT\Test\FileStream\Serialization;
 use DMT\FileStream\Reader\Csv\CsvControl;
 use DMT\FileStream\Reader\Property\NamedPropertyStrategy;
 use DMT\FileStream\Serialization\StringGetCsvDeserializer;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(StringGetCsvDeserializer::class)]
 final class StringGetCsvDeserializerTest extends TestCase
 {
     public function testDeserializesCsvRecordIntoArrayObject(): void

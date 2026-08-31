@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Reader\Property;
 
 use DMT\FileStream\Reader\Property\IndexColumnNamingStrategy;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(IndexColumnNamingStrategy::class)]
 final class IndexColumnNamingStrategyTest extends TestCase
 {
     public function testMapsSelectedColumnsToPropertyNames(): void

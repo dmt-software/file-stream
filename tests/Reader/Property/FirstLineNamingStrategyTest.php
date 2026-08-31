@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Reader\Property;
 
 use DMT\FileStream\Reader\Property\FirstLineNamingStrategy;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(FirstLineNamingStrategy::class)]
 final class FirstLineNamingStrategyTest extends TestCase
 {
     public function testUsesFirstLineAsPropertyNames(): void

@@ -8,8 +8,10 @@ use DMT\FileStream\Reader\Parser\JsonObjectNodeParser;
 use DMT\FileStream\Reader\Selector\JsonObjectPathSelector;
 use DMT\FileStream\Reader\Stream\JsonObjectIterator;
 use pcrov\JsonReader\JsonReader;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(JsonObjectIterator::class)]
 final class JsonObjectIteratorTest extends TestCase
 {
     public function testIteratesSelectedObjects(): void

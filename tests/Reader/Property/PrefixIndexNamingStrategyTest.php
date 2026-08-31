@@ -6,7 +6,9 @@ namespace DMT\Test\FileStream\Reader\Property;
 
 use DMT\FileStream\Reader\Property\PrefixIndexNamingStrategy;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
+#[CoversClass(PrefixIndexNamingStrategy::class)]
 final class PrefixIndexNamingStrategyTest extends TestCase
 {
     public function testNamesColumnsByIndex(): void

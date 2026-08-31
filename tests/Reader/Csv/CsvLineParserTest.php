@@ -7,8 +7,10 @@ namespace DMT\Test\FileStream\Reader\Csv;
 use DMT\FileStream\Reader\Csv\CsvControl;
 use DMT\FileStream\Reader\Csv\CsvLineParser;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(CsvLineParser::class)]
 final class CsvLineParserTest extends TestCase
 {
     public function testParsesSingleLine(): void

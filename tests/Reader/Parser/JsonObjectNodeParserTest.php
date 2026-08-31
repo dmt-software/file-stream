@@ -7,8 +7,10 @@ namespace DMT\Test\FileStream\Reader\Parser;
 use DMT\FileStream\Exception\ParserException;
 use DMT\FileStream\Reader\Parser\JsonObjectNodeParser;
 use pcrov\JsonReader\JsonReader;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(JsonObjectNodeParser::class)]
 final class JsonObjectNodeParserTest extends TestCase
 {
     public function testParsesRootObject(): void

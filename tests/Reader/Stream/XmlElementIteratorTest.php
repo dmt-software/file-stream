@@ -10,8 +10,10 @@ use DMT\XmlParser\Parser;
 use DMT\XmlParser\Source\FileParser;
 use DMT\XmlParser\Source\StreamParser;
 use DMT\XmlParser\Tokenizer\XmlReaderTokenizer;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(XmlElementIterator::class)]
 final class XmlElementIteratorTest extends TestCase
 {
     public function testIteratesSelectedElements(): void

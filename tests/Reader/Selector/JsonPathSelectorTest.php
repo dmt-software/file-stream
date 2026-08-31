@@ -9,9 +9,11 @@ use DMT\FileStream\Reader\Parser\JsonObjectNodeParser;
 use DMT\FileStream\Reader\Selector\JsonObjectPathSelector;
 use InvalidArgumentException;
 use pcrov\JsonReader\JsonReader;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(JsonObjectPathSelector::class)]
 final class JsonPathSelectorTest extends TestCase
 {
     public function testMovesToRootPath(): void

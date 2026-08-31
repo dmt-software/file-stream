@@ -10,9 +10,11 @@ use DMT\XmlParser\Parser;
 use DMT\XmlParser\Source\StreamParser;
 use DMT\XmlParser\Tokenizer\XmlReaderTokenizer;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(XmlElementPathSelector::class)]
 final class XmlElementPathSelectorTest extends TestCase
 {
     public function testSelectsRootElement(): void

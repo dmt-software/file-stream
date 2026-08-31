@@ -7,10 +7,12 @@ namespace DMT\Test\FileStream\Serialization;
 use DMT\FileStream\Exception\SerializationException;
 use DMT\FileStream\Serialization\JsonDecodeDeserializer;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+#[CoversClass(JsonDecodeDeserializer::class)]
 final class JsonDecodeDeserializerTest extends TestCase
 {
     public function testDeserializesJsonObject(): void
