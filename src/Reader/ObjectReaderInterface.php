@@ -9,7 +9,7 @@ use Iterator;
 /**
  * @template T of object
  */
-interface ReaderInterface
+interface ObjectReaderInterface
 {
     /**
      * Get the results of the reader.

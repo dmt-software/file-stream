@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader;
 
-use DMT\FileStream\Reader\ReaderInterface;
+use DMT\FileStream\Reader\ObjectReaderInterface;
 use DMT\FileStream\Serialization\DeserializerInterface;
 use Iterator;
 
@@ -12,9 +12,9 @@ use Iterator;
  * Generic object reader that deserializes values from an iterator.
  *
  * @template T of object
- * @implements ReaderInterface<T>
+ * @implements ObjectReaderInterface<T>
  */
-final readonly class ObjectReader implements ReaderInterface
+final readonly class StreamObjectReader implements ObjectReaderInterface
 {
     /**
      * @param Iterator<int, string> $iterator
