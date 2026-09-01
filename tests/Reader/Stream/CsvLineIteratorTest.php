@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Reader\Stream;
 
-use DMT\FileStream\Reader\Csv\CsvControl;
+use DMT\FileStream\Csv\CsvControl;
 use DMT\FileStream\Reader\Csv\CsvLineParser;
 use DMT\FileStream\Reader\Stream\CsvLineIterator;
 use PHPUnit\Framework\Attributes\CoversClass;

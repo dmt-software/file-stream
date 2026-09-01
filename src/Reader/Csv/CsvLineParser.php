@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader\Csv;
 
+use DMT\FileStream\Csv\CsvControl;
 use InvalidArgumentException;
 
 /**

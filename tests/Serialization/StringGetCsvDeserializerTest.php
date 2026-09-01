@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Serialization;
 
-use DMT\FileStream\Reader\Csv\CsvControl;
+use DMT\FileStream\Csv\CsvControl;
 use DMT\FileStream\Reader\Property\NamedPropertyStrategy;
 use DMT\FileStream\Serialization\StringGetCsvDeserializer;
 use PHPUnit\Framework\Attributes\CoversClass;

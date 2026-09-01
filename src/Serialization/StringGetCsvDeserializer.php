@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\FileStream\Serialization;
 
 use ArrayObject;
-use DMT\FileStream\Reader\Csv\CsvControl;
+use DMT\FileStream\Csv\CsvControl;
 use DMT\FileStream\Reader\Property\NamingStrategyInterface;
 
 /**

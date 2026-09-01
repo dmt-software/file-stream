@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Reader\Csv;
+namespace DMT\FileStream\Csv;
 
 final readonly class CsvControl
 {

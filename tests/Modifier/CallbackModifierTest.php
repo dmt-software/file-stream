@@ -80,7 +80,7 @@ final class CallbackModifierTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessageIs(
-            'Callback not compatible with ReadStatement'
+            'Callback not compatible with ObjectReader'
         );
 
         $modifier->modify(new ArrayObject(), 0);
