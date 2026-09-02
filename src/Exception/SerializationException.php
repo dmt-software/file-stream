@@ -6,7 +6,7 @@ namespace DMT\FileStream\Exception;
 
 use RuntimeException;
 
-class SerializationException extends ReaderException
+class SerializationException extends RuntimeException implements Exception
 {
 
 }

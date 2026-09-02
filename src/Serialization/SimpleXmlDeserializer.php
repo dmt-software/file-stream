@@ -9,38 +9,35 @@ use SimpleXMLElement;
 use Throwable;
 
 /**
- * @implements DeserializerInterface<string, SimpleXMLElement>
+ * Deserializes an XML string into a SimpleXMLElement.
+ *
+ * @implements DeserializerInterface<SimpleXMLElement>
  */
 final readonly class SimpleXmlDeserializer implements DeserializerInterface
 {
     public function __construct(
-        private ?string $namespace = null,
         private int $options = 0,
-        private string $encoding = 'UTF-8',
+        private ?string $namespace = null,
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function deserialize(string|array $part): object
+    public function deserialize(string $data): object
     {
-        if (!is_string($part) || !str_starts_with($part, '<')) {
-            throw new SerializationException('Invalid data to deserialize');
-        }
-
-        if ($this->encoding !== 'UTF-8') {
-            $part = iconv($this->encoding, 'UTF-8//TRANSLIT', $part);
-        }
-
-        if ($part === false) {
-            throw new SerializationException('Could not convert XML encoding to UTF-8');
+        if (!str_starts_with($data, '<')) {
+            throw new SerializationException('Invalid XML data');
         }
 
         try {
-            return new SimpleXMLElement($part, $this->options, false, $this->namespace ?? '');
+            return new SimpleXMLElement(
+                $data,
+                $this->options,
+                namespaceOrPrefix: $this->namespace ?? ''
+            );
         } catch (Throwable $throwable) {
-            throw new SerializationException('Invalid xml', previous: $throwable);
+            throw new SerializationException(
+                'Error deserializing XML data',
+                previous: $throwable
+            );
         }
     }
 }

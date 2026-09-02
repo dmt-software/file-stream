@@ -5,32 +5,34 @@ declare(strict_types=1);
 namespace DMT\FileStream\Serialization;
 
 use DMT\FileStream\Exception\SerializationException;
-use JsonException;
+use InvalidArgumentException;
 use stdClass;
 
 /**
- * @implements DeserializerInterface<string, stdClass>
+ * Deserialize JSON data into a stdClass object.
+ *
+ * @implements DeserializerInterface<stdClass>
  */
 final readonly class JsonDecodeDeserializer implements DeserializerInterface
 {
-    public function __construct(
-        private int $options = JSON_THROW_ON_ERROR)
+    public function __construct(private int $flags = 0)
     {
+        if ($this->flags & JSON_OBJECT_AS_ARRAY) {
+            throw new InvalidArgumentException('JSON_OBJECT_AS_ARRAY is not supported.');
+        }
     }
 
     /**
      * @inheritDoc
      */
-    public function deserialize(string|array $part): object
+    public function deserialize(string $data): object
     {
-        if (!is_string($part) || !str_starts_with($part, '{')) {
-            throw new SerializationException('Invalid data to deserialize');
+        if (!str_starts_with($data, '{')
+            || !json_validate($data, flags: $this->flags & JSON_INVALID_UTF8_IGNORE)
+        ) {
+            throw new SerializationException('Invalid JSON object');
         }
 
-        try {
-            return json_decode($part, flags: $this->options | JSON_THROW_ON_ERROR);
-        } catch (JsonException $exception) {
-            throw new SerializationException('Invalid json', previous: $exception);
-        }
+        return json_decode($data, flags: $this->flags);
     }
 }

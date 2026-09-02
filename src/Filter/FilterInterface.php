@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Filter;
 
+use InvalidArgumentException;
+
 /**
  * @template T of object
  */
 interface FilterInterface
 {
     /**
-     * Call the filter on the given result.
+     * Apply the filter to the given object.
      *
-     * @param T $result
+     * @param T $object
+     * @throws InvalidArgumentException When the filter does not support the given object.
      */
-    public function __invoke(object $result, int $key): bool;
+    public function __invoke(object $object, int $key): bool;
 }

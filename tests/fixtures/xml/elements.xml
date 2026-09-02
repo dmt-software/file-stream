@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<root>
+    <group>
+        <element id="1">One</element>
+        <element id="2">Two</element>
+    </group>
+    <other>
+        <element id="3">Three</element>
+    </other>
+</root>

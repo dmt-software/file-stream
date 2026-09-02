@@ -4,23 +4,60 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader\Stream;
 
-use DMT\FileStream\Exception\ReaderException;
+use DMT\FileStream\Exception\NotFoundException;
+use DMT\FileStream\Exception\ParserException;
 use DMT\FileStream\Reader\Parser\JsonObjectNode;
-use DMT\FileStream\Reader\Parser\JsonObjectParser;
-use pcrov\JsonReader\Exception;
+use DMT\FileStream\Reader\Parser\JsonObjectNodeParser;
+use DMT\FileStream\Reader\Selector\PathSelectorInterface;
+use Iterator;
 
-final class JsonObjectIterator implements StreamIterator
+/**
+ * Iterates over JSON objects matching the selected node.
+ *
+ * The selector determines the first matching node. From that point onward,
+ * every object with the same depth and name is returned, even when matching
+ * nodes are separated by other JSON structures.
+ *
+ * This is comparable to selecting multiple matching elements with an XPath
+ * expression such as "/element".
+ *
+ * The iterator is forward-only and cannot be rewound once iteration has
+ * started.
+ *
+ * @implements Iterator<int, string>
+ */
+final class JsonObjectIterator implements Iterator
 {
-    private int $key = 0;
+    /**
+     * The last node parsed.
+     */
     private ?JsonObjectNode $node = null;
 
-    public function __construct(private readonly JsonObjectParser $parser)
-    {
+    /**
+     * The current key.
+     */
+    private int $key = -1;
+
+    /**
+     * Indicates if the iterator has been started.
+     */
+    private bool $started = false;
+
+    /**
+     * @param PathSelectorInterface<JsonObjectNode> $selector
+     */
+    public function __construct(
+        private readonly JsonObjectNodeParser $parser,
+        private readonly PathSelectorInterface $selector,
+    ) {
     }
 
-    public function key(): int
+    /**
+     * @inheritDoc
+     */
+    public function current(): string
     {
-        return $this->key;
+        return $this->node?->value ?? '';
     }
 
     /**
@@ -29,39 +66,21 @@ final class JsonObjectIterator implements StreamIterator
     public function next(): void
     {
         try {
-            do {
-                $node = $this->parser->parse();
+            $this->selector->moveToNode();
 
-                if (!$node) {
-                    $this->node = null;
-                    return;
-                }
-
-                $this->node ??= $node;
-            } while (!($node->depth == $this->node?->depth && $node->name == $this->node?->name));
-        } catch (Exception $exception) {
-            throw new ReaderException('Error while reading JSON', previous: $exception);
-        } finally {
+            $this->node = $this->parser->parseValue();
             $this->key++;
+        } catch (NotFoundException) {
+            $this->node = null;
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function current(): string
+    public function key(): int
     {
-        return (string) $this->parser->parseValue();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function rewind(): void
-    {
-        if ($this->key > 0) {
-            throw new ReaderException('Cannot rewind JSON stream.');
-        }
+        return $this->key;
     }
 
     /**
@@ -69,6 +88,26 @@ final class JsonObjectIterator implements StreamIterator
      */
     public function valid(): bool
     {
-        return $this->key === 0 || $this->node !== null;
+        return $this->node !== null;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws ParserException When the node cannot be parsed.
+     * @throws NotFoundException When the node path cannot be found.
+     */
+    public function rewind(): void
+    {
+        if ($this->started) {
+            return;
+        }
+
+        $this->started = true;
+
+        $this->selector->moveToNode();
+
+        $this->node = $this->parser->parseValue();
+        $this->key = 0;
     }
 }

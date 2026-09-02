@@ -6,60 +6,61 @@ namespace DMT\Test\FileStream\Filter;
 
 use ArrayObject;
 use DMT\FileStream\Filter\CallbackFilter;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use SimpleXMLElement;
 use stdClass;
-use TypeError;
 
+#[CoversClass(CallbackFilter::class)]
 final class CallbackFilterTest extends TestCase
 {
-    public function testReturnsTrueWhenCallbackAcceptsResult(): void
+    public function testReturnsCallbackResult(): void
     {
-        $filter = new CallbackFilter(
-            fn (object $result, int $key): bool => true
+        $object = new stdClass();
+
+        $acceptingFilter = new CallbackFilter(
+            fn (object $value, int $key): bool => true
         );
 
-        $this->assertTrue(
-            $filter(new stdClass(), 0)
+        $rejectingFilter = new CallbackFilter(
+            fn (object $value, int $key): bool => false
         );
+
+        $this->assertTrue($acceptingFilter($object, 0));
+        $this->assertFalse($rejectingFilter($object, 0));
     }
 
-    public function testReturnsFalseWhenCallbackRejectsResult(): void
+    public function testPassesObjectAndKeyToCallback(): void
     {
-        $filter = new CallbackFilter(
-            fn (object $result, int $key): bool => false
-        );
-
-        $this->assertFalse(
-            $filter(new stdClass(), 0)
-        );
-    }
-
-    public function testPassesResultAndKeyToCallback(): void
-    {
-        $result = new stdClass();
+        $object = new stdClass();
+        $receivedObject = null;
+        $receivedKey = null;
 
         $filter = new CallbackFilter(
-            function (object $actualResult, int $key) use ($result): bool {
-                $this->assertSame($result, $actualResult);
-                $this->assertSame(42, $key);
+            function (object $value, int $key) use (&$receivedObject, &$receivedKey): bool {
+                $receivedObject = $value;
+                $receivedKey = $key;
 
                 return true;
             }
         );
 
-        $this->assertTrue(
-            $filter($result, 42)
-        );
+        $filter($object, 42);
+
+        $this->assertSame($object, $receivedObject);
+        $this->assertSame(42, $receivedKey);
     }
 
-    public function testThrowsTypeErrorForUnsupportedResultType(): void
+    public function testThrowsExceptionWhenObjectTypeDoesNotMatchCallback(): void
     {
         $filter = new CallbackFilter(
-            fn (ArrayObject $result, int $key): bool => true
+            fn (SimpleXMLElement $object): bool => true
         );
 
-        $this->expectException(TypeError::class);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageIs('Callback not compatible with ObjectReader');
 
-        $filter(new stdClass(), 0);
+        $filter(new ArrayObject(), 0);
     }
 }

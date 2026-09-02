@@ -7,15 +7,17 @@ namespace DMT\FileStream\Serialization;
 use DMT\FileStream\Exception\SerializationException;
 
 /**
- * @template ParamType of string|array
- * @template ReturnObject of object
+ * Deserialize data into an object.
+ *
+ * @template T of object
  */
 interface DeserializerInterface
 {
     /**
-     * @param ParamType $part
-     * @return ReturnObject
-     * @throws SerializationException
+     * Deserialize a part of the stream into an object.
+     *
+     * @return T
+     * @throws SerializationException When the data cannot be deserialized.
      */
-    public function deserialize(string|array $part): object;
+    public function deserialize(string $data): object;
 }

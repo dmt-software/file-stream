@@ -4,19 +4,48 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader\Stream;
 
-use DMT\FileStream\Exception\ReaderException;
+use DMT\FileStream\Exception\NotFoundException;
+use DMT\FileStream\Reader\Selector\PathSelectorInterface;
 use DMT\XmlParser\Node\Element;
-use DMT\XmlParser\Node\ElementNode;
 use DMT\XmlParser\Parser;
-use RuntimeException;
+use Iterator;
 
-class XmlElementIterator implements StreamIterator
+/**
+ * Iterates over XML elements matching the selected element.
+ *
+ * The selector determines the first matching element. From that point onward,
+ * every element with the same depth and local name is returned, even when
+ * matching elements are separated by other XML structures.
+ *
+ * The iterator is forward-only and cannot be restarted once iteration has
+ * begun.
+ *
+ * @implements Iterator<int, string>
+ */
+final class XmlElementIterator implements Iterator
 {
-    private int $key = 0;
-    private ?Element $element = null;
+    /**
+     * The last element parsed.
+     */
+    private ?Element $node = null;
 
-    public function __construct(private readonly Parser $parser)
-    {
+    /**
+     * The current key.
+     */
+    private int $key = -1;
+
+    /**
+     * Indicates if the iterator has been started.
+     */
+    private bool $started = false;
+
+    /**
+     * @param PathSelectorInterface<Element> $selector
+     */
+    public function __construct(
+        private readonly Parser $parser,
+        private readonly PathSelectorInterface $selector,
+    ) {
     }
 
     /**
@@ -33,19 +62,12 @@ class XmlElementIterator implements StreamIterator
     public function next(): void
     {
         try {
-            do {
-                $current = $this->parser->parse();
+            $node = $this->selector->moveToNode();
 
-                if (!$current) {
-                    break;
-                }
-
-                $this->element ??= $current;
-            } while (!$this->isValidElement($current));
-        } catch (RuntimeException $exception) {
-            throw new ReaderException(sprintf('Unable to read line %s', $this->key), previous: $exception);
-        } finally {
+            $this->node = $node;
             $this->key++;
+        } catch (NotFoundException) {
+            $this->node = null;
         }
     }
 
@@ -62,7 +84,7 @@ class XmlElementIterator implements StreamIterator
      */
     public function valid(): bool
     {
-        return $this->parser->parseXml() !== '';
+        return $this->node !== null;
     }
 
     /**
@@ -70,15 +92,15 @@ class XmlElementIterator implements StreamIterator
      */
     public function rewind(): void
     {
-        if ($this->key > 0) {
-            throw new ReaderException('Cannot rewind XML stream.');
+        if ($this->started) {
+            return;
         }
-    }
 
-    private function isValidElement(Element|ElementNode $current): bool
-    {
-        return $current->name === $this->element->name
-            && $current->namespace === $this->element->namespace
-            && $current->depth() === $this->element->depth();
+        $this->started = true;
+
+        $node = $this->selector->moveToNode();
+
+        $this->node = $node;
+        $this->key = 0;
     }
 }
