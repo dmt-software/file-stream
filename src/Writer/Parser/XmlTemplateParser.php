@@ -27,6 +27,7 @@ final readonly class XmlTemplateParser implements TemplateParserInterface
         try {
             while ($this->reader->read()) {
                 if ($this->isPlaceholder()) {
+                    $this->writer->text('');
                     return;
                 }
 
@@ -39,9 +40,7 @@ final readonly class XmlTemplateParser implements TemplateParserInterface
             );
         }
 
-        throw new NotFoundException(
-            'Template placeholder not found'
-        );
+        throw new NotFoundException('Template placeholder not found');
     }
 
     /**
@@ -108,22 +107,16 @@ final readonly class XmlTemplateParser implements TemplateParserInterface
 
     private function copyText(): void
     {
-        $this->writer->text(
-            $this->reader->value
-        );
+        $this->writer->text($this->reader->value);
     }
 
     private function copyCdata(): void
     {
-        $this->writer->writeCdata(
-            $this->reader->value
-        );
+        $this->writer->writeCdata($this->reader->value);
     }
 
     private function copyComment(): void
     {
-        $this->writer->writeComment(
-            $this->reader->value
-        );
+        $this->writer->writeComment($this->reader->value);
     }
 }
