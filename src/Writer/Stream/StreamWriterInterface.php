@@ -13,7 +13,7 @@ interface StreamWriterInterface
      *
      * @param string $data
      *
-     * @throws WriterException WHen data could not be written to the stream.
+     * @throws WriterException When the data could not be written.
      */
     public function write(string $data): void;
 }

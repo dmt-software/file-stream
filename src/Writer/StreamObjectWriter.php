@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace DMT\FileStream\Writer;
 
 use DMT\FileStream\Serialization\SerializerInterface;
+use DMT\FileStream\Writer\Stream\FinalizeStreamInterface;
+use DMT\FileStream\Writer\Stream\PrepareStreamInterface;
 use DMT\FileStream\Writer\Stream\StreamWriterInterface;
 
 /**
@@ -30,8 +32,18 @@ final readonly class StreamObjectWriter implements ObjectWriterInterface
      */
     public function write(iterable $objects): void
     {
+        if ($this->writer instanceof PrepareStreamInterface) {
+            $this->writer->prepare();
+        }
+
         foreach ($objects as $object) {
-            $this->writer->write($this->serializer->serialize($object));
+            $this->writer->write(
+                $this->serializer->serialize($object)
+            );
+        }
+
+        if ($this->writer instanceof FinalizeStreamInterface) {
+            $this->writer->finalize();
         }
     }
 }

@@ -24,12 +24,12 @@ final class FlattenArrayColumnStrategy implements ColumnStrategyInterface
             }
 
             if (!is_scalar($value)) {
-                $value = '';
+                $value = null;
             }
         }
 
         $properties = array_slice($properties, 0, $this->columnCount);
 
-        return array_pad($properties, $this->columnCount, '');
+        return array_pad($properties, $this->columnCount, null);
     }
 }
