@@ -19,6 +19,8 @@
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-simplexml": "*",
+    "ext-xmlreader": "*",
+    "ext-xmlwriter": "*",
     "pcrov/jsonreader": "^1.0",
     "dmt-software/xml-parser": "^0.7.3"
   },

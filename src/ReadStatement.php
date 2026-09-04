@@ -16,7 +16,7 @@ use LimitIterator;
 /**
  * @template T of object
  */
-final class ReadStatement
+final class ReadStatement implements ObjectReaderInterface
 {
     /**
      * @var list<FilterInterface<T>>
@@ -98,7 +98,7 @@ final class ReadStatement
      *
      * @return Iterator<int, T>
      */
-    public function execute(): Iterator
+    public function getResults(): Iterator
     {
         $iterator = $this->reader->getResults();
 
