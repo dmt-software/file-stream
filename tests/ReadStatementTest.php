@@ -24,7 +24,7 @@ final class ReadStatementTest extends TestCase
 
         $this->assertSame(
             [$first, $second],
-            iterator_to_array($statement->execute())
+            iterator_to_array($statement->getResults())
         );
     }
 
@@ -44,7 +44,7 @@ final class ReadStatementTest extends TestCase
 
         $this->assertSame(
             [0 => $first, 2 => $third],
-            iterator_to_array($statement->execute())
+            iterator_to_array($statement->getResults())
         );
     }
 
@@ -65,7 +65,7 @@ final class ReadStatementTest extends TestCase
 
         $this->assertSame(
             [2 => $third],
-            iterator_to_array($statement->execute())
+            iterator_to_array($statement->getResults())
         );
     }
 
@@ -86,7 +86,7 @@ final class ReadStatementTest extends TestCase
 
         $this->assertSame(
             [1 => $second],
-            iterator_to_array($statement->execute())
+            iterator_to_array($statement->getResults())
         );
     }
 
@@ -107,7 +107,7 @@ final class ReadStatementTest extends TestCase
             }
         );
 
-        $results = iterator_to_array($statement->execute());
+        $results = iterator_to_array($statement->getResults());
 
         $this->assertSame(0, $results[0]->key);
         $this->assertSame(1, $results[1]->key);
@@ -136,7 +136,7 @@ final class ReadStatementTest extends TestCase
             }
         );
 
-        iterator_to_array($statement->execute());
+        iterator_to_array($statement->getResults());
 
         $this->assertSame([1], $modified);
     }
@@ -160,7 +160,7 @@ final class ReadStatementTest extends TestCase
 
         $this->assertSame(
             [1 => $second],
-            iterator_to_array($statement->execute())
+            iterator_to_array($statement->getResults())
         );
     }
 
@@ -187,7 +187,7 @@ final class ReadStatementTest extends TestCase
             }
         );
 
-        $results = iterator_to_array($statement->execute());
+        $results = iterator_to_array($statement->getResults());
 
         $this->assertSame('PHP!', $results[0]->name);
     }
