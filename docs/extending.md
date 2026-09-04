@@ -1,24 +1,42 @@
-# Fixed-width records
+# Extending the package
 
-The core reader abstractions can also be used for fixed-width records.
+## An Example with fixed-width records
 
-A fixed-width reader can be composed of three small responsibilities:
+A fixed-width reader can be composed from the same low-level abstractions used by the built-in formats:
 
 ```text
 stream
 → FixedLineParser
 → FixedLineIterator
 → StringChunkDeserializer
-→ object
+→ StreamObjectReader
 ```
 
-The parser is responsible only for reading complete fixed-size records from the stream.
+The parser determines record boundaries, the iterator exposes complete records, and the deserializer maps fixed string 
+ranges to object properties.
 
-The iterator exposes those records one at a time.
+```php
+$reader = new StreamObjectReader(
+    iterator: new FixedLineIterator(
+        parser: new FixedLineParser(
+            stream: $stream,
+            length: 80
+        )
+    ),
+    deserializer: new StringChunkDeserializer(
+        mapping: [
+            'name' => [0, 10],
+            'status' => [10, 1],
+            'city' => [11, 20],
+        ]
+    )
+);
+```
 
-The deserializer maps character ranges from a record onto object properties.
+Higher-level components do not need to know that the source uses fixed-width records. The resulting reader can be 
+wrapped in `ReadStatement` like any built-in reader.
 
-## FixedLineParser
+### FixedLineParser
 
 A parser can be configured with the expected record length:
 
@@ -57,7 +75,7 @@ and a record size of `80`, every call to `parse()` returns one complete 80-byte 
 
 The parser does not interpret individual fields.
 
-## FixedLineIterator
+### FixedLineIterator
 
 The parser can be exposed through an iterator:
 
@@ -92,7 +110,7 @@ The iterator yields:
 
 This makes the iterator compatible with `StreamObjectReader`.
 
-## StringChunkDeserializer
+### StringChunkDeserializer
 
 The deserializer defines how ranges inside the fixed-width record map onto properties.
 
@@ -163,7 +181,7 @@ $result->{$property} = trim(
 
 or later through a modifier or transformer, depending on the desired responsibility.
 
-## Composing the reader
+### Composing the reader
 
 The pieces can then be passed into a normal `StreamObjectReader`:
 

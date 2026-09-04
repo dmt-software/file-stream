@@ -42,7 +42,8 @@ final class WritePipeline implements ObjectWriterInterface
      */
     public function write(iterable $objects): void
     {
-        $transform = function () use ($objects){
+        /** @var iterable<int, R|T> $transform */
+        $transform = function () use ($objects): iterable {
             foreach ($objects as $key => $object) {
                 yield $key => $this->transformer?->transform($object) ?? $object;
             };

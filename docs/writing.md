@@ -1,58 +1,92 @@
 # Writing
 
-## Object writers
+## ObjectWriterInterface
 
-Object writers consume an iterable of objects and serialize/write them lazily.
+All object writers consume an iterable of objects:
 
-`StreamObjectWriter<T>` combines a serializer and a stream writer:
+```php
+interface ObjectWriterInterface
+{
+    /** @param iterable<int, T> $objects */
+    public function write(iterable $objects): void;
+}
+```
+
+This is the common write-side abstraction used by preconfigured writers, `StreamObjectWriter` and `WritePipeline`.
+
+## Preconfigured writers
+
+For common formats, use the preconfigured object writers:
+
+```text
+CsvObjectWriter   ← ArrayObject
+JsonObjectWriter  ← stdClass
+XmlObjectWriter   ← SimpleXMLElement
+```
+
+They configure the required serializer and stream writer internally.
+
+Use `StreamObjectWriter` directly when custom serialization or framing is required.
+
+## StreamObjectWriter
+
+`StreamObjectWriter<T>` combines a serializer and stream writer:
 
 ```text
 iterable<T>
 → SerializerInterface<T>
 → StreamWriterInterface
+→ output
 ```
 
-If a stream writer implements `PrepareStreamInterface` and/or `FinalizeStreamInterface`, `StreamObjectWriter` invokes those lifecycle methods around the streamed objects.
+If its stream writer implements `PrepareStreamInterface` and/or `FinalizeStreamInterface`, `StreamObjectWriter` invokes those lifecycle methods around the object stream.
 
 ## WritePipeline
 
-`WritePipeline<T, R>` connects a reader and writer:
+`WritePipeline<T, R>` is itself an `ObjectWriterInterface`.
+
+It decorates another object writer and optionally transforms objects before forwarding them.
 
 ```php
-$pipeline = new WritePipeline($writer);
-$pipeline->write($reader->getResults());
+$writer = new WritePipeline(
+    writer: $csvWriter,
+);
 ```
 
-### Optional transformation
+When no transformer is configured, input objects are forwarded unchanged.
 
-When the reader and writer use different object representations:
+### Transforming before writing
 
 ```php
-$pipeline->transform(
+$writer = (new WritePipeline(
+    writer: $csvWriter,
+))->transform(
     new ToArrayObjectTransformer()
 );
+```
 
-$pipeline->write($reader->getResults());
+The pipeline is then used exactly like any other object writer:
+
+```php
+$writer->write(
+    $reader->getResults()
+);
 ```
 
 Flow:
 
 ```text
-ObjectReaderInterface<T>
+iterable<T>
+→ WritePipeline<T, R>
 → TransformerInterface<T, R>
 → ObjectWriterInterface<R>
 ```
 
-Without a transformer:
+Transformation remains lazy; objects are transformed only as the wrapped writer consumes them.
 
-```text
-ObjectReaderInterface<T>
-→ ObjectWriterInterface<T>
-```
+Because `WritePipeline` implements `ObjectWriterInterface`, it does not introduce a separate execution API.
 
-The implementation remains lazy; the reader is consumed as the writer consumes the iterable.
-
-## PDO example
+## PDO to CSV
 
 ```php
 $statement = $pdo->query(
@@ -60,15 +94,22 @@ $statement = $pdo->query(
 );
 $statement->setFetchMode(PDO::FETCH_OBJ);
 
-$pipeline = new WritePipeline($csvWriter);
+$reader = new IterableObjectReader($statement);
 
-$pipeline->transform(new ToArrayObjectTransformer());
-$pipeline->write($statement);
+$writer = (new WritePipeline(
+    writer: $csvWriter,
+))->transform(
+    new ToArrayObjectTransformer()
+);
+
+$writer->write(
+    $reader->getResults()
+);
 ```
 
-## CSV writing
+No intermediate array is required.
 
-CSV writing separates column selection from serialization.
+## CSV writing
 
 ```text
 ArrayObject
@@ -78,7 +119,7 @@ ArrayObject
 → CsvStreamWriter
 ```
 
-`CsvStreamWriter` owns the line ending. The serializer only creates the CSV record.
+`CsvStreamWriter` owns the record line ending. `StringPutCsvSerializer` only serializes the CSV record.
 
 ## JSON writing
 
@@ -90,19 +131,11 @@ ArrayObject
 [{"id":1},{"id":2}]
 ```
 
-With a template:
-
-```json
-{"meta":{"version":1},"items":[{{items}}]}
-```
-
-the template parser writes everything before `{{items}}`, streamed objects are inserted, and the remainder is copied afterward.
-
 ## XML writing
 
-`SimpleXmlSerializer` returns XML fragments without an XML declaration.
+`SimpleXmlSerializer` serializes `SimpleXMLElement` as an XML fragment without an XML declaration.
 
-`XmlStreamWriter` uses `XMLWriter::writeRaw()` so that both the template parser and stream writer share the same internal `XMLWriter`.
+`XmlStreamWriter` uses `XMLWriter::writeRaw()`, allowing it and `XmlTemplateParser` to share the same internal `XMLWriter`.
 
 Without a template:
 
@@ -112,11 +145,43 @@ Without a template:
 </result>
 ```
 
-With a template, framing is delegated to `XmlTemplateParser`:
+## Templates
+
+Template parsers provide document framing around streamed objects.
+
+```php
+interface TemplateParserInterface
+{
+    public const string DEFAULT_PLACEHOLDER = '{{items}}';
+
+    public function copyToPlaceholder(): void;
+
+    public function copyRemainder(): void;
+}
+```
+
+The placeholder is consumed and is not copied to the output.
+
+> NOTE: template parsers might be changed to accept a path like reader do. 
+
+### JSON templates
+
+```json
+{
+  "meta": {
+    "version": 1
+  },
+  "items": [{{items}}]
+}
+```
+
+### XML templates
 
 ```xml
-<result>
-    <meta version="1"/>
+<root>
+    <meta>Example</meta>
     <items>{{items}}</items>
-</result>
+</root>
 ```
+
+`XmlTemplateParser` copies XML nodes up to the placeholder. `XmlStreamWriter` inserts serialized XML fragments through the shared `XMLWriter`, after which the parser copies the remainder.

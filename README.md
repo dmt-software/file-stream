@@ -2,7 +2,7 @@
 
 Streaming object readers and writers for CSV, JSON and XML.
 
-The package is built around a small set of composable abstractions:
+The package is built around small, composable reader and writer abstractions:
 
 ```text
 source
@@ -11,14 +11,19 @@ ObjectReaderInterface<T>
   ↓
 ReadStatement<T>
   ↓
+iterable<T>
+  ↓
 WritePipeline<T, R>
   ↓
-ObjectWriterInterface<R>
+ObjectWriterInterface<T|R>
   ↓
 output
 ```
 
-Readers expose objects lazily. A `ReadStatement` can filter, slice and modify that stream. A `WritePipeline` can optionally transform the objects before passing them to an object writer.
+The `ReadStatement` decorates a reader with filtering, limits and modifiers, while the `WritePipeline` decorates a 
+writer with an optional object transformation. Both sides remain lazy, so records can flow from source to output without
+first collecting the complete data set in memory.
+
 
 ## Installation
 

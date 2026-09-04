@@ -1,100 +1,117 @@
 # Architecture
 
-The package separates source reading, object processing, transformation and output writing.
+The package separates reading, read-side processing, transformation and writing into small composable abstractions.
 
 ```text
+source
+  ↓
 ObjectReaderInterface<T>
-        ↓
+  ↓
 ReadStatement<T>
-(filter / offset / limit / modify)
-        ↓
+  ↓
+iterable<T>
+  ↓
 WritePipeline<T, R>
-(optional transform)
-        ↓
-ObjectWriterInterface<R>
+  ↓
+ObjectWriterInterface<T|R>
+  ↓
+output
 ```
+
+The read and write sides deliberately meet at `iterable<T>`.
 
 ## ObjectReaderInterface
 
-`ObjectReaderInterface<T>` is the common source abstraction.
+`ObjectReaderInterface<T>` is the common read-side abstraction.
 
-Implementations include stream-backed readers and iterable-backed readers. A `ReadStatement<T>` also implements the same interface, which allows processed reads to be fed directly into a `WritePipeline`.
+Readers expose objects lazily through `getResults()`.
 
-This keeps source adaptation outside the pipeline. For example, a `PDOStatement` can first be wrapped in an `IterableObjectReader`.
+A `PDOStatement`, generator or other iterable source can be adapted through `IterableObjectReader`.
 
 ## ReadStatement
 
-`ReadStatement<T>` decorates another object reader.
-
-It is responsible for read-side processing:
-
-```text
-reader
-→ filters
-→ offset / limit
-→ modifiers
-→ Iterator<T>
-```
-
-A modifier preserves the object type:
-
-```text
-Modifier<T>
-T → T
-```
-
-Original integer reader keys are preserved.
-
-## WritePipeline
-
-`WritePipeline<T, R>` connects a reader to a writer.
+`ReadStatement<T>` is a reader decorator. It accepts another `ObjectReaderInterface<T>` and exposes the processed 
+results through the same interface.
 
 ```text
 ObjectReaderInterface<T>
-→ optional Transformer<T, R>
+→ filters
+→ offset / limit
+→ modifiers
+→ Iterator<int, T>
+```
+
+Because it implements `ObjectReaderInterface<T>`, statements can be nested or used anywhere another object reader is 
+expected.
+
+## ObjectWriterInterface
+
+`ObjectWriterInterface<T>` is the common write-side abstraction.
+
+```php
+interface ObjectWriterInterface
+{
+    /** @param iterable<int, T> $objects */
+    public function write(iterable $objects): void;
+}
+```
+
+## WritePipeline
+
+`WritePipeline<T, R>` is a writer decorator.
+
+It implements `ObjectWriterInterface`, wraps another object writer and can optionally transform each input object before
+delegating it.
+
+Without a transformer:
+
+```text
+iterable<T>
+→ WritePipeline<T, T>
+→ ObjectWriterInterface<T>
+```
+
+With a transformer:
+
+```text
+iterable<T>
+→ TransformerInterface<T, R>
 → ObjectWriterInterface<R>
 ```
 
-The pipeline does not collect objects in memory. It passes a lazy iterable to the writer.
+The pipeline remains lazy: it passes a generator to the wrapped writer instead of collecting the transformed objects 
+first.
 
-Without a transformer, the reader object type must already be compatible with the writer object type.
+This means `WritePipeline` can itself be used anywhere an `ObjectWriterInterface` is accepted.
 
 ## Transformer
 
-A transformer changes representation:
+A transformer changes object representation:
 
 ```text
 Transformer<T, R>
 T → R
 ```
 
-Transformers are intentionally independent from the writer namespace because they are general object conversion components.
+Transformers are independent from the writer namespace because object conversion is not inherently a writing concern.
 
-## Stream writers
+## StreamObjectWriter
 
-Format-specific stream writers own framing behavior.
-
-JSON:
+`StreamObjectWriter<T>` combines serialization and format-specific stream output:
 
 ```text
-prepare  → [
-write    → object[,object...]
-finalize → ]
+iterable<T>
+→ SerializerInterface<T>
+→ StreamWriterInterface
+→ output
 ```
 
-XML without a template:
-
-```text
-prepare  → <result>
-write    → XML fragments
-finalize → </result>
-```
-
-With a template, `prepare()` and `finalize()` delegate to a `TemplateParserInterface`.
+If the stream writer implements `PrepareStreamInterface` or `FinalizeStreamInterface`, those lifecycle operations are 
+invoked around the object stream.
 
 ## Template parsers
 
-Template parsers do not serialize objects. They only copy framing content around the insertion point.
+Template parsers only copy framing content around the insertion point:
 
 ```text
 copyToPlaceholder()
@@ -104,4 +121,5 @@ copyToPlaceholder()
 copyRemainder()
 ```
 
-JSON operates on template bytes. XML uses `XMLReader` together with the same `XMLWriter` instance used by `XmlStreamWriter`.
+JSON copies template bytes. XML uses `XMLReader` while writing through the same `XMLWriter` instance used by 
+`XmlStreamWriter`.

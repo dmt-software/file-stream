@@ -5,34 +5,32 @@
 All object readers expose the same lazy result contract:
 
 ```php
-/**
- * @template T of object
- */
 interface ObjectReaderInterface
 {
-    /**
-     * @return Iterator<int, T>
-     */
+    /** @return Iterator<int, T> */
     public function getResults(): Iterator;
 }
 ```
 
-Readers preserve source keys where possible, this way you can trace the result back to the original source of the data.
+Keys are integers but do not have to be sequential. Readers preserve source keys where possible.
 
-## StreamObjectReader
+## Preconfigured readers
 
-`StreamObjectReader<T>` combines an `Iterator<int, string>` with a `DeserializerInterface<T>`. Each serialized value is deserialized lazily.
+For common formats, use the preconfigured readers:
 
-```php
-$reader = new StreamObjectReader(
-    iterator: $iterator,
-    deserializer: $deserializer,
-);
+```text
+CsvObjectReader   → ArrayObject
+JsonObjectReader  → stdClass
+XmlObjectReader   → SimpleXMLElement
 ```
+
+They configure the required parser, iterator and deserializer internally.
+
+Use `StreamObjectReader` directly when custom parsing or deserialization is required.
 
 ## IterableObjectReader
 
-`IterableObjectReader<T>` adapts an existing iterable into an object reader.
+`IterableObjectReader<T>` adapts an existing iterable of objects.
 
 The iterable is expected to be homogeneous: every yielded object must be compatible with the same generic type `T`. This is a static-analysis and documentation contract rather than runtime validation.
 
@@ -45,18 +43,13 @@ $reader = new IterableObjectReader($statement);
 
 ## ReadStatement
 
-`ReadStatement<T>` implements `ObjectReaderInterface<T>` and decorates another reader.
+`ReadStatement<T>` decorates another `ObjectReaderInterface<T>` and implements the same interface.
 
 ```php
-$statement = new ReadStatement($reader);
-$statement
+$statement = (new ReadStatement($reader))
     ->filter(...)
-    ->limit(0, 100)
+    ->limit(10, 100)
     ->modify(...);
-
-foreach ($statement->getResults() as $object) {
-    // ...
-}
 ```
 
 Processing order:
@@ -67,38 +60,25 @@ filters
 → modifiers
 ```
 
-### Filters
+## Reading into a writer
 
-A filter decides whether an object remains in the stream:
-
-```text
-Filter<T>
-(T, key) → bool
-```
-
-### Modifiers
-
-A modifier keeps the same generic type:
-
-```text
-Modifier<T>
-(T, key) → T
-```
-
-A modifier may mutate an object or return a replacement object compatible with `T`.
-
-### Composition
-
-Because a statement is itself an object reader, it can be passed directly into the write side:
+Readers and writers meet through the result iterable:
 
 ```php
-$statement = new ReadStatement($reader);
-$statement->filter(...);
-
-$pipeline = new WritePipeline(
-    reader: $statement,
-    writer: $writer,
+$writer->write(
+    $statement->getResults()
 );
+```
 
-$pipeline->execute();
+If the output format requires another object representation, decorate the writer with a `WritePipeline`:
+
+```php
+$writer = (new WritePipeline($csvWriter))
+    ->transform(
+        new ToArrayObjectTransformer()
+    );
+
+$writer->write(
+    $statement->getResults()
+);
 ```
