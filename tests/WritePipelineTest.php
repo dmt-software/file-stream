@@ -51,12 +51,8 @@ final class WritePipelineTest extends TestCase
                 )
             );
 
-        $pipeline = new WritePipeline(
-            reader: $reader,
-            writer: $writer
-        );
-
-        $pipeline->execute();
+        $pipeline = new WritePipeline($writer);
+        $pipeline->write($reader->getResults());
     }
 
     public function testTransformsObjectsBeforeWriting(): void
@@ -99,13 +95,8 @@ final class WritePipelineTest extends TestCase
                 )
             );
 
-        $pipeline = new WritePipeline(
-            reader: $reader,
-            writer: $writer
-        );
-
-        $pipeline->transform($transformer);
-        $pipeline->execute();
+        $pipeline = new WritePipeline($writer);
+        $pipeline->transform($transformer)->write($reader->getResults());
     }
 
     public function testPassesObjectsLazilyToWriter(): void
@@ -141,12 +132,8 @@ final class WritePipelineTest extends TestCase
                 )
             );
 
-        $pipeline = new WritePipeline(
-            reader: $reader,
-            writer: $writer
-        );
-
-        $pipeline->execute();
+        $pipeline = new WritePipeline($writer);
+        $pipeline->write($reader->getResults());
     }
 
     public function testTransformerIsLazy(): void
@@ -175,13 +162,8 @@ final class WritePipelineTest extends TestCase
                 )
             );
 
-        $pipeline = new WritePipeline(
-            reader: $reader,
-            writer: $writer
-        );
-
-        $pipeline->transform($transformer);
-        $pipeline->execute();
+        $pipeline = new WritePipeline($writer);
+        $pipeline->transform($transformer)->write($reader->getResults());
     }
 
     /**

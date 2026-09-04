@@ -7,7 +7,7 @@ namespace DMT\FileStream\Writer\Column;
 final class NamedColumnStrategy implements ColumnStrategyInterface
 {
     /**
-     * @param list<string> $columns
+     * @param array<int, string> $columnNames
      */
     public function __construct(
         private readonly array $columnNames = []

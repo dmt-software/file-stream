@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DMT\FileStream;
 
-use DMT\FileStream\Reader\ObjectReaderInterface;
 use DMT\FileStream\Transformer\TransformerInterface;
 use DMT\FileStream\Writer\ObjectWriterInterface;
 
@@ -12,7 +11,7 @@ use DMT\FileStream\Writer\ObjectWriterInterface;
  * @template T of object
  * @template R of object
  */
-final class WritePipeline
+final class WritePipeline implements ObjectWriterInterface
 {
     /**
      * @var TransformerInterface<T, R>|null
@@ -20,11 +19,9 @@ final class WritePipeline
     private ?TransformerInterface $transformer = null;
 
     /**
-     * @param ObjectReaderInterface<T> $reader
      * @param ObjectWriterInterface<T|R> $writer
      */
     public function __construct(
-        private readonly ObjectReaderInterface $reader,
         private readonly ObjectWriterInterface $writer,
     ) {
     }
@@ -32,19 +29,25 @@ final class WritePipeline
     /**
      * @param TransformerInterface<T, R> $transformer
      */
-    public function transform(TransformerInterface $transformer): void
+    public function transform(TransformerInterface $transformer): self
     {
         $this->transformer = $transformer;
+
+        return $this;
     }
 
-    public function execute(): void
+    /**
+     * @param iterable<int, T> $objects
+     * @return void
+     */
+    public function write(iterable $objects): void
     {
-        $objects = function () {
-            foreach ($this->reader->getResults() as $key => $object) {
+        $transform = function () use ($objects){
+            foreach ($objects as $key => $object) {
                 yield $key => $this->transformer?->transform($object) ?? $object;
             };
         };
 
-        $this->writer->write($objects());
+        $this->writer->write($transform());
     }
 }

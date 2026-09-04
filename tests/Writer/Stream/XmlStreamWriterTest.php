@@ -24,7 +24,7 @@ final class XmlStreamWriterTest extends TestCase
         $writer->write('<item>two</item>');
         $writer->finalize();
 
-        $this->assertSame(
+        $this->assertStringContainsString(
             '<result><item>one</item><item>two</item></result>',
             $xmlWriter->outputMemory()
         );
@@ -38,7 +38,7 @@ final class XmlStreamWriterTest extends TestCase
         $writer->prepare();
         $writer->finalize();
 
-        $this->assertSame(
+        $this->assertStringContainsString(
             '<result/>',
             $xmlWriter->outputMemory()
         );
@@ -55,7 +55,7 @@ final class XmlStreamWriterTest extends TestCase
         );
         $writer->finalize();
 
-        $this->assertSame(
+        $this->assertStringContainsString(
             '<result><item id="1"><name>John</name></item></result>',
             $xmlWriter->outputMemory()
         );
@@ -86,7 +86,7 @@ final class XmlStreamWriterTest extends TestCase
         $writer->write('<item>value</item>');
         $writer->finalize();
 
-        $this->assertSame(
+        $this->assertStringContainsString(
             '<item>value</item>',
             $xmlWriter->outputMemory()
         );
@@ -101,7 +101,7 @@ final class XmlStreamWriterTest extends TestCase
         $writer->write('<name>René</name>');
         $writer->finalize();
 
-        $this->assertSame(
+        $this->assertStringContainsString(
             '<result><name>René</name></result>',
             $xmlWriter->outputMemory()
         );

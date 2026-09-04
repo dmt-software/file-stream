@@ -24,6 +24,8 @@ final readonly class XmlStreamWriter implements
      */
     public function prepare(): void
     {
+        $this->writer->startDocument(encoding: 'UTF-8');
+
         if ($this->template) {
             $this->template->copyToPlaceholder();
 
@@ -50,10 +52,10 @@ final readonly class XmlStreamWriter implements
     {
         if ($this->template) {
             $this->template->copyRemainder();
-
-            return;
+        } else {
+            $this->writer->endElement();
         }
 
-        $this->writer->endElement();
+        $this->writer->endDocument();
     }
 }
