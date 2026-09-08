@@ -6,7 +6,8 @@ namespace DMT\Test\FileStream\Writer\Parser;
 
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Exception\ParserException;
-use DMT\FileStream\Writer\Parser\XmlTemplateParser;
+use DMT\FileStream\Format\Xml\Writer\XmlTemplateParser;
+use DMT\FileStream\Format\Xml\XmlPath;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use XMLReader;
@@ -18,16 +19,16 @@ final class XmlTemplateParserTest extends TestCase
     public function testCopiesTemplateUpToPlaceholder(): void
     {
         $reader = XMLReader::XML(
-            '<root><meta version="1">Example</meta><items>{{items}}</items></root>'
+            '<root><meta id="1">Example</meta><items></items></root>'
         );
 
         $writer = XMLWriter::toMemory();
 
-        $parser = new XmlTemplateParser($reader, $writer);
-        $parser->copyToPlaceholder();
+        $parser = new XmlTemplateParser($reader, new XmlPath('/root/items'), $writer);
+        $parser->copyToPath();
 
         $this->assertSame(
-            '<root><meta version="1">Example</meta><items>',
+            '<root><meta id="1">Example</meta><items>',
             $writer->outputMemory()
         );
     }
@@ -35,13 +36,13 @@ final class XmlTemplateParserTest extends TestCase
     public function testCopiesRemainderAfterPlaceholder(): void
     {
         $reader = XMLReader::XML(
-            '<root><items>{{items}}</items><meta><count>2</count><status>ok</status></meta></root>'
+            '<root><items></items><meta><count>2</count><status>ok</status></meta></root>'
         );
 
         $writer = XMLWriter::toMemory();
 
-        $parser = new XmlTemplateParser($reader, $writer);
-        $parser->copyToPlaceholder();
+        $parser = new XmlTemplateParser($reader, new XmlPath('/root/items'), $writer);
+        $parser->copyToPath();
 
         $writer->outputMemory();
 
@@ -53,41 +54,19 @@ final class XmlTemplateParserTest extends TestCase
         );
     }
 
-    public function testUsesCustomPlaceholder(): void
-    {
-        $reader = XMLReader::XML(
-            '<root><items>__DATA__</items></root>'
-        );
-
-        $writer = XMLWriter::toMemory();
-
-        $parser = new XmlTemplateParser(
-            reader: $reader,
-            writer: $writer,
-            placeholder: '__DATA__'
-        );
-        $parser->copyToPlaceholder();
-        $parser->copyRemainder();
-
-        $this->assertSame(
-            '<root><items></items></root>',
-            $writer->outputMemory()
-        );
-    }
-
     public function testCopiesAttributes(): void
     {
         $reader = XMLReader::XML(
-            '<root id="123" active="yes"><items>{{items}}</items></root>'
+            '<root id="123"><items active="yes"></items></root>'
         );
 
         $writer = XMLWriter::toMemory();
 
-        $parser = new XmlTemplateParser($reader, $writer);
-        $parser->copyToPlaceholder();
+        $parser = new XmlTemplateParser($reader, new XmlPath('/./items'), $writer);
+        $parser->copyToPath();
 
         $this->assertSame(
-            '<root id="123" active="yes"><items>',
+            '<root id="123"><items active="yes">',
             $writer->outputMemory()
         );
     }
@@ -95,13 +74,13 @@ final class XmlTemplateParserTest extends TestCase
     public function testCopiesEmptyElements(): void
     {
         $reader = XMLReader::XML(
-            '<root><meta/><items>{{items}}</items></root>'
+            '<root><meta/><items></items></root>'
         );
 
         $writer = XMLWriter::toMemory();
 
-        $parser = new XmlTemplateParser($reader, $writer);
-        $parser->copyToPlaceholder();
+        $parser = new XmlTemplateParser($reader,new XmlPath('/root/items'), $writer);
+        $parser->copyToPath();
 
         $this->assertSame(
             '<root><meta/><items>',
@@ -117,8 +96,8 @@ final class XmlTemplateParserTest extends TestCase
 
         $writer = XMLWriter::toMemory();
 
-        $parser = new XmlTemplateParser($reader, $writer);
-        $parser->copyToPlaceholder();
+        $parser = new XmlTemplateParser($reader, new XmlPath('/root/items'), $writer);
+        $parser->copyToPath();
 
         $this->assertSame(
             '<root><!--comment--><meta><![CDATA[a < b]]></meta><items>',
@@ -126,21 +105,22 @@ final class XmlTemplateParserTest extends TestCase
         );
     }
 
-    public function testThrowsWhenPlaceholderDoesNotExist(): void
+    public function testThrowsWhenPathIsNotFound(): void
     {
         $this->expectException(NotFoundException::class);
 
         $parser = new XmlTemplateParser(
             reader: XMLReader::XML('<root><items></items></root>'),
+            path: new XmlPath('/root/missing'),
             writer: XMLWriter::toMemory()
         );
-        $parser->copyToPlaceholder();
+        $parser->copyToPath();
     }
 
     public function testWrapsReaderFailureInParserException(): void
     {
         $reader = XMLReader::XML(
-            '<root><items>{{items}}</items></root>'
+            '<root><items></items></root>'
         );
         $reader->close();
 
@@ -148,11 +128,12 @@ final class XmlTemplateParserTest extends TestCase
 
         $parser = new XmlTemplateParser(
             reader: $reader,
+            path: new XmlPath('/root/items'),
             writer: $writer
         );
 
         $this->expectException(ParserException::class);
 
-        @$parser->copyToPlaceholder();
+        @$parser->copyToPath();
     }
 }

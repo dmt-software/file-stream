@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Writer\Stream;
 
-use DMT\FileStream\Writer\Parser\TemplateParserInterface;
-use DMT\FileStream\Writer\Stream\JsonStreamWriter;
+use DMT\FileStream\Format\Json\Writer\JsonStreamWriter;
+use DMT\FileStream\Path\TemplateParserInterface;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -79,7 +79,7 @@ final class JsonStreamWriterTest extends TestCase
         $template = $this->createMock(TemplateParserInterface::class);
         $template
             ->expects($this->once())
-            ->method('copyToPlaceholder');
+            ->method('copyToPath');
 
         $template
             ->expects($this->once())

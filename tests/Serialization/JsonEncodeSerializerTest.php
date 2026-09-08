@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Serialization;
 
 use DMT\FileStream\Exception\SerializationException;
-use DMT\FileStream\Serialization\JsonEncodeSerializer;
+use DMT\FileStream\Format\Json\Serialization\JsonEncodeSerializer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;

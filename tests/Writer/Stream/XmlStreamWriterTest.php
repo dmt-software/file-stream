@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Writer\Stream;
 
-use DMT\FileStream\Writer\Parser\TemplateParserInterface;
-use DMT\FileStream\Writer\Stream\XmlStreamWriter;
+use DMT\FileStream\Format\Xml\Writer\XmlStreamWriter;
+use DMT\FileStream\Path\TemplateParserInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -71,7 +71,7 @@ final class XmlStreamWriterTest extends TestCase
 
         $template
             ->expects($this->once())
-            ->method('copyToPlaceholder');
+            ->method('copyToPath');
 
         $template
             ->expects($this->once())

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Serialization;
 
 use DMT\FileStream\Exception\SerializationException;
-use DMT\FileStream\Serialization\SimpleXmlDeserializer;
+use DMT\FileStream\Format\Xml\Serialization\SimpleXmlDeserializer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;

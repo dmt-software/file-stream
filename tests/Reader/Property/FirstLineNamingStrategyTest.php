@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Reader\Property;
 
-use DMT\FileStream\Reader\Property\FirstLineNamingStrategy;
+use DMT\FileStream\Format\Csv\Reader\Property\FirstLineNamingStrategy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

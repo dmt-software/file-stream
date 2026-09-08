@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Reader\Parser;
 
 use DMT\FileStream\Exception\ParserException;
-use DMT\FileStream\Reader\Parser\JsonObjectNodeParser;
+use DMT\FileStream\Format\Json\Reader\JsonObjectNodeParser;
 use pcrov\JsonReader\JsonReader;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

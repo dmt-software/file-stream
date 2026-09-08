@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Filter;
 
 use ArrayObject;
-use DMT\FileStream\Filter\CallbackFilter;
+use DMT\FileStream\Reader\Filter\CallbackFilter;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

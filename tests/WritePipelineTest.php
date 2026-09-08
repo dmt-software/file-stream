@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream;
 
 use DMT\FileStream\Reader\ObjectReaderInterface;
-use DMT\FileStream\Transformer\TransformerInterface;
-use DMT\FileStream\WritePipeline;
 use DMT\FileStream\Writer\ObjectWriterInterface;
+use DMT\FileStream\Writer\Transformer\TransformerInterface;
+use DMT\FileStream\Writer\WritePipeline;
 use Iterator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

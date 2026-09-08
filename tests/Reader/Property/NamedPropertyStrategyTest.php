@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Reader\Property;
 
-use DMT\FileStream\Reader\Property\NamedPropertyStrategy;
+use DMT\FileStream\Format\Csv\Reader\Property\NamedPropertyStrategy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

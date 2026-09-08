@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Writer\Column;
 
-use DMT\FileStream\Writer\Column\NamedColumnStrategy;
+use DMT\FileStream\Format\Csv\Writer\Column\NamedColumnStrategy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

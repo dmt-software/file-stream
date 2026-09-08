@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Reader\Stream;
 
-use DMT\FileStream\Reader\Selector\XmlElementPathSelector;
-use DMT\FileStream\Reader\Stream\XmlElementIterator;
+use DMT\FileStream\Format\Xml\Reader\XmlElementIterator;
+use DMT\FileStream\Format\Xml\Reader\XmlElementPathSelector;
+use DMT\FileStream\Format\Xml\XmlPath;
 use DMT\XmlParser\Parser;
-use DMT\XmlParser\Source\FileParser;
 use DMT\XmlParser\Source\StreamParser;
 use DMT\XmlParser\Tokenizer\XmlReaderTokenizer;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -116,7 +116,7 @@ final class XmlElementIteratorTest extends TestCase
             parser: $parser,
             selector: new XmlElementPathSelector(
                 parser: $parser,
-                path: $path
+                path: new XmlPath($path)
             )
         );
     }

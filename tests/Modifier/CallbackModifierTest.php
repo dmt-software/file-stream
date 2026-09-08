@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Modifier;
 
 use ArrayObject;
-use DMT\FileStream\Modifier\CallbackModifier;
+use DMT\FileStream\Reader\Modifier\CallbackModifier;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

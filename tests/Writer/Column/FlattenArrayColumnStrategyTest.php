@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Writer\Column;
 
-use DMT\FileStream\Writer\Column\FlattenArrayColumnStrategy;
+use DMT\FileStream\Format\Csv\Writer\Column\FlattenArrayColumnStrategy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;

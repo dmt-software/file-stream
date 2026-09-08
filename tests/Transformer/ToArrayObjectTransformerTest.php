@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Transformer;
 
 use ArrayObject;
-use DMT\FileStream\Transformer\ToArrayObjectTransformer;
+use DMT\FileStream\Writer\Transformer\ToArrayObjectTransformer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SimpleXMLElement;

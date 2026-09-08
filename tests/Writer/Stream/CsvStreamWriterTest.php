@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Writer\Stream;
 
-use DMT\FileStream\Csv\CsvControl;
-use DMT\FileStream\Writer\Stream\CsvStreamWriter;
+use DMT\FileStream\Format\Csv\CsvControl;
+use DMT\FileStream\Format\Csv\Writer\CsvStreamWriter;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

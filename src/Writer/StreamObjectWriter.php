@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace DMT\FileStream\Writer;
 
 use DMT\FileStream\Serialization\SerializerInterface;
-use DMT\FileStream\Writer\Stream\FinalizeStreamInterface;
-use DMT\FileStream\Writer\Stream\PrepareStreamInterface;
-use DMT\FileStream\Writer\Stream\StreamWriterInterface;
 
 /**
  * Writes serialized objects to a stream.

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Transformer;
 
 use ArrayObject;
-use DMT\FileStream\Transformer\ToJsonTransformer;
+use DMT\FileStream\Writer\Transformer\ToJsonTransformer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SimpleXMLElement;

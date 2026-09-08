@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Reader\Stream;
 
-use DMT\FileStream\Reader\Parser\JsonObjectNodeParser;
-use DMT\FileStream\Reader\Selector\JsonObjectPathSelector;
-use DMT\FileStream\Reader\Stream\JsonObjectIterator;
+use DMT\FileStream\Format\Json\JsonPath;
+use DMT\FileStream\Format\Json\Reader\JsonObjectIterator;
+use DMT\FileStream\Format\Json\Reader\JsonObjectNodeParser;
+use DMT\FileStream\Format\Json\Reader\JsonObjectPathSelector;
 use pcrov\JsonReader\JsonReader;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -71,6 +72,6 @@ final class JsonObjectIteratorTest extends TestCase
 
         $parser = new JsonObjectNodeParser($reader);
 
-        return new JsonObjectIterator($parser, new JsonObjectPathSelector($parser, $path));
+        return new JsonObjectIterator($parser, new JsonObjectPathSelector($parser, new JsonPath($path)));
     }
 }

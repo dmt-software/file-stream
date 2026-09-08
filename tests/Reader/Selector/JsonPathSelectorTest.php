@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Reader\Selector;
 
 use DMT\FileStream\Exception\NotFoundException;
-use DMT\FileStream\Reader\Parser\JsonObjectNodeParser;
-use DMT\FileStream\Reader\Selector\JsonObjectPathSelector;
-use InvalidArgumentException;
+use DMT\FileStream\Format\Json\JsonPath;
+use DMT\FileStream\Format\Json\Reader\JsonObjectNodeParser;
+use DMT\FileStream\Format\Json\Reader\JsonObjectPathSelector;
 use pcrov\JsonReader\JsonReader;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(JsonObjectPathSelector::class)]
@@ -20,7 +19,7 @@ final class JsonPathSelectorTest extends TestCase
     {
         $selector = new JsonObjectPathSelector(
             parser: $this->parser('root-array.json'),
-            path: '.'
+            path: new JsonPath('.')
         );
 
         $this->assertNull(
@@ -32,7 +31,7 @@ final class JsonPathSelectorTest extends TestCase
     {
         $selector = new JsonObjectPathSelector(
             parser: $this->parser('objects.json'),
-            path: '.meta'
+            path: new JsonPath('.meta')
         );
 
         $this->assertSame(
@@ -44,7 +43,7 @@ final class JsonPathSelectorTest extends TestCase
     {
         $selector = new JsonObjectPathSelector(
             parser: $this->parser('objects.json'),
-            path: '.languages'
+            path: new JsonPath('.languages')
         );
 
         $this->assertSame(
@@ -57,39 +56,17 @@ final class JsonPathSelectorTest extends TestCase
     {
         $selector = new JsonObjectPathSelector(
             parser: $this->parser('escaped-dot.json'),
-            path: '.response\.data.languages'
+            path: new JsonPath('.response\.data.languages')
         );
 
         $this->assertSame('languages', $selector->moveToNode()->name);
-    }
-
-    #[DataProvider('malformedPathProvider')]
-    public function testRejectsMalformedPath(string $path): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new JsonObjectPathSelector(
-            parser: $this->parser('objects.json'),
-            path: $path
-        );
-    }
-
-    /**
-     * @return iterable<string, array{string}>
-     */
-    public static function malformedPathProvider(): iterable
-    {
-        yield 'missing leading dot' => ['meta'];
-        yield 'trailing dot' => ['.meta.'];
-        yield 'empty segment' => ['.meta..name'];
-        yield 'empty path' => [''];
     }
 
     public function testThrowsWhenPathCannotBeFound(): void
     {
         $selector = new JsonObjectPathSelector(
             parser: $this->parser('objects.json'),
-            path: '.missing'
+            path: new JsonPath('.missing')
         );
 
         $this->expectException(NotFoundException::class);

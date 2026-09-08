@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Reader\Selector;
 
 use DMT\FileStream\Exception\NotFoundException;
-use DMT\FileStream\Reader\Selector\XmlElementPathSelector;
+use DMT\FileStream\Format\Xml\Reader\XmlElementPathSelector;
+use DMT\FileStream\Format\Xml\XmlPath;
 use DMT\XmlParser\Parser;
 use DMT\XmlParser\Source\StreamParser;
 use DMT\XmlParser\Tokenizer\XmlReaderTokenizer;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(XmlElementPathSelector::class)]
@@ -20,7 +19,8 @@ final class XmlElementPathSelectorTest extends TestCase
     public function testSelectsRootElement(): void
     {
         $selector = new XmlElementPathSelector(
-            parser: $this->parser('elements.xml')
+            parser: $this->parser(),
+            path: new XmlPath()
         );
 
         $node = $selector->moveToNode();
@@ -32,8 +32,8 @@ final class XmlElementPathSelectorTest extends TestCase
     public function testSelectsElementByExactPath(): void
     {
         $selector = new XmlElementPathSelector(
-            parser: $this->parser('elements.xml'),
-            path: '/root/group/element'
+            parser: $this->parser(),
+            path: new XmlPath('/root/group/element')
         );
 
         $node = $selector->moveToNode();
@@ -45,8 +45,8 @@ final class XmlElementPathSelectorTest extends TestCase
     public function testSupportsWildcardPathSegment(): void
     {
         $selector = new XmlElementPathSelector(
-            parser: $this->parser('elements.xml'),
-            path: '/root/./element'
+            parser: $this->parser(),
+            path: new XmlPath('/root/./element')
         );
 
         $node = $selector->moveToNode();
@@ -55,34 +55,11 @@ final class XmlElementPathSelectorTest extends TestCase
         $this->assertSame(3, $node->depth());
     }
 
-    #[DataProvider('malformedPathProvider')]
-    public function testRejectsMalformedPath(string $path, string $message): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageIs($message);
-
-        new XmlElementPathSelector(
-            parser: $this->parser('elements.xml'),
-            path: $path
-        );
-    }
-
-    /**
-     * @return iterable<string, array{string, string}>
-     */
-    public static function malformedPathProvider(): iterable
-    {
-        yield 'empty path' => ['', 'XML path cannot be empty'];
-        yield 'missing leading slash' => ['root/group', 'Malformed XML path'];
-        yield 'trailing slash' => ['/root/group/', 'Malformed XML path'];
-        yield 'double slash' => ['/root//element', 'Malformed XML path'];
-    }
-
     public function testThrowsWhenPathCannotBeFound(): void
     {
         $selector = new XmlElementPathSelector(
-            parser: $this->parser('elements.xml'),
-            path: '/root/missing'
+            parser: $this->parser(),
+            path: new XmlPath('/root/missing')
         );
 
         $this->expectException(NotFoundException::class);
@@ -91,9 +68,9 @@ final class XmlElementPathSelectorTest extends TestCase
         $selector->moveToNode();
     }
 
-    private function parser(string $fixture): Parser
+    private function parser(): Parser
     {
-        $stream = fopen(dirname(__DIR__, 2) . '/fixtures/xml/' . $fixture, 'r');
+        $stream = fopen(dirname(__DIR__, 2) . '/fixtures/xml/elements.xml', 'r');
 
         $this->assertIsResource($stream);
 
