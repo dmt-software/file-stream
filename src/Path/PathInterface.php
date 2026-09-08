@@ -18,6 +18,8 @@ interface PathInterface
 
     /**
      * Check if the current segments match the path of this instance.
+     *
+     * @param list<string|null> $segments
      */
     public function matchesPath(array $segments): bool;
 }

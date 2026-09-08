@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace DMT\Test\FileStream\Reader\Stream;
+namespace DMT\Test\FileStream\Format\Xml\Reader;
 
 use DMT\FileStream\Format\Xml\Reader\XmlElementIterator;
+use DMT\FileStream\Format\Xml\Reader\XmlElementNodeParser;
 use DMT\FileStream\Format\Xml\Reader\XmlElementPathSelector;
 use DMT\FileStream\Format\Xml\XmlPath;
-use DMT\XmlParser\Parser;
-use DMT\XmlParser\Source\StreamParser;
-use DMT\XmlParser\Tokenizer\XmlReaderTokenizer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use XMLReader;
 
 #[CoversClass(XmlElementIterator::class)]
 final class XmlElementIteratorTest extends TestCase
@@ -79,7 +78,6 @@ final class XmlElementIteratorTest extends TestCase
         );
 
         $iterator->rewind();
-        $iterator->current();
         $iterator->next();
 
         $this->assertTrue($iterator->valid());
@@ -121,12 +119,12 @@ final class XmlElementIteratorTest extends TestCase
         );
     }
 
-    private function parser(): Parser
+    private function parser(): XmlElementNodeParser
     {
-        $stream = fopen(dirname(__DIR__, 2) . '/fixtures/xml/elements.xml', 'r');
+        $stream = fopen(dirname(__DIR__, 3) . '/fixtures/xml/elements.xml', 'r');
 
         $this->assertIsResource($stream);
 
-        return new Parser(new XmlReaderTokenizer(new StreamParser($stream)));
+        return new XmlElementNodeParser(XMLReader::fromStream($stream));
     }
 }

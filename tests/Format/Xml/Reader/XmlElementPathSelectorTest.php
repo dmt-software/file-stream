@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Format\Xml\Reader;
 
 use DMT\FileStream\Exception\NotFoundException;
+use DMT\FileStream\Format\Xml\Reader\XmlElementNodeParser;
 use DMT\FileStream\Format\Xml\Reader\XmlElementPathSelector;
 use DMT\FileStream\Format\Xml\XmlPath;
-use DMT\XmlParser\Parser;
-use DMT\XmlParser\Source\StreamParser;
-use DMT\XmlParser\Tokenizer\XmlReaderTokenizer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use XmlReader;
 
 #[CoversClass(XmlElementPathSelector::class)]
 final class XmlElementPathSelectorTest extends TestCase
@@ -25,8 +24,8 @@ final class XmlElementPathSelectorTest extends TestCase
 
         $node = $selector->moveToNode();
 
-        $this->assertSame('root', $node->localName);
-        $this->assertSame(1, $node->depth());
+        $this->assertSame('root', $node->name);
+        $this->assertSame(0, $node->depth);
     }
 
     public function testSelectsElementByExactPath(): void
@@ -38,8 +37,8 @@ final class XmlElementPathSelectorTest extends TestCase
 
         $node = $selector->moveToNode();
 
-        $this->assertSame('element', $node->localName);
-        $this->assertSame(3, $node->depth());
+        $this->assertSame('element', $node->name);
+        $this->assertSame(2, $node->depth);
     }
 
     public function testSupportsWildcardPathSegment(): void
@@ -51,8 +50,8 @@ final class XmlElementPathSelectorTest extends TestCase
 
         $node = $selector->moveToNode();
 
-        $this->assertSame('element', $node->localName);
-        $this->assertSame(3, $node->depth());
+        $this->assertSame('element', $node->name);
+        $this->assertSame(2, $node->depth);
     }
 
     public function testThrowsWhenPathCannotBeFound(): void
@@ -68,12 +67,12 @@ final class XmlElementPathSelectorTest extends TestCase
         $selector->moveToNode();
     }
 
-    private function parser(): Parser
+    private function parser(): XmlElementNodeParser
     {
         $stream = fopen(dirname(__DIR__, 3) . '/fixtures/xml/elements.xml', 'r');
 
         $this->assertIsResource($stream);
 
-        return new Parser(new XmlReaderTokenizer(new StreamParser($stream)));
+        return new XmlElementNodeParser(XmlReader::fromStream($stream));
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DMT\FileStream\Format\Xml;
 
 use DMT\FileStream\Path\PathInterface;
-use DMT\XmlParser\Node\Element;
 use InvalidArgumentException;
 
 /**
@@ -14,7 +13,7 @@ use InvalidArgumentException;
  * Paths start at the document root. A "." segment matches any element name.
  *
  *  Examples:
- *  - "/" selects the root element.
+ *  - "/." selects the elements within the container root.
  *  - "/root/element" selects an exact path.
  *  - "/./element" matches "element" below any root element.
  */
@@ -43,9 +42,7 @@ final readonly class XmlPath implements PathInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @param list<Element> $segments
+     * @inheritDoc
      */
     public function matchesPath(array $segments): bool
     {

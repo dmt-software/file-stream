@@ -6,6 +6,7 @@ namespace DMT\FileStream;
 
 use DMT\FileStream\Exception\ReaderException;
 use DMT\FileStream\Format\Xml\Reader\XmlElementIterator;
+use DMT\FileStream\Format\Xml\Reader\XmlElementNodeParser;
 use DMT\FileStream\Format\Xml\Reader\XmlElementPathSelector;
 use DMT\FileStream\Format\Xml\Serialization\SimpleXmlDeserializer;
 use DMT\FileStream\Format\Xml\XmlPath;
@@ -14,12 +15,10 @@ use DMT\FileStream\Reader\ObjectReaderInterface;
 use DMT\FileStream\Reader\StreamObjectReader;
 use DMT\FileStream\Stream\ReadableResourceStream;
 use DMT\FileStream\Stream\ReadableStreamInterface;
-use DMT\XmlParser\Parser;
-use DMT\XmlParser\Source\StreamParser;
-use DMT\XmlParser\Tokenizer\XmlReaderTokenizer;
 use InvalidArgumentException;
 use Iterator;
 use SimpleXMLElement;
+use XMLReader;
 
 /**
  * Reads selected XML elements as SimpleXMLElement instances.
@@ -63,7 +62,7 @@ final class XmlObjectReader implements ObjectReaderInterface
             throw new ReaderException('Stream can not be rewind');
         }
 
-        $parser = new Parser(new XmlReaderTokenizer(new StreamParser($this->stream->getResource())));
+        $parser = new XmlElementNodeParser(XMLReader::fromStream($this->stream->getResource()));
         $reader = new StreamObjectReader(
             new XmlElementIterator($parser, new XmlElementPathSelector($parser, $this->path)),
             new SimpleXmlDeserializer($this->options, $this->namespace),

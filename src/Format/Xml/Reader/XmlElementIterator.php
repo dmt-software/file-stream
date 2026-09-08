@@ -6,8 +6,6 @@ namespace DMT\FileStream\Format\Xml\Reader;
 
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Reader\PathSelectorInterface;
-use DMT\XmlParser\Node\Element;
-use DMT\XmlParser\Parser;
 use Iterator;
 
 /**
@@ -27,7 +25,7 @@ final class XmlElementIterator implements Iterator
     /**
      * The last element parsed.
      */
-    private ?Element $node = null;
+    private ?XmlElementNode $node = null;
 
     /**
      * The current key.
@@ -40,10 +38,10 @@ final class XmlElementIterator implements Iterator
     private bool $started = false;
 
     /**
-     * @param PathSelectorInterface<Element> $selector
+     * @param PathSelectorInterface<XmlElementNode> $selector
      */
     public function __construct(
-        private readonly Parser $parser,
+        private readonly XmlElementNodeParser $parser,
         private readonly PathSelectorInterface $selector,
     ) {
     }
@@ -53,7 +51,7 @@ final class XmlElementIterator implements Iterator
      */
     public function current(): string
     {
-        return $this->parser->parseXml();
+        return $this->node?->value ?? '';
     }
 
     /**
@@ -62,9 +60,9 @@ final class XmlElementIterator implements Iterator
     public function next(): void
     {
         try {
-            $node = $this->selector->moveToNode();
+            $this->selector->moveToNode();
 
-            $this->node = $node;
+            $this->node = $this->parser->parseXml();
             $this->key++;
         } catch (NotFoundException) {
             $this->node = null;
@@ -98,9 +96,9 @@ final class XmlElementIterator implements Iterator
 
         $this->started = true;
 
-        $node = $this->selector->moveToNode();
+        $this->selector->moveToNode();
 
-        $this->node = $node;
+        $this->node = $this->parser->parseXml();
         $this->key = 0;
     }
 }

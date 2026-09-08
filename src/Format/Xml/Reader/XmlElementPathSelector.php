@@ -7,43 +7,35 @@ namespace DMT\FileStream\Format\Xml\Reader;
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Path\PathInterface;
 use DMT\FileStream\Reader\PathSelectorInterface;
-use DMT\XmlParser\Node\Element;
-use DMT\XmlParser\Parser;
 
 /**
  * Selects an XML element using a simple absolute path.
  *
- * @implements PathSelectorInterface<Element>
+ * @implements PathSelectorInterface<XmlElementNode>
  */
 final class XmlElementPathSelector implements PathSelectorInterface
 {
     /**
      * The default path to select the root object.
      */
-    public const string ROOT_PATH = '/';
+    public const string ROOT_PATH = '/.';
 
     /**
-     * @var list<Element>
+     * @var list<string>
      */
     private array $stack = [];
 
     public function __construct(
-        private readonly Parser $parser,
+        private readonly XmlElementNodeParser $parser,
         private readonly PathInterface $path,
     ) {
     }
 
-    public function moveToNode(): Element
+    public function moveToNode(): XmlElementNode
     {
         while ($node = $this->parser->parse()) {
-            if (!$node instanceof Element) {
-                continue;
-            }
-
-            $depth = $node->depth() - 1;
-
-            $this->stack = array_slice($this->stack, 0, $depth);
-            $this->stack[$depth] = $node->localName;
+            $this->stack = array_slice($this->stack, 0, $node->depth);
+            $this->stack[$node->depth] = $node->name;
 
             if ($this->path->matchesPath($this->stack)) {
                 return $node;
