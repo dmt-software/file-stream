@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DMT\FileStream\Reader\Filter;
 
 use Closure;
+use DMT\FileStream\Reader\FilterInterface;
 use InvalidArgumentException;
 use TypeError;
 

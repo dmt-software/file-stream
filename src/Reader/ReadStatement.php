@@ -6,9 +6,7 @@ namespace DMT\FileStream\Reader;
 
 use CallbackFilterIterator;
 use DMT\FileStream\Reader\Filter\CallbackFilter;
-use DMT\FileStream\Reader\Filter\FilterInterface;
 use DMT\FileStream\Reader\Modifier\CallbackModifier;
-use DMT\FileStream\Reader\Modifier\ModifierInterface;
 use Iterator;
 use LimitIterator;
 

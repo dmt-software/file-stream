@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Reader;
 
-use DMT\FileStream\Reader\ObjectReaderInterface;
-use DMT\FileStream\Serialization\DeserializerInterface;
 use Iterator;
 
 /**

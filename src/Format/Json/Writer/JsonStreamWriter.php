@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Format\Json\Writer;
 
-use DMT\FileStream\Path\TemplateParserInterface;
 use DMT\FileStream\Writer\FinalizeStreamInterface;
 use DMT\FileStream\Writer\PrepareStreamInterface;
 use DMT\FileStream\Writer\StreamWriterInterface;
+use DMT\FileStream\Writer\TemplateParserInterface;
 use InvalidArgumentException;
 use RuntimeException;
 

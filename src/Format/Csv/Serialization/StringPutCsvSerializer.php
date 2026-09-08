@@ -7,7 +7,7 @@ namespace DMT\FileStream\Format\Csv\Serialization;
 use ArrayObject;
 use DMT\FileStream\Format\Csv\CsvControl;
 use DMT\FileStream\Format\Csv\Writer\Column\ColumnStrategyInterface;
-use DMT\FileStream\Serialization\SerializerInterface;
+use DMT\FileStream\Writer\SerializerInterface;
 use InvalidArgumentException;
 
 /**

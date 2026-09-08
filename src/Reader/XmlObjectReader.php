@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Format\Xml\Reader;
+namespace DMT\FileStream\Reader;
 
+use DMT\FileStream\Format\Xml\Reader\XmlElementIterator;
+use DMT\FileStream\Format\Xml\Reader\XmlElementPathSelector;
 use DMT\FileStream\Format\Xml\Serialization\SimpleXmlDeserializer;
-use DMT\FileStream\Reader\ObjectReaderInterface;
-use DMT\FileStream\Reader\StreamObjectReader;
 use DMT\XmlParser\Parser;
 use DMT\XmlParser\Source\StreamParser;
 use DMT\XmlParser\Tokenizer\XmlReaderTokenizer;

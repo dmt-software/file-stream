@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Serialization;
+namespace DMT\FileStream\Writer;
 
 use DMT\FileStream\Exception\SerializationException;
 

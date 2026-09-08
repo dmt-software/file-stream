@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\FileStream\Format\Xml\Serialization;
 
 use DMT\FileStream\Exception\SerializationException;
-use DMT\FileStream\Serialization\DeserializerInterface;
+use DMT\FileStream\Reader\DeserializerInterface;
 use SimpleXMLElement;
 use Throwable;
 

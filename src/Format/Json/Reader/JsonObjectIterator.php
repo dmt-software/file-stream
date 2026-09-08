@@ -6,7 +6,7 @@ namespace DMT\FileStream\Format\Json\Reader;
 
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Exception\ParserException;
-use DMT\FileStream\Path\PathSelectorInterface;
+use DMT\FileStream\Reader\PathSelectorInterface;
 use Iterator;
 
 /**

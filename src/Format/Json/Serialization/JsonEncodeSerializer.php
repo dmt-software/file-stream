@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\FileStream\Format\Json\Serialization;
 
 use DMT\FileStream\Exception\SerializationException;
-use DMT\FileStream\Serialization\SerializerInterface;
+use DMT\FileStream\Writer\SerializerInterface;
 use JsonException;
 use stdClass;
 

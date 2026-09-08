@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Path;
+namespace DMT\FileStream\Reader;
 
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Exception\ReaderException;

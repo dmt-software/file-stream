@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Reader;
 
 use ArrayIterator;
+use DMT\FileStream\Reader\DeserializerInterface;
 use DMT\FileStream\Reader\StreamObjectReader;
-use DMT\FileStream\Serialization\DeserializerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;

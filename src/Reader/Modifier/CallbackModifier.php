@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DMT\FileStream\Reader\Modifier;
 
 use Closure;
+use DMT\FileStream\Reader\ModifierInterface;
 use InvalidArgumentException;
 use TypeError;
 

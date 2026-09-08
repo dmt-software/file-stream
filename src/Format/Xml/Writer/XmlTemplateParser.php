@@ -7,7 +7,7 @@ namespace DMT\FileStream\Format\Xml\Writer;
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Exception\ParserException;
 use DMT\FileStream\Path\PathInterface;
-use DMT\FileStream\Path\TemplateParserInterface;
+use DMT\FileStream\Writer\TemplateParserInterface;
 use DMT\XmlParser\Node\Element;
 use Throwable;
 use XMLReader;

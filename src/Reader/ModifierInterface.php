@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Reader\Modifier;
+namespace DMT\FileStream\Reader;
 
 /**
  * Modifies an object while preserving its type.

@@ -2,17 +2,16 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Format\Csv;
+namespace DMT\FileStream\Reader;
 
 use ArrayObject;
+use DMT\FileStream\Format\Csv\CsvControl;
 use DMT\FileStream\Format\Csv\Reader\CsvLineIterator;
 use DMT\FileStream\Format\Csv\Reader\CsvLineParser;
 use DMT\FileStream\Format\Csv\Reader\Property\FirstLineNamingStrategy;
 use DMT\FileStream\Format\Csv\Reader\Property\NamingStrategyInterface;
 use DMT\FileStream\Format\Csv\Reader\Property\PrefixIndexNamingStrategy;
 use DMT\FileStream\Format\Csv\Serialization\StringGetCsvDeserializer;
-use DMT\FileStream\Reader\ObjectReaderInterface;
-use DMT\FileStream\Reader\StreamObjectReader;
 use Iterator;
 
 /**

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Writer\Stream;
 
 use DMT\FileStream\Format\Xml\Writer\XmlStreamWriter;
-use DMT\FileStream\Path\TemplateParserInterface;
+use DMT\FileStream\Writer\TemplateParserInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

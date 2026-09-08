@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Format\Json;
+namespace DMT\FileStream\Reader;
 
 use DMT\FileStream\Format\Json\Reader\JsonObjectIterator;
 use DMT\FileStream\Format\Json\Reader\JsonObjectNodeParser;
 use DMT\FileStream\Format\Json\Reader\JsonObjectPathSelector;
 use DMT\FileStream\Format\Json\Serialization\JsonDecodeDeserializer;
-use DMT\FileStream\Reader\ObjectReaderInterface;
-use DMT\FileStream\Reader\StreamObjectReader;
 use InvalidArgumentException;
 use Iterator;
 use pcrov\JsonReader\Exception;

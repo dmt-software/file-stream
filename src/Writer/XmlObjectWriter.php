@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Format\Xml\Writer;
+namespace DMT\FileStream\Writer;
 
 use DMT\FileStream\Format\Xml\Serialization\SimpleXmlSerializer;
+use DMT\FileStream\Format\Xml\Writer\XmlStreamWriter;
+use DMT\FileStream\Format\Xml\Writer\XmlTemplateParser;
 use DMT\FileStream\Format\Xml\XmlPath;
-use DMT\FileStream\Writer\ObjectWriterInterface;
-use DMT\FileStream\Writer\StreamObjectWriter;
 use InvalidArgumentException;
 use SimpleXMLElement;
 use XMLReader;

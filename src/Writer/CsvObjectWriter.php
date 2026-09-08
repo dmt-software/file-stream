@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Format\Csv;
+namespace DMT\FileStream\Writer;
 
 use ArrayObject;
+use DMT\FileStream\Format\Csv\CsvControl;
 use DMT\FileStream\Format\Csv\Serialization\StringPutCsvSerializer;
 use DMT\FileStream\Format\Csv\Writer\Column\ColumnStrategyInterface;
 use DMT\FileStream\Format\Csv\Writer\Column\FlattenArrayColumnStrategy;
 use DMT\FileStream\Format\Csv\Writer\CsvStreamWriter;
-use DMT\FileStream\Writer\ObjectWriterInterface;
-use DMT\FileStream\Writer\StreamObjectWriter;
 
 /**
  * Writes ArrayObject instances as CSV records.

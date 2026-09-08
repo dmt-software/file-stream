@@ -7,7 +7,7 @@ namespace DMT\FileStream\Format\Csv\Serialization;
 use ArrayObject;
 use DMT\FileStream\Format\Csv\CsvControl;
 use DMT\FileStream\Format\Csv\Reader\Property\NamingStrategyInterface;
-use DMT\FileStream\Serialization\DeserializerInterface;
+use DMT\FileStream\Reader\DeserializerInterface;
 
 /**
  * Deserializes a CSV record into an ArrayObject.

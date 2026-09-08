@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Writer\Transformer;
+namespace DMT\FileStream\Writer;
 
 /**
  * Transforms an object into another object.

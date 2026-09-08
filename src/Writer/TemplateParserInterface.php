@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Path;
+namespace DMT\FileStream\Writer;
 
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Exception\ParserException;

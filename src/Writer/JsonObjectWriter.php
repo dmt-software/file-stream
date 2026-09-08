@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Format\Json;
+namespace DMT\FileStream\Writer;
 
+use DMT\FileStream\Format\Json\JsonPath;
 use DMT\FileStream\Format\Json\Serialization\JsonEncodeSerializer;
 use DMT\FileStream\Format\Json\Writer\JsonStreamWriter;
 use DMT\FileStream\Format\Json\Writer\JsonTemplateParser;
-use DMT\FileStream\Writer\ObjectWriterInterface;
-use DMT\FileStream\Writer\StreamObjectWriter;
 use InvalidArgumentException;
 use pcrov\JsonReader\Exception;
 use pcrov\JsonReader\JsonReader;

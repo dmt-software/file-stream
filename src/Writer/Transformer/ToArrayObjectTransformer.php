@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DMT\FileStream\Writer\Transformer;
 
 use ArrayObject;
+use DMT\FileStream\Writer\TransformerInterface;
 use SimpleXMLElement;
 use stdClass;
 

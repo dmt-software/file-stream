@@ -6,7 +6,7 @@ namespace DMT\FileStream\Format\Xml\Reader;
 
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Path\PathInterface;
-use DMT\FileStream\Path\PathSelectorInterface;
+use DMT\FileStream\Reader\PathSelectorInterface;
 use DMT\XmlParser\Node\Element;
 use DMT\XmlParser\Parser;
 

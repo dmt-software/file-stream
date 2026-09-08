@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Reader\Filter;
+namespace DMT\FileStream\Reader;
 
 use InvalidArgumentException;
 

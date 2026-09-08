@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream\Writer\Stream;
 
 use DMT\FileStream\Format\Json\Writer\JsonStreamWriter;
-use DMT\FileStream\Path\TemplateParserInterface;
+use DMT\FileStream\Writer\TemplateParserInterface;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

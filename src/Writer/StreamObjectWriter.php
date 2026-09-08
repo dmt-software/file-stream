@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Writer;
 
-use DMT\FileStream\Serialization\SerializerInterface;
-
 /**
  * Writes serialized objects to a stream.
  *

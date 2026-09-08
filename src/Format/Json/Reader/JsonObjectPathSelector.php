@@ -6,7 +6,7 @@ namespace DMT\FileStream\Format\Json\Reader;
 
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Path\PathInterface;
-use DMT\FileStream\Path\PathSelectorInterface;
+use DMT\FileStream\Reader\PathSelectorInterface;
 
 /**
  * Selects a JSON object by a dotted path.

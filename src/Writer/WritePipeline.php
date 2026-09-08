@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Writer;
 
-use DMT\FileStream\Writer\Transformer\TransformerInterface;
-
 /**
  * @template T of object
  * @template R of object
