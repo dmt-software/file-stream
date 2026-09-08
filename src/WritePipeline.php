@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Writer;
+namespace DMT\FileStream;
+
+use DMT\FileStream\Writer\ObjectWriterInterface;
+use DMT\FileStream\Writer\TransformerInterface;
 
 /**
  * @template T of object

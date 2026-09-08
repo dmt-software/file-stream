@@ -23,9 +23,9 @@ class XmlPathTest extends TestCase
 
     public static function pathProvider(): iterable
     {
-        yield 'default path' => ['/.', [new Element('root')]];
-        yield 'literal path' => ['/root/elem', [new Element('root'), new Element('elem')]];
-        yield 'wildcard path' => ['/./elem', [new Element('root'), new Element('elem')]];
+        yield 'default path' => ['/.', ['root']];
+        yield 'literal path' => ['/root/elem', ['root', 'elem']];
+        yield 'wildcard path' => ['/./elem', ['root', 'elem']];
     }
 
     public function testDoesNotMatchesPath(): void

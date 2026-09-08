@@ -53,11 +53,6 @@ final readonly class XmlPath implements PathInterface
             return false;
         }
 
-        $segments = array_map(
-            static fn(Element $element): string => $element->localName,
-            $segments
-        );
-
         return preg_match($this->pattern, implode('/', [null, ...$segments])) === 1;
     }
 

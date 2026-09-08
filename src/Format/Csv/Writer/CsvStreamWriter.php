@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Format\Csv\Writer;
 
+use DMT\FileStream\Exception\WriterException;
 use DMT\FileStream\Format\Csv\CsvControl;
+use DMT\FileStream\Stream\WritableStreamInterface;
 use DMT\FileStream\Writer\StreamWriterInterface;
 use InvalidArgumentException;
 use RuntimeException;
@@ -15,11 +17,11 @@ final readonly class CsvStreamWriter implements StreamWriterInterface
      * @param resource $stream
      */
     public function __construct(
-        private mixed $stream,
+        private WritableStreamInterface $stream,
         private CsvControl $control,
     ) {
-        if (!is_resource($stream)) {
-            throw new InvalidArgumentException('Stream must be a resource');
+        if (!$stream->isWritable()) {
+            throw new InvalidArgumentException('Stream is not writable');
         }
     }
 
@@ -28,12 +30,10 @@ final readonly class CsvStreamWriter implements StreamWriterInterface
      */
     public function write(string $data): void
     {
-        $data .= $this->control->lineEnding;
-
-        $written = fwrite($this->stream, $data);
-
-        if ($written === false || $written !== strlen($data)) {
-            throw new RuntimeException('Unable to write CSV record');
+        try {
+            $this->stream->write($data . $this->control->lineEnding);
+        } catch (WriterException) {
+            throw new WriterException('Unable to write CSV record');
         }
     }
 }

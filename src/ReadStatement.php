@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Reader;
+namespace DMT\FileStream;
 
 use CallbackFilterIterator;
 use DMT\FileStream\Reader\Filter\CallbackFilter;
+use DMT\FileStream\Reader\FilterInterface;
 use DMT\FileStream\Reader\Modifier\CallbackModifier;
+use DMT\FileStream\Reader\ModifierInterface;
+use DMT\FileStream\Reader\ObjectReaderInterface;
 use Iterator;
 use LimitIterator;
 

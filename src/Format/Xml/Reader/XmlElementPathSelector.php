@@ -35,8 +35,6 @@ final class XmlElementPathSelector implements PathSelectorInterface
 
     public function moveToNode(): Element
     {
-        $paths = $this->path->getSegments();
-
         while ($node = $this->parser->parse()) {
             if (!$node instanceof Element) {
                 continue;
@@ -45,10 +43,7 @@ final class XmlElementPathSelector implements PathSelectorInterface
             $depth = $node->depth() - 1;
 
             $this->stack = array_slice($this->stack, 0, $depth);
-
-            if ($depth < count($paths)) {
-                $this->stack[$depth] = $node;
-            }
+            $this->stack[$depth] = $node->localName;
 
             if ($this->path->matchesPath($this->stack)) {
                 return $node;

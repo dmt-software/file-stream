@@ -7,6 +7,7 @@ namespace DMT\FileStream\Format\Json\Writer;
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Exception\ParserException;
 use DMT\FileStream\Path\PathInterface;
+use DMT\FileStream\Stream\WritableStreamInterface;
 use DMT\FileStream\Writer\TemplateParserInterface;
 use pcrov\JsonReader\Exception;
 use pcrov\JsonReader\JsonReader;
@@ -18,9 +19,9 @@ final class JsonTemplateParser implements TemplateParserInterface
     private bool $pathFound = false;
 
     public function __construct(
+        private readonly WritableStreamInterface $stream,
         private readonly JsonReader $reader,
         private readonly PathInterface $path,
-        private readonly mixed $stream,
     ) {
     }
 
@@ -36,10 +37,7 @@ final class JsonTemplateParser implements TemplateParserInterface
                 $this->copyNode();
             }
         } catch (Exception $throwable) {
-            throw new ParserException(
-                'Unable to parse JSON template',
-                previous: $throwable
-            );
+            throw new ParserException('Unable to parse JSON template', previous: $throwable);
         }
 
         throw new NotFoundException('Template path not found');
@@ -56,10 +54,7 @@ final class JsonTemplateParser implements TemplateParserInterface
                 $this->copyNode();
             } while ($this->reader->read());
         } catch (Exception $throwable) {
-            throw new ParserException(
-                'Unable to parse JSON template',
-                previous: $throwable
-            );
+            throw new ParserException('Unable to parse JSON template', previous: $throwable);
         }
     }
 
@@ -70,14 +65,14 @@ final class JsonTemplateParser implements TemplateParserInterface
         if (in_array($type, [JsonReader::END_ARRAY, JsonReader::END_OBJECT], true)) {
             $this->stack = array_slice($this->stack, 0, $this->reader->depth());
         } elseif ($this->reader->depth() === $this->depth) {
-            $this->write(',');
+            $this->stream->write(',');
         }
 
         match ($this->reader->type()) {
             JsonReader::ARRAY => $this->copyArray(),
-            JsonReader::END_ARRAY => $this->write(']'),
+            JsonReader::END_ARRAY => $this->stream->write(']'),
             JsonReader::OBJECT => $this->copyObject(),
-            JsonReader::END_OBJECT => $this->write('}'),
+            JsonReader::END_OBJECT => $this->stream->write('}'),
             default => $this->copyValue(),
         };
 
@@ -93,7 +88,7 @@ final class JsonTemplateParser implements TemplateParserInterface
             $this->stack[$depth] = $name;
         }
 
-        $this->write($name === null ? '{' : sprintf('%s:{', $this->encode($name)));
+        $this->stream->write($name === null ? '{' : sprintf('%s:{', $this->encode($name)));
     }
 
     private function copyArray(): void
@@ -105,7 +100,7 @@ final class JsonTemplateParser implements TemplateParserInterface
             $this->stack[$depth] = $name;
         }
 
-        $this->write($name === null ? '[' : sprintf('%s:[', $this->encode($name)));
+        $this->stream->write($name === null ? '[' : sprintf('%s:[', $this->encode($name)));
     }
 
     private function copyValue(): void
@@ -117,20 +112,11 @@ final class JsonTemplateParser implements TemplateParserInterface
             $value = sprintf('%s:%s', $this->encode($name), $value);
         }
 
-        $this->write($value);
+        $this->stream->write($value);
     }
 
     private function encode(mixed $name): string
     {
-        return json_encode($name, JSON_THROW_ON_ERROR);
-    }
-
-    private function write(string $data): void
-    {
-        $written = fwrite($this->stream, $data);
-
-        if ($written === false || $written !== strlen($data)) {
-            throw new ParserException('Unable to write JSON template');
-        }
+        return json_encode($name) ?: '';
     }
 }

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Format\Json\Writer;
 
+use DMT\FileStream\Stream\WritableStreamInterface;
 use DMT\FileStream\Writer\FinalizeStreamInterface;
 use DMT\FileStream\Writer\PrepareStreamInterface;
 use DMT\FileStream\Writer\StreamWriterInterface;
 use DMT\FileStream\Writer\TemplateParserInterface;
 use InvalidArgumentException;
-use RuntimeException;
 
 final class JsonStreamWriter implements
     StreamWriterInterface,
@@ -22,11 +22,11 @@ final class JsonStreamWriter implements
      * @param resource $stream
      */
     public function __construct(
-        private readonly mixed $stream,
+        private readonly WritableStreamInterface $stream,
         private readonly ?TemplateParserInterface $template = null
     ) {
-        if (!is_resource($stream)) {
-            throw new InvalidArgumentException('Stream must be a resource');
+        if (!$stream->isWritable()) {
+            throw new InvalidArgumentException('Stream is not writable');
         }
     }
 
@@ -41,7 +41,7 @@ final class JsonStreamWriter implements
             return;
         }
 
-        $this->writeToStream('[');
+        $this->stream->write('[');
     }
 
     /**
@@ -50,10 +50,10 @@ final class JsonStreamWriter implements
     public function write(string $data): void
     {
         if (!$this->first) {
-            $this->writeToStream(',');
+            $this->stream->write(',');
         }
 
-        $this->writeToStream($data);
+        $this->stream->write($data);
 
         $this->first = false;
     }
@@ -69,15 +69,6 @@ final class JsonStreamWriter implements
             return;
         }
 
-        $this->writeToStream(']');
-    }
-
-    private function writeToStream(string $data): void
-    {
-        $written = fwrite($this->stream, $data);
-
-        if ($written === false || $written !== strlen($data)) {
-            throw new RuntimeException('Unable to write complete JSON data');
-        }
+        $this->stream->write(']');
     }
 }

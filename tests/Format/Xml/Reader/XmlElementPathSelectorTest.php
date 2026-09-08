@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DMT\Test\FileStream\Reader\Selector;
+namespace DMT\Test\FileStream\Format\Xml\Reader;
 
 use DMT\FileStream\Exception\NotFoundException;
 use DMT\FileStream\Format\Xml\Reader\XmlElementPathSelector;
@@ -70,7 +70,7 @@ final class XmlElementPathSelectorTest extends TestCase
 
     private function parser(): Parser
     {
-        $stream = fopen(dirname(__DIR__, 2) . '/fixtures/xml/elements.xml', 'r');
+        $stream = fopen(dirname(__DIR__, 3) . '/fixtures/xml/elements.xml', 'r');
 
         $this->assertIsResource($stream);
 

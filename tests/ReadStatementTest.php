@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\Test\FileStream;
 
 use DMT\FileStream\Reader\IterableObjectReader;
-use DMT\FileStream\Reader\ReadStatement;
+use DMT\FileStream\ReadStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;

@@ -19,9 +19,9 @@ final class XmlTemplateParser implements TemplateParserInterface
     private bool $pathFound = false;
 
     public function __construct(
+        private readonly XMLWriter $writer,
         private readonly XMLReader $reader,
         private readonly PathInterface $path,
-        private readonly XMLWriter $writer,
     ) {
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DMT\FileStream\Format\Csv\Reader;
 
 use DMT\FileStream\Format\Csv\CsvControl;
+use DMT\FileStream\Stream\ReadableStreamInterface;
 use InvalidArgumentException;
 
 /**
@@ -25,13 +26,10 @@ final readonly class CsvLineParser
      */
     private string $closed;
 
-    /**
-     * @param resource $stream
-     */
-    public function __construct(private mixed $stream, private CsvControl $control)
+    public function __construct(private ReadableStreamInterface $stream, private CsvControl $control)
     {
-        if (!is_resource($stream)) {
-            throw new InvalidArgumentException('Stream must be a resource');
+        if (!$stream->isReadable()) {
+            throw new InvalidArgumentException('Stream is not readable');
         }
 
         $escape = sprintf('(?<!%s)', preg_quote($control->escape ?: $control->enclosure, '~'));
@@ -46,8 +44,8 @@ final readonly class CsvLineParser
     {
         $line = '';
 
-        while (false !== ($char = fgetc($this->stream))) {
-            $line .= $char;
+        do {
+            $line .= $this->stream->read(1);
 
             if (!str_ends_with($line, $this->control->lineEnding)) {
                 continue;
@@ -56,7 +54,7 @@ final readonly class CsvLineParser
             if ($this->isFulfilledLine($line)) {
                 return substr($line, 0, -strlen($this->control->lineEnding));
             }
-        }
+        } while(!$this->stream->endOfFile());
 
         return $line !== '' ? $line : null;
     }
