@@ -5,21 +5,25 @@ declare(strict_types=1);
 namespace DMT\FileStream\Stream;
 
 use DMT\FileStream\Exception\ReaderException;
+use DMT\FileStream\Exception\WriterException;
 use InvalidArgumentException;
 
 /**
- * Provides a readable stream backed directly by a PHP stream resource.
+ * Provides a stream backed directly by a PHP stream resource.
  *
- * The stream reads fixed-size chunks from the underlying resource. The
- * current chunk can be inspected without advancing, and seekable resources
- * can be rewound to their initial position.
+ * The available capabilities depend on how the underlying resource was
+ * opened. Readable resources support cursor-based reads and rewinding;
+ * writable resources support sequential writes and flushing.
  *
  * @implements ReadableStreamInterface<resource>
+ * @implements WritableStreamInterface<resource>
  */
-final class ResourceReaderStream implements ReadableStreamInterface
+final class ResourceStream implements
+    ReadableStreamInterface,
+    WritableStreamInterface
 {
     /**
-     * Indicates whether the underlying stream is seekable.
+     * Indicates whether the stream is seekable.
      */
     private readonly bool $seekable;
 
@@ -34,11 +38,13 @@ final class ResourceReaderStream implements ReadableStreamInterface
     private bool $closed = false;
 
     /**
-     * The current chunk of data.
+     * The current read chunk of data.
      */
     private ?string $current = null;
 
     /**
+     * Construct a new ResourceStream instance.
+     *
      * @param resource $stream A readable stream resource.
      * @param positive-int|null $chunkSize The number of bytes to read at a time.
      *
@@ -48,7 +54,7 @@ final class ResourceReaderStream implements ReadableStreamInterface
         private readonly mixed $stream,
         private readonly ?int $chunkSize = null,
     ) {
-        StreamValidator::readable($stream);
+        StreamValidator::resource($stream);
 
         if (!is_null($chunkSize) && $chunkSize < 1) {
             throw new InvalidArgumentException('Chunk size must be greater than zero');
@@ -67,7 +73,17 @@ final class ResourceReaderStream implements ReadableStreamInterface
 
     public function isReadable(): bool
     {
-        return !$this->closed && is_resource($this->stream);
+        if ($this->closed || !is_resource($this->stream)) {
+            return false;
+        }
+
+        try {
+            StreamValidator::readable($this->stream);
+        } catch (InvalidArgumentException) {
+            return false;
+        }
+
+        return true;
     }
 
     public function next(): bool
@@ -76,13 +92,9 @@ final class ResourceReaderStream implements ReadableStreamInterface
             throw ReaderException::unreadable();
         }
 
-        $data = fread($this->stream, $this->chunkSize);
+        $data = fgets($this->stream, $this->chunkSize);
 
         if ($data === false) {
-            return false;
-        }
-
-        if ($data === '' && !$this->started) {
             return false;
         }
 
@@ -94,11 +106,50 @@ final class ResourceReaderStream implements ReadableStreamInterface
 
     public function current(): string
     {
-        if (!$this->started && false === $this->next()) {
+        if (!$this->started && !$this->next()) {
             throw ReaderException::empty();
         }
 
         return $this->current ?? '';
+    }
+
+    public function isWritable(): bool
+    {
+        if ($this->closed || !is_resource($this->stream)) {
+            return false;
+        }
+
+        try {
+            StreamValidator::writable($this->stream);
+        } catch (InvalidArgumentException) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function write(string $data): void
+    {
+        if (!$this->isWritable()) {
+            throw WriterException::unwritable();
+        }
+
+        $size = fwrite($this->stream, $data);
+
+        if ($size === false || $size !== strlen($data)) {
+            throw WriterException::failure();
+        }
+    }
+
+    public function flush(): void
+    {
+        if (!$this->isWritable()) {
+            throw WriterException::unwritable();
+        }
+
+        if (!fflush($this->stream)) {
+            throw WriterException::failure();
+        }
     }
 
     public function isRewindable(): bool
@@ -122,11 +173,7 @@ final class ResourceReaderStream implements ReadableStreamInterface
 
     public function eof(): bool
     {
-        if ($this->closed) {
-            return true;
-        }
-
-        return !is_resource($this->stream) || feof($this->stream);
+        return $this->closed || !is_resource($this->stream) || feof($this->stream);
     }
 
     public function close(): void
@@ -135,10 +182,12 @@ final class ResourceReaderStream implements ReadableStreamInterface
             return;
         }
 
-        $this->closed = true;
+        if (!is_resource($this->stream)) {
+            $this->closed = true;
 
-        if (is_resource($this->stream)) {
-            fclose($this->stream);
+            return;
         }
+
+        $this->closed = fclose($this->stream);
     }
 }

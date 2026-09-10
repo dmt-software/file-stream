@@ -70,7 +70,7 @@ final class StreamValidator
      *
      * @throws InvalidArgumentException
      */
-    private static function resource(mixed $stream): void
+    public static function resource(mixed $stream): void
     {
         if (!is_resource($stream) || get_resource_type($stream) !== 'stream') {
             throw new InvalidArgumentException('Expected a stream resource');
