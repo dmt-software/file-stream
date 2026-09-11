@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Format\Csv\Serialization;
+namespace DMT\FileStream\Serialization;
 
 use ArrayObject;
-use DMT\FileStream\Format\Csv\CsvControl;
-use DMT\FileStream\Format\Csv\Reader\Property\NamingStrategyInterface;
-use DMT\FileStream\Reader\DeserializerInterface;
+use DMT\FileStream\Config\CsvControl;
+use DMT\FileStream\Serialization\Mapping\PropertyNamingMapperInterface;
 
 /**
  * Deserializes a CSV record into an ArrayObject.
@@ -17,11 +16,11 @@ use DMT\FileStream\Reader\DeserializerInterface;
  *
  * @implements DeserializerInterface<ArrayObject>
  */
-final readonly class StringGetCsvDeserializer implements DeserializerInterface
+final readonly class CsvRecordDeserializer implements DeserializerInterface
 {
     public function __construct(
         private CsvControl $control,
-        private NamingStrategyInterface $namingStrategy,
+        private PropertyNamingMapperInterface $propertyNamingMapper,
     ) {
     }
 
@@ -38,7 +37,7 @@ final readonly class StringGetCsvDeserializer implements DeserializerInterface
         );
 
         return new ArrayObject(
-            $this->namingStrategy->apply($records),
+            $this->propertyNamingMapper->map($records),
             ArrayObject::ARRAY_AS_PROPS
         );
     }

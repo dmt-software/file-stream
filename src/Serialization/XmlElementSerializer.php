@@ -2,21 +2,17 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Format\Xml\Serialization;
+namespace DMT\FileStream\Serialization;
 
 use DMT\FileStream\Exception\SerializationException;
-use DMT\FileStream\Writer\SerializerInterface;
 use InvalidArgumentException;
 use SimpleXMLElement;
 
 /**
  * @implements SerializerInterface<SimpleXMLElement>
  */
-class SimpleXmlSerializer implements SerializerInterface
+class XmlElementSerializer implements SerializerInterface
 {
-    /**
-     * @inheritDoc
-     */
     public function serialize(object $object): string
     {
         if (!$object instanceof SimpleXMLElement) {

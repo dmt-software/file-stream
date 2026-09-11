@@ -52,6 +52,7 @@ final class JsonObjectSelector implements SelectorInterface
      *
      * @return bool True when a matching object was selected.
      * @throws ReaderException When the stream could not be read.
+     * @throws InvalidArgumentException When the supplied stream is not compatible.
      */
     public function selectNext(ReadableStreamInterface $stream): bool
     {

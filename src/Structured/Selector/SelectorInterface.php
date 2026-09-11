@@ -6,6 +6,7 @@ namespace DMT\FileStream\Structured\Selector;
 
 use DMT\FileStream\Exception\ReaderException;
 use DMT\FileStream\Stream\ReadableStreamInterface;
+use InvalidArgumentException;
 
 /**
  * Selects logical items from a readable stream.
@@ -32,6 +33,7 @@ interface SelectorInterface
      *
      * @return bool True when an item was selected.
      * @throws ReaderException When the stream could not be read.
+     * @throws InvalidArgumentException When the supplied stream is not compatible.
      */
     public function selectNext(ReadableStreamInterface $stream): bool;
 }

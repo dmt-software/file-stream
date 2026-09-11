@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Reader;
+namespace DMT\FileStream\Serialization;
 
 use DMT\FileStream\Exception\SerializationException;
 
 /**
- * Deserialize data into an object.
+ * Deserializes string data into an object.
  *
  * @template T of object
  */
 interface DeserializerInterface
 {
     /**
-     * Deserialize a part of the stream into an object.
+     * Convert serialized string data into an object.
      *
      * @return T
      * @throws SerializationException When the data cannot be deserialized.
