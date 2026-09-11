@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Structured;
 
+use DMT\FileStream\SerializedIterableInterface;
 use DMT\FileStream\Stream\ReadableStreamInterface;
 use DMT\FileStream\Structured\Selector\SelectorInterface;
 use Iterator;
-use IteratorAggregate;
 
 /**
  * Iterates over selected structures from a readable stream.
@@ -16,9 +16,9 @@ use IteratorAggregate;
  * Every selected structure is then yielded as a string for further processing,
  * such as deserialization by an object reader.
  *
- * @implements IteratorAggregate<int, string>
+ * @implements SerializedIterableInterface<int, string>
  */
-final readonly class StructuredIterable implements IteratorAggregate
+final readonly class StructuredIterable implements SerializedIterableInterface
 {
     public function __construct(
         private ReadableStreamInterface $stream,

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace DMT\FileStream\Record;
 
 use DMT\FileStream\Record\Boundary\RecordBoundaryInterface;
+use DMT\FileStream\SerializedIterableInterface;
 use DMT\FileStream\Stream\ReadableStreamInterface;
 use Iterator;
-use IteratorAggregate;
 
 /**
  * Iterates over complete logical records from a readable stream.
@@ -17,9 +17,9 @@ use IteratorAggregate;
  * is then yielded as a string for further processing, such as deserialization
  * by an object reader.
  *
- * @implements IteratorAggregate<int, string>
+ * @implements SerializedIterableInterface<int, string>
  */
-final readonly class RecordIterable implements IteratorAggregate
+final readonly class RecordIterable implements SerializedIterableInterface
 {
     public function __construct(
         private ReadableStreamInterface $stream,

@@ -5,25 +5,30 @@ declare(strict_types=1);
 namespace DMT\FileStream\Structured\Template;
 
 use DMT\FileStream\Stream\WritableStreamInterface;
+use LogicException;
 
 /**
- * Writes structured template content around an insertion point.
+ * Writes template content around serialized values.
  *
- * Implementations manage their own template source and insertion point. The
- * template prefix and suffix are written to a supplied output stream so
- * serialized values can be written between them.
+ * Implementations may manage their own template source and insertion point.
+ * Simple handlers can write directly to any compatible output stream, while
+ * more complex handlers may require a specific writable stream implementation.
  */
 interface TemplateHandlerInterface
 {
     /**
      * Write the template content preceding the insertion point.
+     *
+     * @throws LogicException When the supplied output stream is incompatible
+     *                        with the handler.
      */
     public function writePrefix(WritableStreamInterface $output): void;
 
     /**
      * Write the remaining template content following the insertion point.
      *
-     * This method must be called after writePrefix() on the same handler instance.
+     * @throws LogicException When the supplied output stream is incompatible
+     *                        or writePrefix() has not been called first.
      */
     public function writeSuffix(WritableStreamInterface $output): void;
 }

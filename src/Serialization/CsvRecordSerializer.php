@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Format\Csv\Serialization;
+namespace DMT\FileStream\Serialization;
 
 use ArrayObject;
-use DMT\FileStream\Format\Csv\CsvControl;
-use DMT\FileStream\Format\Csv\Writer\Column\ColumnStrategyInterface;
-use DMT\FileStream\Writer\SerializerInterface;
+use DMT\FileStream\Config\CsvControl;
+use DMT\FileStream\Serialization\Mapping\ColumnMapperInterface;
 use InvalidArgumentException;
 
 /**
@@ -15,11 +14,11 @@ use InvalidArgumentException;
  *
  * @implements SerializerInterface<ArrayObject<string, mixed>>
  */
-final readonly class StringPutCsvSerializer implements SerializerInterface
+final readonly class CsvRecordSerializer implements SerializerInterface
 {
     public function __construct(
         private CsvControl $control,
-        private ColumnStrategyInterface $columnStrategy,
+        private ColumnMapperInterface $columnMapper,
     ) {
     }
 
@@ -32,9 +31,7 @@ final readonly class StringPutCsvSerializer implements SerializerInterface
             throw new InvalidArgumentException('Expected ArrayObject');
         }
 
-        $columns = $this->columnStrategy->apply(
-            $object->getArrayCopy()
-        );
+        $columns = $this->columnMapper->map($object->getArrayCopy());
 
         return implode(
             $this->control->delimiter,

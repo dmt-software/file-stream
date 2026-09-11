@@ -5,22 +5,18 @@ declare(strict_types=1);
 namespace DMT\FileStream\Stream;
 
 use DMT\FileStream\Exception\ReaderException;
-use DMT\FileStream\Exception\WriterException;
 use InvalidArgumentException;
 
 /**
- * Provides a stream backed directly by a PHP stream resource.
+ * Provides a readable stream backed directly by a PHP stream resource.
  *
- * The available capabilities depend on how the underlying resource was
- * opened. Readable resources support cursor-based reads and rewinding;
- * writable resources support sequential writes and flushing.
+ * The stream exposes the underlying resource while providing cursor-based
+ * character reading, current-value access and optional rewinding when the
+ * resource is seekable.
  *
  * @implements ReadableStreamInterface<resource>
- * @implements WritableStreamInterface<resource>
  */
-final class ResourceStream implements
-    ReadableStreamInterface,
-    WritableStreamInterface
+final class ResourceReaderStream implements ReadableStreamInterface
 {
     /**
      * Indicates whether the stream is seekable.
@@ -43,15 +39,15 @@ final class ResourceStream implements
     private ?string $current = null;
 
     /**
-     * Construct a new ResourceStream instance.
+     * Construct a readable resource stream.
      *
-     * @param resource $stream A stream resource.
+     * @param resource $stream
      *
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException When the supplied resource is not readable.
      */
     public function __construct(private readonly mixed $stream)
     {
-        StreamValidator::resource($stream);
+        StreamValidator::readable($stream);
 
         $this->seekable = stream_get_meta_data($stream)['seekable'] ?? false;
     }
@@ -66,17 +62,7 @@ final class ResourceStream implements
 
     public function isReadable(): bool
     {
-        if ($this->closed || !is_resource($this->stream)) {
-            return false;
-        }
-
-        try {
-            StreamValidator::readable($this->stream);
-        } catch (InvalidArgumentException) {
-            return false;
-        }
-
-        return true;
+        return !$this->closed && is_resource($this->stream);
     }
 
     public function next(): bool
@@ -104,45 +90,6 @@ final class ResourceStream implements
         }
 
         return $this->current ?? '';
-    }
-
-    public function isWritable(): bool
-    {
-        if ($this->closed || !is_resource($this->stream)) {
-            return false;
-        }
-
-        try {
-            StreamValidator::writable($this->stream);
-        } catch (InvalidArgumentException) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function write(string $data): void
-    {
-        if (!$this->isWritable()) {
-            throw WriterException::unwritable();
-        }
-
-        $size = fwrite($this->stream, $data);
-
-        if ($size === false || $size !== strlen($data)) {
-            throw WriterException::failure();
-        }
-    }
-
-    public function flush(): void
-    {
-        if (!$this->isWritable()) {
-            throw WriterException::unwritable();
-        }
-
-        if (!fflush($this->stream)) {
-            throw WriterException::failure();
-        }
     }
 
     public function isRewindable(): bool

@@ -6,7 +6,7 @@ namespace DMT\FileStream\Structured\Selector;
 
 use DMT\FileStream\Exception\ReaderException;
 use DMT\FileStream\Stream\ReadableStreamInterface;
-use DMT\FileStream\Structured\Selector\Path\PathInterface;
+use DMT\FileStream\Structured\Path\PathInterface;
 use InvalidArgumentException;
 use pcrov\JsonReader\JsonReader;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Structured\Selector\Path;
+namespace DMT\FileStream\Structured\Path;
 
 use InvalidArgumentException;
 

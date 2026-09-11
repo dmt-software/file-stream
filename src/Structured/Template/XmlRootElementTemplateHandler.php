@@ -9,10 +9,12 @@ use DMT\FileStream\Stream\WritableStreamInterface;
 /**
  * Writes XML template content around a configured insertion point.
  *
- * The configured path identifies the root element that will contain the
- * serialized XML elements written between the template prefix and suffix.
+ * The configured path identifies the element that will contain the serialized
+ * values written between the template prefix and suffix. The values themselves
+ * are supplied by the caller and are not interpreted or validated by this
+ * handler.
  */
-class XmlRootElementTemplateHandler implements TemplateHandlerInterface
+final class XmlRootElementTemplateHandler implements TemplateHandlerInterface
 {
     public function __construct(private string $rootElement = 'Results')
     {
