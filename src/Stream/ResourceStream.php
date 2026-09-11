@@ -45,20 +45,13 @@ final class ResourceStream implements
     /**
      * Construct a new ResourceStream instance.
      *
-     * @param resource $stream A readable stream resource.
-     * @param positive-int|null $chunkSize The number of bytes to read at a time.
+     * @param resource $stream A stream resource.
      *
      * @throws InvalidArgumentException
      */
-    public function __construct(
-        private readonly mixed $stream,
-        private readonly ?int $chunkSize = null,
-    ) {
+    public function __construct(private readonly mixed $stream)
+    {
         StreamValidator::resource($stream);
-
-        if (!is_null($chunkSize) && $chunkSize < 1) {
-            throw new InvalidArgumentException('Chunk size must be greater than zero');
-        }
 
         $this->seekable = stream_get_meta_data($stream)['seekable'] ?? false;
     }
@@ -92,7 +85,7 @@ final class ResourceStream implements
             throw ReaderException::unreadable();
         }
 
-        $data = fgets($this->stream, $this->chunkSize);
+        $data = fgetc($this->stream);
 
         if ($data === false) {
             return false;
