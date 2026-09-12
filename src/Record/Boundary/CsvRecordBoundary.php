@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Record\Boundary;
 
-use DMT\FileStream\Config\CsvControl;
+use DMT\FileStream\Config\CsvControlInterface;
 
 /**
  * Detects logical CSV record boundaries.
@@ -37,7 +37,7 @@ final readonly class CsvRecordBoundary implements RecordBoundaryInterface
     /**
      * Construct the record boundary detector.
      */
-    public function __construct(CsvControl $control)
+    public function __construct(CsvControlInterface $control)
     {
         $escape = sprintf('(?<!%s)', preg_quote($control->escape ?: $control->enclosure, '~'));
         $delimiter = preg_quote($control->delimiter, '~');

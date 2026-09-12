@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\FileStream\Serialization;
 
 use ArrayObject;
-use DMT\FileStream\Config\CsvControl;
+use DMT\FileStream\Config\CsvControlInterface;
 use DMT\FileStream\Record\Mapping\PropertyMapperInterface;
 
 /**
@@ -19,7 +19,7 @@ use DMT\FileStream\Record\Mapping\PropertyMapperInterface;
 final readonly class CsvRecordDeserializer implements DeserializerInterface
 {
     public function __construct(
-        private CsvControl              $control,
+        private CsvControlInterface     $control,
         private PropertyMapperInterface $propertyNamingMapper,
     ) {
     }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\FileStream\Serialization;
 
 use ArrayObject;
-use DMT\FileStream\Config\CsvControl;
+use DMT\FileStream\Config\CsvControlInterface;
 use DMT\FileStream\Record\Mapping\ColumnMapperInterface;
 use InvalidArgumentException;
 
@@ -17,7 +17,7 @@ use InvalidArgumentException;
 final readonly class CsvRecordSerializer implements SerializerInterface
 {
     public function __construct(
-        private CsvControl $control,
+        private CsvControlInterface   $control,
         private ColumnMapperInterface $columnMapper,
     ) {
     }
