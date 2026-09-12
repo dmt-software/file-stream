@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Serialization\Mapping\Csv;
+namespace DMT\FileStream\Record\Mapping\Csv;
 
-use DMT\FileStream\Serialization\Mapping\ColumnMapperInterface;
+use DMT\FileStream\Record\Mapping\ColumnMapperInterface;
 
 /**
  * Maps properties to a fixed-width list of scalar column values.

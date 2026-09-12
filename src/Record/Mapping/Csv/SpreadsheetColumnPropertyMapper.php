@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Serialization\Mapping\Csv;
+namespace DMT\FileStream\Record\Mapping\Csv;
 
-use DMT\FileStream\Serialization\Mapping\PropertyMapperInterface;
+use DMT\FileStream\Record\Mapping\PropertyMapperInterface;
 
 /**
  * Maps positional columns to spreadsheet-style property names.

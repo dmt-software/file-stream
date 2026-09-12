@@ -6,7 +6,7 @@ namespace DMT\FileStream\Serialization;
 
 use ArrayObject;
 use DMT\FileStream\Config\CsvControl;
-use DMT\FileStream\Serialization\Mapping\PropertyMapperInterface;
+use DMT\FileStream\Record\Mapping\PropertyMapperInterface;
 
 /**
  * Deserializes a CSV record into an ArrayObject.

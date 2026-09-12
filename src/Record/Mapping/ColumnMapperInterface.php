@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream\Serialization\Mapping;
+namespace DMT\FileStream\Record\Mapping;
 
 interface ColumnMapperInterface
 {
