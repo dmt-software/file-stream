@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Structured;
 
-use DMT\FileStream\SerializedIterableInterface;
+use DMT\FileStream\Reader\SerializedIterableInterface;
 use DMT\FileStream\Stream\ReadableStreamInterface;
 use DMT\FileStream\Structured\Selector\SelectorInterface;
 use Iterator;

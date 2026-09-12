@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DMT\FileStream\Record;
 
 use DMT\FileStream\Stream\WritableStreamInterface;
-use DMT\FileStream\SerializedWriterInterface;
+use DMT\FileStream\Writer\SerializedWriterInterface;
 
 /**
  * Writes serialized records to a writable stream.

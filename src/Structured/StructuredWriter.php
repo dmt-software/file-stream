@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DMT\FileStream\Structured;
 
 use DMT\FileStream\Stream\WritableStreamInterface;
-use DMT\FileStream\SerializedWriterInterface;
 use DMT\FileStream\Structured\Template\TemplateHandlerInterface;
+use DMT\FileStream\Writer\SerializedWriterInterface;
 
 /**
  * Writes serialized values into a structured template.

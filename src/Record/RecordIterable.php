@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Record;
 
+use DMT\FileStream\Reader\SerializedIterableInterface;
 use DMT\FileStream\Record\Boundary\RecordBoundaryInterface;
-use DMT\FileStream\SerializedIterableInterface;
 use DMT\FileStream\Stream\ReadableStreamInterface;
 use Iterator;
 

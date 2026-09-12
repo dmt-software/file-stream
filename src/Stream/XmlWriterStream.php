@@ -5,54 +5,46 @@ declare(strict_types=1);
 namespace DMT\FileStream\Stream;
 
 use DMT\FileStream\Exception\WriterException;
+use DMT\FileStream\Stream\Buffer\OutputBuffer;
 use InvalidArgumentException;
 use XMLWriter;
 
 /**
- * Provides a writable stream backed by XMLWriter.
+ * Provides a buffered writable stream backed by XMLWriter.
  *
- * The stream is constructed from a writable PHP stream resource and exposes
- * a live XMLWriter instance for XML-specific write operations. XML is written
- * through an internal XMLWriter buffer and flushed to the underlying resource
- * by this wrapper.
+ * XML is produced through an in-memory XMLWriter and periodically transferred
+ * to an output buffer. The output buffer subsequently flushes its contents to
+ * the underlying output resource.
  *
  * @implements WritableStreamInterface<XMLWriter>
  */
 final class XmlWriterStream implements WritableStreamInterface
 {
-    /**
-     * The underlying stream resource.
-     *
-     * @var resource
-     */
-    private readonly mixed $resource;
-
-    /**
-     * The internal used XMLWriter instance.
-     */
     private readonly XMLWriter $stream;
 
-    /**
-     * Indicates whether the stream has been closed.
-     */
+    private readonly OutputBuffer $buffer;
+
     private bool $closed = false;
 
     /**
-     * Create a new XmlWriterStream instance.
-     *
-     * @param resource $stream A writable stream resource.
+     * @param resource $resource
      *
      * @throws InvalidArgumentException
      */
-    public function __construct(mixed $stream)
-    {
-        StreamValidator::writable($stream);
+    public function __construct(
+        private readonly mixed $resource,
+        int $bufferSize = 65536,
+    ) {
+        StreamValidator::writable($resource);
 
-        $this->resource = $stream;
         $this->stream = XMLWriter::toMemory();
+        $this->buffer = new OutputBuffer(
+            destination: $resource,
+            limit: $bufferSize,
+        );
     }
 
-    public function getStream(): mixed
+    public function getStream(): XMLWriter
     {
         return $this->stream;
     }
@@ -69,35 +61,47 @@ final class XmlWriterStream implements WritableStreamInterface
         }
 
         if (!$this->stream->writeRaw($data)) {
-            throw WriterException::unwritable();
+            throw WriterException::failure();
         }
+
+        $this->flushBuffer();
     }
 
     public function flush(): void
     {
-        if (!is_resource($this->resource)) {
+        if (!$this->isWritable()) {
             throw WriterException::unwritable();
         }
 
-        $data = $this->stream->flush();
-        $size = fwrite($this->resource, $data);
-
-        if ($size === false || $size !== strlen($data)) {
-            throw WriterException::unwritable();
-        }
+        $this->flushBuffer();
+        $this->buffer->flush();
     }
 
     public function close(): void
     {
-        if (!is_resource($this->resource)) {
-            $this->closed = true;
-        }
-
         if ($this->closed) {
             return;
         }
 
-        $this->flush();
+        if (!is_resource($this->resource)) {
+            $this->closed = true;
+
+            return;
+        }
+
+        $this->flushBuffer();
+        $this->buffer->close();
         $this->closed = fclose($this->resource);
+    }
+
+    private function flushBuffer(): void
+    {
+        $data = $this->stream->flush();
+
+        if ($data === '') {
+            return;
+        }
+
+        $this->buffer->write($data);
     }
 }

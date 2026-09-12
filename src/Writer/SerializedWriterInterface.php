@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DMT\FileStream;
+namespace DMT\FileStream\Writer;
 
 interface SerializedWriterInterface
 {
