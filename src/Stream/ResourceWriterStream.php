@@ -34,10 +34,7 @@ final class ResourceWriterStream implements WritableStreamInterface
     ) {
         StreamValidator::writable($stream);
 
-        $this->buffer = new OutputBuffer(
-            destination: $stream,
-            limit: $bufferSize,
-        );
+        $this->buffer = new OutputBuffer($stream, $bufferSize);
     }
 
     /**

@@ -38,10 +38,7 @@ final class XmlWriterStream implements WritableStreamInterface
         StreamValidator::writable($resource);
 
         $this->stream = XMLWriter::toMemory();
-        $this->buffer = new OutputBuffer(
-            destination: $resource,
-            limit: $bufferSize,
-        );
+        $this->buffer = new OutputBuffer($resource, $bufferSize);
     }
 
     public function getStream(): XMLWriter

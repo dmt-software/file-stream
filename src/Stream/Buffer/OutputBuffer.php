@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace DMT\FileStream\Stream\Buffer;
 
 use DMT\FileStream\Exception\WriterException;
+use InvalidArgumentException;
 
 /**
  * Buffers output data until a configured byte threshold is reached.
  *
  * Buffered data is flushed to the supplied destination stream when the
  * threshold is exceeded or when flush() is called explicitly.
+ *
+ * @internal
  */
 final class OutputBuffer
 {
@@ -26,7 +29,7 @@ final class OutputBuffer
         private readonly int $limit = 65536,
     ) {
         if ($limit < 1) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Buffer limit must be greater than zero'
             );
         }
@@ -38,6 +41,11 @@ final class OutputBuffer
         }
 
         $this->stream = $stream;
+    }
+
+    public function getStream(): mixed
+    {
+        return $this->stream;
     }
 
     public function write(string $data): void
