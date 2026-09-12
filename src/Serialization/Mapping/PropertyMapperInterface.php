@@ -10,7 +10,7 @@ namespace DMT\FileStream\Serialization\Mapping;
  * Implementations determine how positional values are associated with
  * property names and return the resulting associative representation.
  */
-interface PropertyNamingMapperInterface
+interface PropertyMapperInterface
 {
     /**
      * Map the given record values to named properties.

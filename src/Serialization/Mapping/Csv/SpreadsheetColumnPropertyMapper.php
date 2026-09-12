@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Serialization\Mapping\Csv;
 
-use DMT\FileStream\Serialization\Mapping\PropertyNamingMapperInterface;
+use DMT\FileStream\Serialization\Mapping\PropertyMapperInterface;
 
 /**
  * Maps positional columns to spreadsheet-style property names.
@@ -16,7 +16,7 @@ use DMT\FileStream\Serialization\Mapping\PropertyNamingMapperInterface;
  * The generated names are determined from the first row and then reused for
  * subsequent rows.
  */
-final class SpreadsheetColumnNames implements PropertyNamingMapperInterface
+final class SpreadsheetColumnPropertyMapper implements PropertyMapperInterface
 {
     /**
      * Construct the strategy based on the first row.

@@ -4,6 +4,7 @@ namespace DMT\FileStream\Structured\Template;
 
 use DMT\FileStream\Stream\WritableStreamInterface;
 use DMT\FileStream\Structured\Template\TemplateHandlerInterface;
+use LogicException;
 
 /**
  * Writes a JSON array container around serialized values.
@@ -14,13 +15,24 @@ use DMT\FileStream\Structured\Template\TemplateHandlerInterface;
  */
 final class JsonArrayContainerHandler implements TemplateHandlerInterface
 {
+    /**
+     * Indicates if the prefix has already been written.
+     */
+    private bool $prefixWritten = false;
+
     public function writePrefix(WritableStreamInterface $output): void
     {
+        $this->prefixWritten = true;
+
         $output->write('[');
     }
 
     public function writeSuffix(WritableStreamInterface $output): void
     {
+        if (!$this->prefixWritten) {
+            throw new LogicException('JSON template prefix was not written');
+        }
+
         $output->write(']');
     }
 }

@@ -6,7 +6,7 @@ namespace DMT\FileStream\Serialization;
 
 use ArrayObject;
 use DMT\FileStream\Config\CsvControl;
-use DMT\FileStream\Serialization\Mapping\PropertyNamingMapperInterface;
+use DMT\FileStream\Serialization\Mapping\PropertyMapperInterface;
 
 /**
  * Deserializes a CSV record into an ArrayObject.
@@ -19,8 +19,8 @@ use DMT\FileStream\Serialization\Mapping\PropertyNamingMapperInterface;
 final readonly class CsvRecordDeserializer implements DeserializerInterface
 {
     public function __construct(
-        private CsvControl $control,
-        private PropertyNamingMapperInterface $propertyNamingMapper,
+        private CsvControl              $control,
+        private PropertyMapperInterface $propertyNamingMapper,
     ) {
     }
 

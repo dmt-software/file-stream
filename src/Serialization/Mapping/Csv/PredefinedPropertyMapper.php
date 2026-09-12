@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Serialization\Mapping\Csv;
 
-use DMT\FileStream\Serialization\Mapping\PropertyNamingMapperInterface;
+use DMT\FileStream\Serialization\Mapping\PropertyMapperInterface;
 
 /**
  * Maps record values to a predefined set of property names.
@@ -14,7 +14,7 @@ use DMT\FileStream\Serialization\Mapping\PropertyNamingMapperInterface;
  * ignored. When a property name occurs more than once, its values are grouped
  * into an array in their original order.
  */
-final readonly class PredefinedPropertyMapper implements PropertyNamingMapperInterface
+final readonly class PredefinedPropertyMapper implements PropertyMapperInterface
 {
     /**
      * The number of property names.
