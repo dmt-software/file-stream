@@ -10,7 +10,7 @@ use DMT\FileStream\Writer\SerializedWriterInterface;
 
 /**
  * Serializes objects and writes the resulting string values.
-
+ *
  * @template T of object
  */
 final readonly class ObjectWriter implements ObjectWriterInterface

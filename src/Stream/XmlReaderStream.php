@@ -87,7 +87,7 @@ final class XmlReaderStream implements ReadableStreamInterface
 
     public function isRewindable(): bool
     {
-        return isset($this->uri) && str_starts_with($this->uri, 'php://');
+        return isset($this->uri) && !str_starts_with($this->uri, 'php://');
     }
 
     public function rewind(): void
