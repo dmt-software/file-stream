@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Serialization;
 
-use DMT\FileStream\Config\JsonConfig;
+use DMT\FileStream\Config\JsonConfigInterface;
+use DMT\FileStream\Config\JsonReaderConfig;
 use DMT\FileStream\Exception\SerializationException;
-use DMT\FileStream\Reader\DeserializerInterface;
 use stdClass;
 
 /**
@@ -16,8 +16,9 @@ use stdClass;
  */
 final readonly class JsonObjectDeserializer implements DeserializerInterface
 {
-    public function __construct(private JsonConfig $config = new JsonConfig())
-    {
+    public function __construct(
+        private JsonConfigInterface $config = new JsonReaderConfig()
+    ) {
     }
 
     /**

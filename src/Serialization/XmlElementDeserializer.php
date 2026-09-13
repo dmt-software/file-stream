@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DMT\FileStream\Serialization;
 
-use DMT\FileStream\Config\XmlConfig;
+use DMT\FileStream\Config\XmlConfigInterface;
+use DMT\FileStream\Config\XmlReaderConfig;
 use DMT\FileStream\Exception\SerializationException;
-use DMT\FileStream\Reader\DeserializerInterface;
 use SimpleXMLElement;
 use Throwable;
 
@@ -17,8 +17,9 @@ use Throwable;
  */
 final readonly class XmlElementDeserializer implements DeserializerInterface
 {
-    public function __construct(private XmlConfig $config = new XmlConfig())
-    {
+    public function __construct(
+        private XmlConfigInterface $config = new XmlReaderConfig()
+    ) {
     }
 
     public function deserialize(string $data): object

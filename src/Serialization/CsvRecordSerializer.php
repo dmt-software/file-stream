@@ -17,7 +17,7 @@ use InvalidArgumentException;
 final readonly class CsvRecordSerializer implements SerializerInterface
 {
     public function __construct(
-        private CsvControlInterface   $control,
+        private CsvControlInterface $control,
         private ColumnMapperInterface $columnMapper,
     ) {
     }
