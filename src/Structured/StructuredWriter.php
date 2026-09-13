@@ -33,7 +33,6 @@ final readonly class StructuredWriter implements SerializedWriterInterface
 
         foreach ($values as $value) {
             $this->output->write($value);
-            // @todo introduce bounded buffering to reduce write calls
         }
 
         $this->template->writeSuffix($this->output);

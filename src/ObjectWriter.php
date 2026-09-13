@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace DMT\FileStream;
 
 use DMT\FileStream\Serialization\SerializerInterface;
+use DMT\FileStream\Writer\ObjectWriterInterface;
 use DMT\FileStream\Writer\SerializedWriterInterface;
 
 /**
  * Serializes objects and writes the resulting string values.
- *
+
  * @template T of object
  */
-final readonly class ObjectWriter
+final readonly class ObjectWriter implements ObjectWriterInterface
 {
     /**
      * @param SerializerInterface<T> $serializer
