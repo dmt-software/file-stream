@@ -11,15 +11,16 @@ use DMT\FileStream\Record\Mapping\PropertyMapperInterface;
 /**
  * Deserializes a CSV record into an ArrayObject.
  *
- * CSV parsing is configured through CsvControl. Property names are assigned
- * to the parsed values using the configured naming strategy.
+ * CSV parsing is configured through the supplied CSV control settings. Parsed
+ * column values are mapped to named properties using the configured property
+ * mapper.
  *
  * @implements DeserializerInterface<ArrayObject>
  */
 final readonly class CsvRecordDeserializer implements DeserializerInterface
 {
     public function __construct(
-        private CsvControlInterface     $control,
+        private CsvControlInterface $control,
         private PropertyMapperInterface $propertyNamingMapper,
     ) {
     }

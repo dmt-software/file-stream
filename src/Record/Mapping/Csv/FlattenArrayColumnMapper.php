@@ -7,11 +7,11 @@ namespace DMT\FileStream\Record\Mapping\Csv;
 use DMT\FileStream\Record\Mapping\ColumnMapperInterface;
 
 /**
- * Maps properties to a fixed-width list of scalar column values.
+ * Maps properties to a fixed-size list of scalar column values.
  *
- * Array values are flattened to their first value, non-scalar values are
- * replaced with null, and the number of columns is determined by the first
- * mapped record.
+ * Array values are flattened to their first value, and non-scalar values are
+ * replaced with null. The number of columns is either configured explicitly
+ * or determined by the first mapped record and reused thereafter.
  */
 final class FlattenArrayColumnMapper implements ColumnMapperInterface
 {
@@ -19,7 +19,11 @@ final class FlattenArrayColumnMapper implements ColumnMapperInterface
         private ?int $columnCount = null
     ) {
     }
-    
+
+    /**
+     * @param array<string, mixed> $properties
+     * @return list<scalar|null>
+     */
     public function map(array $properties): array
     {
         $this->columnCount ??= count($properties);
@@ -36,6 +40,6 @@ final class FlattenArrayColumnMapper implements ColumnMapperInterface
 
         $properties = array_slice($properties, 0, $this->columnCount);
 
-        return array_pad($properties, $this->columnCount, null);
+        return array_values(array_pad($properties, $this->columnCount, null));
     }
 }

@@ -14,31 +14,38 @@ use DMT\FileStream\Record\Mapping\PropertyMapperInterface;
  * ignored. When a property name occurs more than once, its values are grouped
  * into an array in their original order.
  */
-final readonly class PredefinedPropertyMapper implements PropertyMapperInterface
+final class PredefinedPropertyMapper implements PropertyMapperInterface
 {
     /**
      * The number of property names.
      */
-    private int $propertyCount;
+    private readonly int $propertyCount;
 
     /**
      * Indicates if the property names have duplicates.
      */
-    private bool $hasDuplicates;
+    private readonly bool $hasDuplicates;
 
     /**
-     * @param list<string> $propertyNames
+     * @param array<int, string> $propertyNames
      */
     public function __construct(private array $propertyNames)
     {
+        ksort($this->propertyNames);
+
         $this->hasDuplicates = max(array_count_values($this->propertyNames)) > 1;
-        $this->propertyCount = count($this->propertyNames);
+        $this->propertyCount = max(array_keys($this->propertyNames)) + 1;
     }
 
     public function map(array $values): array
     {
         $values = array_slice($values, 0, $this->propertyCount);
         $values = array_pad($values, $this->propertyCount, null);
+        $values = array_filter(
+            $values,
+            fn(int $key) => array_key_exists($key, $this->propertyNames),
+            ARRAY_FILTER_USE_KEY
+        );
 
         if (!$this->hasDuplicates) {
             return array_combine($this->propertyNames, $values);
