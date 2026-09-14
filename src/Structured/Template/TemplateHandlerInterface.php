@@ -19,16 +19,14 @@ interface TemplateHandlerInterface
     /**
      * Write the template content preceding the insertion point.
      *
-     * @throws LogicException When the supplied output stream is incompatible
-     *                        with the handler.
+     * @throws LogicException
      */
     public function writePrefix(WritableStreamInterface $output): void;
 
     /**
      * Write the remaining template content following the insertion point.
      *
-     * @throws LogicException When the supplied output stream is incompatible
-     *                        or writePrefix() has not been called first.
+     * @throws LogicException
      */
     public function writeSuffix(WritableStreamInterface $output): void;
 }

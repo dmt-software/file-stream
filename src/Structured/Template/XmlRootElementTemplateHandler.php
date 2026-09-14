@@ -28,6 +28,10 @@ final class XmlRootElementTemplateHandler implements TemplateHandlerInterface
 
     public function writePrefix(WritableStreamInterface $output): void
     {
+        if ($this->prefixWritten) {
+            throw new LogicException('XML template prefix was already written');
+        }
+
         $this->prefixWritten = true;
 
         $output->write('<?xml version="1.0" encoding="UTF-8"?>');
@@ -42,5 +46,6 @@ final class XmlRootElementTemplateHandler implements TemplateHandlerInterface
         }
 
         $output->write(sprintf('</%s>', $this->rootElement));
+        $output->flush();
     }
 }

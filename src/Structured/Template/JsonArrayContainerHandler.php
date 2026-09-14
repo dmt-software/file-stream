@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DMT\FileStream\Structured\Template;
 
 use DMT\FileStream\Stream\WritableStreamInterface;
-use DMT\FileStream\Structured\Template\TemplateHandlerInterface;
 use LogicException;
 
 /**
@@ -22,9 +23,14 @@ final class JsonArrayContainerHandler implements TemplateHandlerInterface
 
     public function writePrefix(WritableStreamInterface $output): void
     {
+        if ($this->prefixWritten) {
+            throw new LogicException('JSON template prefix was already written');
+        }
+
         $this->prefixWritten = true;
 
         $output->write('[');
+        $output->flush();
     }
 
     public function writeSuffix(WritableStreamInterface $output): void
@@ -34,5 +40,6 @@ final class JsonArrayContainerHandler implements TemplateHandlerInterface
         }
 
         $output->write(']');
+        $output->flush();
     }
 }

@@ -20,6 +20,11 @@ use DMT\FileStream\Config\CsvControlInterface;
 final readonly class CsvRecordBoundary implements RecordBoundaryInterface
 {
     /**
+     * Expression to replace empty columns with the enclosure character.
+     */
+    private string $empty;
+
+    /**
      * Expression to determine the current record enclosure is opened.
      */
     private string $opened;
@@ -43,6 +48,9 @@ final readonly class CsvRecordBoundary implements RecordBoundaryInterface
         $delimiter = preg_quote($control->delimiter, '~');
         $enclosure = preg_quote($control->enclosure, '~');
 
+        $this->empty = sprintf(
+            '~(^|%1$s)%2$s%2$s(?=%1$s|%3$s$)~', $delimiter, $enclosure, $control->lineEnding
+        );
         $this->opened = sprintf('~(?:^|%s)%s~', $delimiter, $enclosure);
         $this->closed = sprintf('~%s%s(?=%s|(?:\r?\n)?$)~', $escape, $enclosure, $delimiter);
         $this->lineEnding = $control->lineEnding;
@@ -61,6 +69,8 @@ final readonly class CsvRecordBoundary implements RecordBoundaryInterface
 
         $opened = 0;
         $closed = 0;
+
+        $data = preg_replace($this->empty, '', $data);
 
         preg_replace($this->opened, '$0', $data, count: $opened);
         preg_replace($this->closed, '$0', $data, count: $closed);

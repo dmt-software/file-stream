@@ -52,7 +52,7 @@ final class XmlElementSelector implements SelectorInterface
         }
 
         while ($stream->next()) {
-            if (!$reader->depth === 0) {
+            if ($reader->depth === 0) {
                 $this->segments = [];
             }
 

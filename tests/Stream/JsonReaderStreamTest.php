@@ -169,7 +169,8 @@ final class JsonReaderStreamTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $resource = fopen(__DIR__ . '/../fixtures/json/objects.json', 'a');
+        $resource = fopen(__DIR__ . '/../fixtures/json/stream.json', 'a');
+
         try {
             new JsonReaderStream($resource);
         } finally {
