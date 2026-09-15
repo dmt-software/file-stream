@@ -6,10 +6,12 @@ namespace DMT\FileStream;
 
 use CallbackFilterIterator;
 use DMT\FileStream\Filter\CallbackFilter;
+use DMT\FileStream\Filter\ExpressionFilter;
 use DMT\FileStream\Filter\FilterInterface;
 use DMT\FileStream\Reader\ObjectReaderInterface;
 use Iterator;
 use LimitIterator;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
  * Configures filtering and pagination for object reader results.
@@ -43,7 +45,8 @@ final class ReadStatement
      * @param ObjectReaderInterface<T> $reader
      */
     public function __construct(
-        private readonly ObjectReaderInterface $reader
+        private readonly ObjectReaderInterface $reader,
+        private readonly ?ExpressionLanguage $expressionLanguage = null,
     ) {
     }
 
@@ -61,6 +64,16 @@ final class ReadStatement
         $this->filters[] = $filter;
 
         return $this;
+    }
+
+    /**
+     * Add a filter to the results based on an expression.
+     */
+    public function where(string $expression): self
+    {
+        return $this->filter(
+            new ExpressionFilter($expression, $this->expressionLanguage)
+        );
     }
 
     /**
