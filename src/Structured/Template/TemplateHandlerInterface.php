@@ -13,12 +13,15 @@ use LogicException;
  * Implementations may manage their own template source and insertion point.
  * Simple handlers can write directly to any compatible output stream, while
  * more complex handlers may require a specific writable stream implementation.
+ *
+ * @template T of WritableStreamInterface
  */
 interface TemplateHandlerInterface
 {
     /**
      * Write the template content preceding the insertion point.
      *
+     * @param T $output
      * @throws LogicException
      */
     public function writePrefix(WritableStreamInterface $output): void;
@@ -26,6 +29,7 @@ interface TemplateHandlerInterface
     /**
      * Write the remaining template content following the insertion point.
      *
+     * @param T $output
      * @throws LogicException
      */
     public function writeSuffix(WritableStreamInterface $output): void;

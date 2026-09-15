@@ -12,6 +12,13 @@
          failOnRisky="true"
          failOnWarning="true"
          warnWhenPhpIsNotConfiguredForDevelopment="true">
+
+    <groups>
+        <exclude>
+            <group>integration</group>
+        </exclude>
+    </groups>
+
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>

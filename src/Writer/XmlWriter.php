@@ -7,7 +7,7 @@ namespace DMT\FileStream\Writer;
 use DMT\FileStream\Config\XmlWriterConfig;
 use DMT\FileStream\ObjectWriter;
 use DMT\FileStream\Serialization\XmlElementSerializer;
-use DMT\FileStream\Stream\WritableStreamInterface;
+use DMT\FileStream\Stream\XmlWriterStream;
 use DMT\FileStream\Structured\StructuredWriter;
 
 class XmlWriter implements SerializedWriterInterface
@@ -15,7 +15,7 @@ class XmlWriter implements SerializedWriterInterface
     private ObjectWriter $writer;
 
     public function __construct(
-        WritableStreamInterface $output,
+        XmlWriterStream $output,
         XmlWriterConfig $config
     ) {
         $this->writer = new ObjectWriter(

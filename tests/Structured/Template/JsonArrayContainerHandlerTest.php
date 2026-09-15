@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Structured\Template;
 
-use DMT\FileStream\Stream\ResourceWriterStream;
+use DMT\FileStream\Stream\JsonWriterStream;
 use DMT\FileStream\Structured\Template\JsonArrayContainerHandler;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -16,7 +16,7 @@ final class JsonArrayContainerHandlerTest extends TestCase
     public function testWritePrefix(): void
     {
         $resource = fopen('php://memory', 'w+');
-        $output = new ResourceWriterStream($resource);
+        $output = new JsonWriterStream($resource);
 
         $handler = new JsonArrayContainerHandler();
         $handler->writePrefix($output);
@@ -29,7 +29,7 @@ final class JsonArrayContainerHandlerTest extends TestCase
     public function testWritePrefixAndSuffix(): void
     {
         $resource = fopen('php://memory', 'w+');
-        $output = new ResourceWriterStream($resource);
+        $output = new JsonWriterStream($resource);
 
         $handler = new JsonArrayContainerHandler();
         $handler->writePrefix($output);
@@ -43,7 +43,7 @@ final class JsonArrayContainerHandlerTest extends TestCase
     public function testWriteContainerAroundContent(): void
     {
         $resource = fopen('php://memory', 'w+');
-        $output = new ResourceWriterStream($resource);
+        $output = new JsonWriterStream($resource);
 
         $handler = new JsonArrayContainerHandler();
 
@@ -67,7 +67,7 @@ final class JsonArrayContainerHandlerTest extends TestCase
         );
 
         $resource = fopen('php://memory', 'w+');
-        $output = new ResourceWriterStream($resource);
+        $output = new JsonWriterStream($resource);
 
         $handler = new JsonArrayContainerHandler();
         $handler->writePrefix($output);
@@ -81,7 +81,7 @@ final class JsonArrayContainerHandlerTest extends TestCase
             'JSON template prefix was not written'
         );
 
-        $output = new ResourceWriterStream(fopen('php://memory', 'w+'));
+        $output = new JsonWriterStream(fopen('php://memory', 'w+'));
 
         $handler = new JsonArrayContainerHandler();
         $handler->writeSuffix($output);

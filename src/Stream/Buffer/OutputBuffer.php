@@ -22,8 +22,6 @@ final class OutputBuffer
      */
     private mixed $stream;
 
-    private int $size = 0;
-
     public function __construct(
         private readonly mixed $destination,
         private readonly int $limit = 65536,
@@ -50,9 +48,10 @@ final class OutputBuffer
 
     public function write(string $data): void
     {
+        $size = $this->getSize();
         $length = strlen($data);
 
-        if ($this->size > 0 && $this->size + $length > $this->limit) {
+        if ($size > 0 && $size + $length > $this->limit) {
             $this->flush();
         }
 
@@ -62,16 +61,16 @@ final class OutputBuffer
             throw WriterException::failure();
         }
 
-        $this->size += $written;
-
-        if ($this->size >= $this->limit) {
+        if ($this->getSize() >= $this->limit) {
             $this->flush();
         }
     }
 
     public function flush(): void
     {
-        if ($this->size === 0) {
+        $size = $this->getSize();
+
+        if ($size === 0) {
             return;
         }
 
@@ -80,16 +79,18 @@ final class OutputBuffer
         $written = stream_copy_to_stream(
             $this->stream,
             $this->destination,
+            $size
         );
 
-        if ($written === false || $written !== $this->size) {
+        if ($written === false || $written !== $size) {
             throw WriterException::failure();
         }
 
-        ftruncate($this->stream, 0);
-        rewind($this->stream);
+        if (!ftruncate($this->stream, 0)) {
+            throw WriterException::failure();
+        }
 
-        $this->size = 0;
+        rewind($this->stream);
     }
 
     public function close(): void
@@ -99,5 +100,16 @@ final class OutputBuffer
         if (is_resource($this->stream)) {
             fclose($this->stream);
         }
+    }
+
+    private function getSize(): int
+    {
+        $size = ftell($this->stream);
+
+        if ($size === false) {
+            throw WriterException::failure();
+        }
+
+        return $size;
     }
 }

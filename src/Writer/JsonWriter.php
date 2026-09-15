@@ -7,7 +7,7 @@ namespace DMT\FileStream\Writer;
 use DMT\FileStream\Config\JsonWriterConfig;
 use DMT\FileStream\ObjectWriter;
 use DMT\FileStream\Serialization\JsonObjectSerializer;
-use DMT\FileStream\Stream\ResourceWriterStream;
+use DMT\FileStream\Stream\JsonWriterStream;
 use DMT\FileStream\Structured\StructuredWriter;
 
 class JsonWriter implements SerializedWriterInterface
@@ -15,7 +15,7 @@ class JsonWriter implements SerializedWriterInterface
     private ObjectWriter $writer;
 
     public function __construct(
-        ResourceWriterStream $output,
+        JsonWriterStream $output,
         JsonWriterConfig $config
     ) {
         $this->writer = new ObjectWriter(

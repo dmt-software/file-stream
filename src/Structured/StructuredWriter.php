@@ -29,14 +29,13 @@ final readonly class StructuredWriter implements SerializedWriterInterface
     public function write(iterable $values): void
     {
         $this->template->writePrefix($this->output);
-        $this->output->flush();
 
         foreach ($values as $value) {
             $this->output->write($value);
         }
 
         $this->template->writeSuffix($this->output);
-        $this->output->flush();
+
         $this->output->close();
     }
 }

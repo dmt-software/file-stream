@@ -36,7 +36,7 @@ final readonly class CsvRecordSerializer implements SerializerInterface
         return implode(
             $this->control->delimiter,
             array_map($this->serializeColumn(...), $columns)
-        );
+        ) . $this->control->lineEnding;
     }
 
     /**

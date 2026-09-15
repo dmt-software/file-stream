@@ -41,7 +41,7 @@ final class CsvRecordSerializerTest extends TestCase
             ])
         );
 
-        $this->assertSame('John,42', $result);
+        $this->assertSame('John,42' . "\n", $result);
     }
 
     #[DataProvider('provideScalarValues')]
@@ -56,7 +56,7 @@ final class CsvRecordSerializerTest extends TestCase
             new ArrayObject(['value' => $value])
         );
 
-        $this->assertSame($expected, $result);
+        $this->assertSame($expected, rtrim($result));
     }
 
     #[DataProvider('provideValuesRequiringEnclosure')]
@@ -71,7 +71,7 @@ final class CsvRecordSerializerTest extends TestCase
             new ArrayObject(['value' => $value])
         );
 
-        $this->assertSame($expected, $result);
+        $this->assertSame($expected, rtrim($result));
     }
 
     public function testEscapeEnclosureByDoublingIt(): void
@@ -85,7 +85,7 @@ final class CsvRecordSerializerTest extends TestCase
             new ArrayObject(['value' => 'Say "hello"'])
         );
 
-        $this->assertSame('"Say ""hello"""', $result);
+        $this->assertSame('"Say ""hello"""' . "\n", $result);
     }
 
     public function testEscapeEnclosureUsingConfiguredEscapeCharacter(): void
@@ -99,7 +99,7 @@ final class CsvRecordSerializerTest extends TestCase
             new ArrayObject(['value' => 'Say "hello"'])
         );
 
-        $this->assertSame('"Say \\"hello\\""', $result);
+        $this->assertSame('"Say \\"hello\\""' . "\n", $result);
     }
 
     public function testUseConfiguredDelimiter(): void
@@ -116,7 +116,7 @@ final class CsvRecordSerializerTest extends TestCase
             new ArrayObject()
         );
 
-        $this->assertSame('John;Doe', $result);
+        $this->assertSame('John;Doe' . "\n", $result);
     }
 
     public function testConfiguredDelimiterRequiresEnclosure(): void
@@ -132,7 +132,7 @@ final class CsvRecordSerializerTest extends TestCase
             new ArrayObject()
         );
 
-        $this->assertSame('"John;Doe"', $result);
+        $this->assertSame('"John;Doe"' . "\n", $result);
     }
 
     public function testConfiguredEnclosureIsUsed(): void
@@ -148,7 +148,7 @@ final class CsvRecordSerializerTest extends TestCase
             new ArrayObject()
         );
 
-        $this->assertSame("'John,Doe'", $result);
+        $this->assertSame("'John,Doe'" . "\n", $result);
     }
 
     public function testRejectNonArrayObject(): void

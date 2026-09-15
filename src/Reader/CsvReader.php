@@ -6,7 +6,7 @@ namespace DMT\FileStream\Reader;
 
 use ArrayObject;
 use DMT\FileStream\Config\CsvReaderConfig;
-use DMT\FileStream\SerializedObjectReader;
+use DMT\FileStream\ObjectReader;
 use DMT\FileStream\Record\Boundary\CsvRecordBoundary;
 use DMT\FileStream\Record\RecordIterable;
 use DMT\FileStream\Serialization\CsvRecordDeserializer;
@@ -24,13 +24,13 @@ use Iterator;
  */
 final readonly class CsvReader implements ObjectReaderInterface
 {
-    private SerializedObjectReader $reader;
+    private ObjectReader $reader;
 
     public function __construct(
         ResourceReaderStream $stream,
         CsvReaderConfig $config = new CsvReaderConfig(),
     ) {
-        $this->reader = new SerializedObjectReader(
+        $this->reader = new ObjectReader(
             new RecordIterable($stream, new CsvRecordBoundary($config)),
             new CsvRecordDeserializer($config, $config->propertyMapper)
         );

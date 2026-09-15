@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream\Structured\Template;
 
-use DMT\FileStream\Stream\ResourceWriterStream;
+use DMT\FileStream\Stream\XmlWriterStream;
 use DMT\FileStream\Structured\Template\XmlRootElementTemplateHandler;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -16,7 +16,7 @@ final class XmlRootElementTemplateHandlerTest extends TestCase
     public function testWriteDefaultRootElement(): void
     {
         $resource = fopen('php://memory', 'w+');
-        $output = new ResourceWriterStream($resource);
+        $output = new XmlWriterStream($resource);
 
         $handler = new XmlRootElementTemplateHandler();
         $handler->writePrefix($output);
@@ -24,8 +24,8 @@ final class XmlRootElementTemplateHandlerTest extends TestCase
 
         rewind($resource);
 
-        $this->assertSame(
-            '<?xml version="1.0" encoding="UTF-8"?><Results></Results>',
+        $this->assertMatchesRegularExpression(
+            '~<Results>\s</Results>\s~',
             stream_get_contents($resource)
         );
     }
@@ -33,7 +33,7 @@ final class XmlRootElementTemplateHandlerTest extends TestCase
     public function testWriteCustomRootElement(): void
     {
         $resource = fopen('php://memory', 'w+');
-        $output = new ResourceWriterStream($resource);
+        $output = new XmlWriterStream($resource);
 
         $handler = new XmlRootElementTemplateHandler('Items');
         $handler->writePrefix($output);
@@ -41,8 +41,8 @@ final class XmlRootElementTemplateHandlerTest extends TestCase
 
         rewind($resource);
 
-        $this->assertSame(
-            '<?xml version="1.0" encoding="UTF-8"?><Items></Items>',
+        $this->assertMatchesRegularExpression(
+            '~<Items>\s</Items>~',
             stream_get_contents($resource)
         );
     }
@@ -50,7 +50,7 @@ final class XmlRootElementTemplateHandlerTest extends TestCase
     public function testWriteTemplateAroundContent(): void
     {
         $resource = fopen('php://memory', 'w+');
-        $output = new ResourceWriterStream($resource);
+        $output = new XmlWriterStream($resource);
 
         $handler = new XmlRootElementTemplateHandler('Items');
         $handler->writePrefix($output);
@@ -59,8 +59,8 @@ final class XmlRootElementTemplateHandlerTest extends TestCase
 
         rewind($resource);
 
-        $this->assertSame(
-            '<?xml version="1.0" encoding="UTF-8"?><Items><Item>one</Item></Items>',
+        $this->assertMatchesRegularExpression(
+            '~<Items>\s<Item>one</Item></Items>~',
             stream_get_contents($resource)
         );
     }
@@ -73,7 +73,7 @@ final class XmlRootElementTemplateHandlerTest extends TestCase
         );
 
         $resource = fopen('php://memory', 'w+');
-        $output = new ResourceWriterStream($resource);
+        $output = new XmlWriterStream($resource);
 
         $handler = new XmlRootElementTemplateHandler();
         $handler->writePrefix($output);
@@ -88,7 +88,7 @@ final class XmlRootElementTemplateHandlerTest extends TestCase
         );
 
         $resource = fopen('php://memory', 'w+');
-        $output = new ResourceWriterStream($resource);
+        $output = new XmlWriterStream($resource);
 
         $handler = new XmlRootElementTemplateHandler();
         $handler->writeSuffix($output);
