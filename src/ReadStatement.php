@@ -50,7 +50,7 @@ final class ReadStatement
     /**
      * Add a filter to the results.
      *
-     * @param FilterInterface<T>|callable $filter
+     * @param FilterInterface<T>|callable(T, int): bool $filter
      */
     public function filter(FilterInterface|callable $filter): self
     {
