@@ -8,7 +8,6 @@ use DMT\FileStream\Config\XmlWriterConfig;
 use DMT\FileStream\Stream\XmlWriterStream;
 use DMT\FileStream\Structured\Template\XmlRootElementTemplateHandler;
 use DMT\FileStream\Writer\XmlWriter;
-use PHPUnit\Event\Runtime\PHP;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
