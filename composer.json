@@ -29,6 +29,10 @@
     }
   },
   "require-dev": {
-    "phpunit/phpunit": "^13.3"
+    "phpunit/phpunit": "^13.3",
+    "symfony/expression-language": "^8.1"
+  },
+  "suggest": {
+    "symfony/expression-language": "For using expressions in filters"
   }
 }

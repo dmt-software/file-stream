@@ -1,29 +1,6 @@
-# dmt-software/file-stream
+# File Stream
 
-Streaming object readers and writers for CSV, JSON and XML.
-
-The package is built around small, composable reader and writer abstractions:
-
-```text
-source
-  ↓
-ObjectReaderInterface<T>
-  ↓
-ReadStatement<T>
-  ↓
-iterable<T>
-  ↓
-WritePipeline<T, R>
-  ↓
-ObjectWriterInterface<T|R>
-  ↓
-output
-```
-
-The `ReadStatement` decorates a reader with filtering, limits and modifiers, while the `WritePipeline` decorates a 
-writer with an optional object transformation. Both sides remain lazy, so records can flow from source to output without
-first collecting the complete data set in memory.
-
+Streaming readers and writers for CSV, JSON and XML.
 
 ## Installation
 
@@ -31,136 +8,91 @@ first collecting the complete data set in memory.
 composer require dmt-software/file-stream
 ```
 
-## Formats
+# Reading
 
-### CSV
-
-The `CsvObjectReader` reads a CSV stream into a series of `ArrayObject`s.
-
-For common use cases, use the configured reader:
+Read structured data as objects.
 
 ```php
-$reader = new CsvObjectReader(
-    stream: $stream,
-    delimiter: ';',
-    firstRowDefinesColumns: true,
+use DMT\FileStream\Config\JsonReaderConfig;
+use DMT\FileStream\Reader\JsonReader;
+use DMT\FileStream\Stream\JsonReaderStream;
+use DMT\FileStream\Structured\Path\DotSeparatedPath;
+
+$reader = new JsonReader(
+    new JsonReaderStream(fopen('people.json', 'r')),
+    new JsonReaderConfig(
+        path: new DotSeparatedPath('.people')
+    )
 );
+
+foreach ($reader->getResults() as $person) {
+    echo $person->firstName;
+}
 ```
 
-Its naming strategy can be overridden when needed:
-
-```php
-$reader->setNamingStrategy(
-    new NamedPropertyStrategy(propertyNames: ['name', 'tag', 'tag'])
-);
-```
-
-> NOTE: the first row is returned even when it contains just the column names.
-
-
-A `CsvObjectWriter` writes a series of `ArrayObject`s to a CSV stream.
-
-```php
-$writer = new CsvObjectWriter(
-    stream: $stream,
-    delimiter: ';',
-);
-```
-
-Its column strategy can be overridden when needed:
-
-```php
-$writer->setColumnStrategy(
-    new NamedColumnStrategy(columnNames: ['id','name','email'])
-);
-```
-
-> NOTE: a property containing a list of associative arrays or objects will be discarded.
-
-### JSON
-
-The `JsonObjectReader` provides a configured JSON reader that yields `stdClass` objects.
-
-```php
-$reader = new JsonObjectReader(
-    stream: $stream,
-    path: '.to.objects'
-);
-```
-
-The reader above  will return a `stdClass` for each value in the object list `{"to":{"objects":[{...}, {...}, {...}]}}`.
-
-> NOTE: `JSON_OBJECT_AS_ARRAY` will trigger an error because the expected result contains of objects.
-
-A `JsonObjectWriter` writes a series of `stdClass` objects into a JSON stream.
-
-```php
-$writer = JsonObjectWriter(
-    stream: $stream,
-    template: fopen('template.json', 'r')
-)
-```
-
-### XML
-
-The `XmlObjectReader` provides a configured XML reader that returns a series of `SimpleXMLElement` objects.
-
-```php
-$reader = new XmlObjectReader(
-    stream: $stream,
-    path: '/to/elements/item'
-)
-```
-
-The reader above will return a `SimpleXMlElement` for each node found in `<to><elements><item>...</item></elements></to>`.
-
-A `XMLObjectWriter` writes a series of `SimpleXmlElement` objects into a XML stream.
-
-```php
-$writer = XmlObjectWriter(
-    stream: $stream,
-    template: fopen('template.xml', 'r')
-)
-```
-
-> NOTE: XML declaration is set by the writer and can not be overridden by using a template.
-
-## Encoding
-
-Input encoding normalization should happen before parsing, preferably with PHP stream filters.
-
-```php
-stream_filter_append(
-    $stream,
-    'convert.iconv.ISO-8859-1/UTF-8'
-);
-```
-
-Parsers should receive input in the encoding they expect, normally UTF-8. Encoding conversion is intentionally kept outside readers, parsers and deserializers.
-
-## Extending the package
-
-The package is designed so additional record formats can be added without changing the higher-level read and write APIs.
-
-For example, a fixed-width reader can be composed as:
+Available readers:
 
 ```text
-stream
-→ FixedLineParser
-→ FixedLineIterator
-→ StringChunkDeserializer
-→ StreamObjectReader
+CsvReader
+JsonReader
+XmlReader
 ```
 
-The preconfigured readers are convenience wrappers around the same lower-level components. Advanced users can compose `StreamObjectReader` directly with custom iterators and deserializers.
+# Filtering
 
-See the documentation for more detailed extension examples.
+Reader results can be filtered and paginated with `ReadStatement`.
 
-## Documentation
+```php
+use DMT\FileStream\ReadStatement;
 
-- [Architecture](docs/architecture.md)
-- [Reading](docs/reading.md)
-- [Writing](docs/writing.md)
-- [Transformers](docs/transformers.md)
-- [Encoding and errors](docs/encoding-and-errors.md)
-- [Extending](docs/extending.md)
+$results = (new ReadStatement($reader))
+    ->where('object.age >= 18')
+    ->limit(
+        offset: 10,
+        limit: 20
+    )
+    ->execute();
+```
+
+Offset and limit are applied after filtering.
+
+# Writing
+
+Serialize objects directly to a stream.
+
+```php
+use ArrayObject;
+use DMT\FileStream\Config\CsvWriterConfig;
+use DMT\FileStream\Record\Mapping\Csv\PredefinedNamedColumnMapper;
+use DMT\FileStream\Stream\ResourceWriterStream;
+use DMT\FileStream\Writer\CsvWriter;
+
+$writer = new CsvWriter(
+    new ResourceWriterStream(fopen('people.csv', 'w')),
+    new CsvWriterConfig(
+        columnMapper: new PredefinedNamedColumnMapper([
+            'firstName',
+            'lastName',
+            'age',
+        ])
+    )
+);
+
+$writer->write([
+    new ArrayObject([
+        'firstName' => 'John',
+        'lastName' => 'Doe',
+        'age' => 42,
+    ]),
+]);
+```
+
+Available writers:
+
+```text
+CsvWriter
+JsonWriter
+XmlWriter
+```
+
+Writers flush and close their output stream when writing completes.

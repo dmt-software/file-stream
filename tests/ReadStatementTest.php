@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace DMT\Test\FileStream;
 
-use DMT\FileStream\Reader\IterableObjectReader;
+use ArrayIterator;
+use DMT\FileStream\Filter\CallbackFilter;
 use DMT\FileStream\ReadStatement;
+use DMT\FileStream\Reader\ObjectReaderInterface;
+use Iterator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -13,190 +16,218 @@ use stdClass;
 #[CoversClass(ReadStatement::class)]
 final class ReadStatementTest extends TestCase
 {
-    public function testReturnsReaderResults(): void
+    public function testExecuteReturnsReaderResults(): void
     {
-        $first = $this->object('first');
-        $second = $this->object('second');
-
         $statement = new ReadStatement(
-            new IterableObjectReader([$first, $second])
+            $this->createReader([
+                0 => (object)['value' => 1],
+                1 => (object)['value' => 2],
+            ])
         );
 
+        $results = iterator_to_array($statement->execute());
+
         $this->assertSame(
-            [$first, $second],
-            iterator_to_array($statement->getResults())
+            [0 => 1, 1 => 2],
+            array_map(
+                static fn (stdClass $object): int => $object->value,
+                $results
+            )
         );
     }
 
-    public function testFiltersResults(): void
+    public function testApplyFilter(): void
     {
-        $first = $this->object('first');
-        $second = $this->object('second');
-        $third = $this->object('third');
-
         $statement = new ReadStatement(
-            new IterableObjectReader([$first, $second, $third])
+            $this->createReader([
+                0 => (object)['value' => 1],
+                1 => (object)['value' => 2],
+                2 => (object)['value' => 3],
+            ])
         );
 
         $statement->filter(
-            fn (stdClass $object, int $key): bool => $object->name !== 'second'
+            new CallbackFilter(
+                static fn (object $object, int $key): bool => $object->value >= 2
+            )
         );
 
+        $results = iterator_to_array($statement->execute());
+
         $this->assertSame(
-            [0 => $first, 2 => $third],
-            iterator_to_array($statement->getResults())
+            [1 => 2, 2 => 3],
+            array_map(
+                static fn (stdClass $object): int => $object->value,
+                $results
+            )
         );
     }
 
-    public function testAppliesOffsetAfterFiltering(): void
+    public function testApplyCallableFilter(): void
     {
-        $first = $this->object('first');
-        $second = $this->object('second');
-        $third = $this->object('third');
-
         $statement = new ReadStatement(
-            new IterableObjectReader([$first, $second, $third])
+            $this->createReader([
+                0 => (object)['value' => 1],
+                1 => (object)['value' => 2],
+                2 => (object)['value' => 3],
+            ])
         );
 
         $statement->filter(
-            fn (stdClass $object, int $key): bool => $object->name !== 'first'
+            static fn (object $object, int $key): bool => $object->value !== 2
         );
-        $statement->limit(1);
+
+        $results = iterator_to_array($statement->execute());
 
         $this->assertSame(
-            [2 => $third],
-            iterator_to_array($statement->getResults())
+            [0 => 1, 2 => 3],
+            array_map(
+                static fn (stdClass $object): int => $object->value,
+                $results
+            )
         );
     }
 
-    public function testAppliesLimitAfterFiltering(): void
+    public function testApplyFiltersInOrder(): void
     {
-        $first = $this->object('first');
-        $second = $this->object('second');
-        $third = $this->object('third');
-
         $statement = new ReadStatement(
-            new IterableObjectReader([$first, $second, $third])
+            $this->createReader([
+                0 => (object)['value' => 1],
+            ])
         );
 
-        $statement->filter(
-            fn (stdClass $object, int $key): bool => $object->name !== 'first'
+        $calls = [];
+
+        $statement
+            ->filter(
+                static function (object $object, int $key) use (&$calls): bool {
+                    $calls[] = 'first';
+
+                    return true;
+                }
+            )
+            ->filter(
+                static function (object $object, int $key) use (&$calls): bool {
+                    $calls[] = 'second';
+
+                    return true;
+                }
+            );
+
+        iterator_to_array($statement->execute());
+
+        $this->assertSame(['first', 'second'], $calls);
+    }
+
+    public function testApplyOffsetAfterFiltering(): void
+    {
+        $statement = new ReadStatement(
+            $this->createReader([
+                0 => (object)['value' => 1],
+                1 => (object)['value' => 2],
+                2 => (object)['value' => 3],
+                3 => (object)['value' => 4],
+            ])
         );
-        $statement->limit(0, 1);
+
+        $statement
+            ->filter(
+                static fn (object $object, int $key): bool => $object->value >= 2
+            )
+            ->limit(offset: 1);
+
+        $results = iterator_to_array($statement->execute());
 
         $this->assertSame(
-            [1 => $second],
-            iterator_to_array($statement->getResults())
+            [2 => 3, 3 => 4],
+            array_map(
+                static fn (stdClass $object): int => $object->value,
+                $results
+            )
         );
     }
 
-    public function testAppliesModifierToReturnedResults(): void
+    public function testApplyLimitAfterFiltering(): void
     {
-        $first = $this->object('first');
-        $second = $this->object('second');
-
         $statement = new ReadStatement(
-            new IterableObjectReader([$first, $second])
+            $this->createReader([
+                0 => (object)['value' => 1],
+                1 => (object)['value' => 2],
+                2 => (object)['value' => 3],
+                3 => (object)['value' => 4],
+            ])
         );
 
-        $statement->modify(
-            function (stdClass $object, int $key): stdClass {
-                $object->key = $key;
+        $statement
+            ->filter(
+                static fn (object $object, int $key): bool => $object->value >= 2
+            )
+            ->limit(limit: 2);
 
-                return $object;
+        $results = iterator_to_array($statement->execute());
+
+        $this->assertCount(2, $results);
+        $this->assertSame(
+            [1 => 2, 2 => 3],
+            array_map(
+                static fn (stdClass $object): int => $object->value,
+                $results
+            )
+        );
+    }
+
+    public function testApplyOffsetAndLimitAfterFiltering(): void
+    {
+        $statement = new ReadStatement(
+            $this->createReader([
+                0 => (object)['value' => 1],
+                1 => (object)['value' => 2],
+                2 => (object)['value' => 3],
+                3 => (object)['value' => 4],
+                4 => (object)['value' => 5],
+            ])
+        );
+
+        $statement
+            ->filter(
+                static fn (object $object, int $key): bool => $object->value >= 2
+            )
+            ->limit(offset: 1, limit: 2);
+
+        $results = iterator_to_array($statement->execute());
+
+        $this->assertCount(2, $results);
+        $this->assertSame(
+            [2 => 3, 3 => 4],
+            array_map(
+                static fn (stdClass $object): int => $object->value,
+                $results
+            )
+        );
+    }
+
+    /**
+     * @param array<int, stdClass> $objects
+     * @return ObjectReaderInterface<stdClass>
+     */
+    private function createReader(array $objects): ObjectReaderInterface
+    {
+        return new class($objects) implements ObjectReaderInterface {
+            /**
+             * @param array<int, stdClass> $objects
+             */
+            public function __construct(
+                private readonly array $objects
+            ) {
             }
-        );
 
-        $results = iterator_to_array($statement->getResults());
-
-        $this->assertSame(0, $results[0]->key);
-        $this->assertSame(1, $results[1]->key);
-    }
-
-    public function testModifierIsOnlyAppliedAfterFilterAndLimit(): void
-    {
-        $first = $this->object('first');
-        $second = $this->object('second');
-        $third = $this->object('third');
-        $modified = [];
-
-        $statement = new ReadStatement(
-            new IterableObjectReader([$first, $second, $third])
-        );
-
-        $statement->filter(
-            fn (stdClass $object, int $key): bool => $object->name !== 'first'
-        );
-        $statement->limit(0, 1);
-        $statement->modify(
-            function (stdClass $object, int $key) use (&$modified): stdClass {
-                $modified[] = $key;
-
-                return $object;
+            /**
+             * @return Iterator<int, stdClass>
+             */
+            public function getResults(): Iterator
+            {
+                yield from new ArrayIterator($this->objects);
             }
-        );
-
-        iterator_to_array($statement->getResults());
-
-        $this->assertSame([1], $modified);
-    }
-
-    public function testAppliesMultipleFilters(): void
-    {
-        $first = $this->object('first');
-        $second = $this->object('second');
-        $third = $this->object('third');
-
-        $statement = new ReadStatement(
-            new IterableObjectReader([$first, $second, $third])
-        );
-
-        $statement->filter(
-            fn (stdClass $object, int $key): bool => $object->name !== 'first'
-        );
-        $statement->filter(
-            fn (stdClass $object, int $key): bool => $object->name !== 'third'
-        );
-
-        $this->assertSame(
-            [1 => $second],
-            iterator_to_array($statement->getResults())
-        );
-    }
-
-    public function testAppliesMultipleModifiersInOrder(): void
-    {
-        $object = $this->object('php');
-
-        $statement = new ReadStatement(
-            new IterableObjectReader([$object])
-        );
-
-        $statement->modify(
-            function (stdClass $object, int $key): stdClass {
-                $object->name = strtoupper($object->name);
-
-                return $object;
-            }
-        );
-        $statement->modify(
-            function (stdClass $object, int $key): stdClass {
-                $object->name .= '!';
-
-                return $object;
-            }
-        );
-
-        $results = iterator_to_array($statement->getResults());
-
-        $this->assertSame('PHP!', $results[0]->name);
-    }
-
-    private function object(string $name): stdClass
-    {
-        $object = new stdClass();
-        $object->name = $name;
-
-        return $object;
+        };
     }
 }

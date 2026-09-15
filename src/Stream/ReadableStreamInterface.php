@@ -6,34 +6,59 @@ namespace DMT\FileStream\Stream;
 
 use DMT\FileStream\Exception\ReaderException;
 
-interface ReadableStreamInterface
+/**
+ * Represents a readable stream abstraction.
+ *
+ * The stream exposes a forward-moving cursor over an underlying stream
+ * implementation. Consumers can advance the cursor, inspect the current
+ * item and optionally rewind the stream when supported.
+ *
+ * @template T of resource|object
+ * @extends StreamInterface<T>
+ */
+interface ReadableStreamInterface extends StreamInterface
 {
     /**
-     * Check if the stream is readable.
+     * Check whether the stream can currently be read.
      */
     public function isReadable(): bool;
 
     /**
-     * Read from the stream.
+     * Advance the stream cursor to the next item.
      *
-     * @throws ReaderException When the stream cannot be read.
+     * The return value indicates whether the cursor was successfully moved
+     * to a readable item.
+     *
+     * @throws ReaderException
      */
-    public function read(?int $length = null): string;
+    public function next(): bool;
 
     /**
-     * Check if the stream is seekable.
+     * Get the contents of the current item.
+     *
+     * The returned value represents the item at the current cursor position
+     * without advancing the stream.
+     *
+     * @throws ReaderException
      */
-    public function isSeekable(): bool;
+    public function current(): string;
 
     /**
-     * Rewind the stream to the beginning.
+     * Check whether the stream supports rewinding.
+     */
+    public function isRewindable(): bool;
+
+    /**
+     * Rewind the stream to its initial position.
      *
-     * @throws ReaderException When the stream cannot be seeked.
+     * Implementations that cannot be rewound should throw a ReaderException.
+     *
+     * @throws ReaderException
      */
     public function rewind(): void;
 
     /**
-     * Check if the file pointer is at the end of the stream.
+     * Check whether the end of the stream has been reached.
      */
-    public function endOfFile(): bool;
+    public function eof(): bool;
 }
