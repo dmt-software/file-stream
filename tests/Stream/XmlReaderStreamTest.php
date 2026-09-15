@@ -77,7 +77,7 @@ final class XmlReaderStreamTest extends TestCase
             $this->createStream('')
         );
 
-        $stream->current();
+        @$stream->current();
     }
 
     public function testPhpStreamIsNotRewindable(): void

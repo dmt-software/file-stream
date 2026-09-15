@@ -9,6 +9,7 @@ use DMT\FileStream\Stream\ReadableStreamInterface;
 use DMT\FileStream\Structured\Path\DotSeparatedPath;
 use DMT\FileStream\Structured\Selector\JsonObjectSelector;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -97,6 +98,7 @@ final class JsonObjectSelectorTest extends TestCase
         $this->assertSame('{"name":"PHP"}', $stream->current());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testRejectIncompatibleStream(): void
     {
 

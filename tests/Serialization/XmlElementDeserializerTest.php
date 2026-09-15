@@ -54,7 +54,7 @@ final class XmlElementDeserializerTest extends TestCase
         $this->expectException(SerializationException::class);
 
         $deserializer = new XmlElementDeserializer(new XmlReaderConfig());
-        $deserializer->deserialize($xml);
+        @$deserializer->deserialize($xml);
     }
 
     public function testRejectDataThatDoesNotStartWithElement(): void
@@ -71,7 +71,7 @@ final class XmlElementDeserializerTest extends TestCase
         $deserializer = new XmlElementDeserializer(new XmlReaderConfig());
 
         try {
-            $deserializer->deserialize('<item>');
+            @$deserializer->deserialize('<item>');
 
             $this->fail('SerializationException was not thrown');
         } catch (SerializationException $exception) {

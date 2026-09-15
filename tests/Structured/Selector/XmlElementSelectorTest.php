@@ -9,6 +9,7 @@ use DMT\FileStream\Stream\XmlReaderStream;
 use DMT\FileStream\Structured\Path\SlashSeparatedPath;
 use DMT\FileStream\Structured\Selector\XmlElementSelector;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -127,6 +128,7 @@ final class XmlElementSelectorTest extends TestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testRejectIncompatibleStream(): void
     {
         $this->expectException(InvalidArgumentException::class);

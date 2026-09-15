@@ -9,6 +9,7 @@ use DMT\FileStream\Config\CsvWriterConfig;
 use DMT\FileStream\Record\Mapping\ColumnMapperInterface;
 use DMT\FileStream\Serialization\CsvRecordSerializer;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -45,6 +46,7 @@ final class CsvRecordSerializerTest extends TestCase
     }
 
     #[DataProvider('provideScalarValues')]
+    #[AllowMockObjectsWithoutExpectations]
     public function testSerializeScalarValues(mixed $value, string $expected): void
     {
         $serializer = new CsvRecordSerializer(
@@ -60,6 +62,7 @@ final class CsvRecordSerializerTest extends TestCase
     }
 
     #[DataProvider('provideValuesRequiringEnclosure')]
+    #[AllowMockObjectsWithoutExpectations]
     public function testEncloseValuesWhenRequired(string $value, string $expected): void
     {
         $serializer = new CsvRecordSerializer(
@@ -74,6 +77,7 @@ final class CsvRecordSerializerTest extends TestCase
         $this->assertSame($expected, rtrim($result));
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testEscapeEnclosureByDoublingIt(): void
     {
         $serializer = new CsvRecordSerializer(
@@ -88,6 +92,7 @@ final class CsvRecordSerializerTest extends TestCase
         $this->assertSame('"Say ""hello"""' . "\n", $result);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testEscapeEnclosureUsingConfiguredEscapeCharacter(): void
     {
         $serializer = new CsvRecordSerializer(
@@ -102,6 +107,7 @@ final class CsvRecordSerializerTest extends TestCase
         $this->assertSame('"Say \\"hello\\""' . "\n", $result);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testUseConfiguredDelimiter(): void
     {
         $serializer = new CsvRecordSerializer(
@@ -119,6 +125,7 @@ final class CsvRecordSerializerTest extends TestCase
         $this->assertSame('John;Doe' . "\n", $result);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testConfiguredDelimiterRequiresEnclosure(): void
     {
         $serializer = new CsvRecordSerializer(
@@ -135,6 +142,7 @@ final class CsvRecordSerializerTest extends TestCase
         $this->assertSame('"John;Doe"' . "\n", $result);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testConfiguredEnclosureIsUsed(): void
     {
         $serializer = new CsvRecordSerializer(
@@ -151,6 +159,7 @@ final class CsvRecordSerializerTest extends TestCase
         $this->assertSame("'John,Doe'" . "\n", $result);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testRejectNonArrayObject(): void
     {
         $serializer = new CsvRecordSerializer(

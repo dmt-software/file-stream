@@ -7,6 +7,7 @@ namespace DMT\Test\FileStream\Structured;
 use DMT\FileStream\Stream\ReadableStreamInterface;
 use DMT\FileStream\Structured\Selector\SelectorInterface;
 use DMT\FileStream\Structured\StructuredIterable;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -63,6 +64,7 @@ final class StructuredIterableTest extends TestCase
         $this->assertSame([], iterator_to_array($iterable->getIterator()));
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testKeysAreSequential(): void
     {
         $stream = $this->createMock(ReadableStreamInterface::class);
