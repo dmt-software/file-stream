@@ -12,6 +12,11 @@ jobs:
         with:
           php-version: latest
           coverage: none
+          ini-values: >-
+            display_errors=On,
+            display_startup_errors=On,
+            error_reporting=-1,
+            zend.assertions=1
 
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist
