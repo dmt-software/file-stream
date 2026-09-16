@@ -14,7 +14,7 @@ use LimitIterator;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
- * Configures filtering and pagination for object reader results.
+ * Configures filtering, offset and limit for object reader results.
  *
  * Filters are applied in the order they are added. Offset and limit are
  * applied after all filters, so the offset refers to accepted results rather
