@@ -40,7 +40,7 @@ XmlReader
 
 # Filtering
 
-Reader results can be filtered and paginated with `ReadStatement`.
+Reader results can be filtered and chunked with `ReadStatement`.
 
 ```php
 use DMT\FileStream\ReadStatement;
@@ -82,7 +82,7 @@ $writer->write([
     new ArrayObject([
         'firstName' => 'John',
         'lastName' => 'Doe',
-        'age' => 42,
+        'age' => '42',
     ]),
 ]);
 ```

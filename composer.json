@@ -2,10 +2,22 @@
   "name": "dmt-software/file-stream",
   "type": "library",
   "license": "MIT",
+  "description": "Import and export large datasets with a low memory footprint.",
+  "keywords": [
+    "import",
+    "export",
+    "file-stream",
+    "csv",
+    "json",
+    "xml",
+    "reader",
+    "writer",
+    "serialization"
+  ],
   "authors": [
     {
-      "name": "proggeler",
-      "email": "proggeler@de-mes.nl"
+      "name": "Bas de Mes",
+      "email": "bas@dmt-software.nl"
     }
   ],
   "autoload": {
@@ -31,6 +43,9 @@
   "require-dev": {
     "phpunit/phpunit": "^13.3",
     "symfony/expression-language": "^8.1"
+  },
+  "scripts": {
+    "test": "phpunit --group default --group integration"
   },
   "suggest": {
     "symfony/expression-language": "For using expressions in filters"
