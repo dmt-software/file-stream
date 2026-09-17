@@ -31,6 +31,7 @@ final readonly class StructuredIterable implements SerializedIterableInterface
      */
     public function getIterator(): Iterator
     {
+        $this->stream->rewind();
         $key = 0;
 
         while ($this->selector->selectNext($this->stream)) {
