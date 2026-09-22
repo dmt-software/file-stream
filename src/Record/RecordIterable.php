@@ -32,6 +32,7 @@ final readonly class RecordIterable implements SerializedIterableInterface
      */
     public function getIterator(): Iterator
     {
+        $this->stream->rewind();
         $key = 0;
         $record = '';
 
